@@ -2,14 +2,19 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
+#include <vector>
+#include <sstream>
 
 void parse_and_run_command(const std::string &command) {
     /* TODO: Implement this. */
 
   std::istringstream s(command);
+  std::vector<std::string> args;
+  std::string token;
   while (s >> token) {
-    std::cout << token;
+    args.push_back(token);
   }
+  
     /* Note that this is not the correct way to test for the exit command.
        For example the command "   exit  " should also exit your shell.
      */
