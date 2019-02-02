@@ -24,9 +24,9 @@ class command {
   const char* argArray() {
     const char* arr[10];
     for (uint i=0; i<args.size(); i++) {
-      arr[i] = args[i].c_str;
+      arr[i] = args[i].c_str();
     }
-    return arr;
+    return *arr;
   }
 };
 
@@ -53,6 +53,7 @@ void parse_and_run_command(const std::string &cmd) {
   std::vector<int> pids;
   int status;
   for (uint j = 0; j < 1; j++) {
+    if (cur->cmd == "exit") exit(0);
     pid_t pid = fork();
     if (pid==0) {
       //redirection stuff here*
@@ -64,18 +65,18 @@ void parse_and_run_command(const std::string &cmd) {
   }
   //for each command in the line
   for (uint k=0; k<pids.size(); k++) {
-    waitpid(pids[k], status*);
-    printf("%s exited with status: %d", cur->cmd, status.c_str());
+    waitpid(pids[k], &status, 0);
+    printf("%s exited with status: %d", cur->cmd.c_str(), status);
   }
 
 }
 
 int main(void) {
     while (true) {
-        std::string command;
+        std::string cmd;
         std::cout << "> ";
-        std::getline(std::cin, command);
-        parse_and_run_command(command);
+        std::getline(std::cin, cmd);
+        parse_and_run_command(cmd);
     }
     return 0;
 }
