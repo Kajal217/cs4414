@@ -10,10 +10,12 @@
 #include <dirent.h>
 #include <errno.h>
 
+
 typedef struct
 {
   const char* args[20];
-  std::string name;
+  int inIndex = -1;
+  int outIndex = -1;
 } command_t;
 
 int isOperator(char* token) {
@@ -35,7 +37,7 @@ void parse_and_run_command(const std::string &cmd) {
   //create commands (deal with operators later)
   //pipeline object?
   int numOps = 0;
-  std::vector<const char*> opArr;
+  //  std::vector<const char*> opArr;
   command_t c;
   for (uint i=0; i < tokens.size(); i++) {
     if (tokens[i] == "&" && i != tokens.size()-1) {
@@ -44,13 +46,11 @@ void parse_and_run_command(const std::string &cmd) {
 	}
     if (isOperator((char*)tokens[i].c_str()) == 1) {
 	numOps++;
-	opArr.push_back(tokens[i].c_str());
+	if (tokens[i] == "<") c.inIndex = i;
+	else if (tokens[i] == ">") c.outIndex = i;
+	//	opArr.push_back(tokens[i].c_str());
     }
-    if (i==0){
-      c.name = tokens[i].c_str();
-      c.args[0] = "";
-    }
-    else c.args[i-1] = tokens[i].c_str();
+    c.args[i] = tokens[i];
   }
 
   //ERROR HANDLING
@@ -77,6 +77,7 @@ void parse_and_run_command(const std::string &cmd) {
   std::vector<pid_t> pids;
   pid_t pid;
   int status;
+  
   for (uint j = 0; j < 1; j++) {
     if (c.name == "exit") exit(0);
     pid = fork();
@@ -92,7 +93,7 @@ void parse_and_run_command(const std::string &cmd) {
   
   for (uint k=0; k<pids.size(); k++) {
     waitpid(pids[k], &status, 0);
-    printf("%s exit status: %d.\n", c.name.c_str(), status/256);
+    printf("%s exit status: %d.\n", c.name.c_str(), WEXITSTATUS(status));
   }
 }
 
