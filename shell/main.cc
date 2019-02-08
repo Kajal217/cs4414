@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <errno.h>
+#include <cstring>
 
 
 typedef struct
@@ -34,10 +35,10 @@ void parse_and_run_command(const std::string &cmd) {
     tokens.push_back(token);
   }
 
-  //create commands (deal with operators later)
-  //pipeline object?
+  
+  //create commands
+  
   int numOps = 0;
-  //  std::vector<const char*> opArr;
   command_t c;
   for (uint i=0; i < tokens.size(); i++) {
     if (tokens[i] == "&" && i != tokens.size()-1) {
@@ -48,16 +49,20 @@ void parse_and_run_command(const std::string &cmd) {
 	numOps++;
 	if (tokens[i] == "<") c.inIndex = i;
 	else if (tokens[i] == ">") c.outIndex = i;
-	//	opArr.push_back(tokens[i].c_str());
     }
-    c.args[i] = tokens[i];
+    c.args[i] = tokens[i].c_str();
+    // if "|" start a new cmd object...
   }
 
+  std::string ex = "exit";
+  //BUILT-IN COMMAND
+  if (strcmp(c.args[0],ex.c_str())==0) exit(0);
+  
   //ERROR HANDLING
 
   // missing file
-  if (c.name != "exit" && isOperator((char*)c.name.c_str()) == 0) {  
-    DIR* dir = opendir(c.name.c_str());
+  if (isOperator((char*)c.args[0]) == 0) {  
+    DIR* dir = opendir(c.args[0]);
     if (dir) {
       closedir(dir);
     }
@@ -79,11 +84,11 @@ void parse_and_run_command(const std::string &cmd) {
   int status;
   
   for (uint j = 0; j < 1; j++) {
-    if (c.name == "exit") exit(0);
+    
     pid = fork();
     if (pid==0) {
       //redirection stuff here*
-      execv(c.name.c_str(), (char**)c.args);
+      execv(c.args[0], (char**)(&(c.args[0])));
       std::cerr << "exec failed, exiting...\n";
       exit(1);
     }
@@ -93,7 +98,7 @@ void parse_and_run_command(const std::string &cmd) {
   
   for (uint k=0; k<pids.size(); k++) {
     waitpid(pids[k], &status, 0);
-    printf("%s exit status: %d.\n", c.name.c_str(), WEXITSTATUS(status));
+    printf("%s exit status: %d.\n", c.args[0], WEXITSTATUS(status));
   }
 }
 
