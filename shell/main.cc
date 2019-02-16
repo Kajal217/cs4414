@@ -22,9 +22,14 @@ typedef struct
 {
   const char* args[30];
   char* name = 0;
+
+  int numOps = 0;
+  int numIn = 0;
+  int numOut = 0;
   int inIndex = -1;
   int outIndex = -1;
   int argSize = 0;
+  
   bool background = false;
 } command_t;
 
@@ -77,6 +82,8 @@ void redirect(std::string infile, std::string outfile, command_t c){
 }
 
 void parse_and_run_command(const std::string &cmd) {
+
+  int pipeCount = 1;
   
   // parse input
   std::istringstream s(cmd);
@@ -84,149 +91,150 @@ void parse_and_run_command(const std::string &cmd) {
   std::string token;
   while (s >> token) {
     tokens.push_back(token);
+    if (token=="|") pipeCount++;
   }
 
   
   //create commands
-  int numOps = 0;
-  int numIn = 0;
-  int numOut = 0;
-  command_t c;
+  std::vector<command_t> pipeline;
   uint i;
-  for (i=0; i < tokens.size(); i++)
-  {
-    if (tokens[i] == "&")
+  uint tokenIndex = 0;
+
+  for (int n=0; n<pipeCount; n++)
     {
-      if (i==tokens.size()-1) c.background = true;
-      else {
+      command_t c;
+      
+      for (i=0; i+tokenIndex < tokens.size(); i++)
+	{
+	  if (tokens[i+tokenIndex] == "&")
+	    {
+	      if (i==tokens.size()-1) c.background = true;
+	      else {
+		std::cerr << "invalid command.";
+		std::cout << "> ";
+		exit(1);
+	      }
+	    }
+	  if (isOperator((char*)tokens[i+tokenIndex].c_str()) == 1)
+	    {
+	      c.numOps++;
+	      if (tokens[i+tokenIndex] == "<") {
+		c.inIndex = i;
+		c.numIn++;
+	      }
+	      else if (tokens[i+tokenIndex] == ">") {
+		c.outIndex = i;
+		c.numOut++;
+	      }
+	    }
+	  if (tokens[i+tokenIndex]=="|") {
+	    i++;
+	    break;
+	  }
+	  if (tokens[i+tokenIndex] != "&") {
+	    c.args[i] = tokens[i+tokenIndex].c_str();
+	    c.argSize++;
+	  }
+	  if (i==0) {
+	    if (isOperator((char*)tokens[0+tokenIndex].c_str())==0) c.name = (char*)tokens[0+tokenIndex].c_str();
+	  }
+	  if (i==2 && c.name==0) {
+	    if (isOperator((char*)tokens[2+tokenIndex].c_str())==0) c.name = (char*)tokens[2+tokenIndex].c_str();
+	  }
+	  if (i==4 && c.name==0) {
+	    if (isOperator((char*)tokens[4+tokenIndex].c_str())==0) c.name = (char*)tokens[4+tokenIndex].c_str();
+	  }
+	  
+	}//end i loop
+      
+      c.args[i] = 0; //null terminator
+      tokenIndex += i;
+      pipeline.push_back(c);
+    }//end m loop
+
+  // ERROR HANDLING FOR EACH COMMAND
+  for (int p=0; p<pipeCount; p++)
+    {
+  
+      //no command given
+      if (pipeline[p].name==0) {
 	std::cerr << "invalid command.";
 	std::cout << "> ";
 	exit(1);
       }
-    }
-    if (isOperator((char*)tokens[i].c_str()) == 1)
-    {
-	numOps++;
-	if (tokens[i] == "<") {
-	  c.inIndex = i;
-	  numIn++;
-	}
-	else if (tokens[i] == ">") {
-	  c.outIndex = i;
-	  numOut++;
-	}
-    }
-    if (tokens[i] != "&") c.args[i] = tokens[i].c_str();
-    c.argSize += 1;
-    if (i==0) {
-      if (isOperator((char*)tokens[0].c_str())==0) c.name = (char*)tokens[0].c_str();
-    }
-    if (i==2 && c.name==0) {
-      if (isOperator((char*)tokens[2].c_str())==0) c.name = (char*)tokens[2].c_str();
-    }
-    if (i==4 && c.name==0) {
-      if (isOperator((char*)tokens[4].c_str())==0) c.name = (char*)tokens[4].c_str();
-    }
+
+      //BUILT-IN COMMAND
+      std::string ex = "exit";
+      if (strcmp(pipeline[p].name,ex.c_str())==0) exit(0);
+
+      // missing file
     
-    // if "|" put everything into a cmd object...
-  }
-  c.args[i] = 0; //null terminator
+      DIR* dir = opendir(pipeline[p].name);
+      if (dir) {
+	closedir(dir);
+      }
+      else if (ENOENT == errno) {
+	std::cerr << "No such file or directory.\n";
+	exit(1);
+      }
 
-  //no command
-  if (c.name==0) {
-    std::cerr << "invalid command.";
-    std::cout << "> ";
-    exit(1);
-  }
-
-  //BUILT-IN COMMAND
-  std::string ex = "exit";
-  if (strcmp(c.name,ex.c_str())==0) exit(0);
-  
-  //ERROR HANDLING
-
-  // missing file
-  if (isOperator(c.name) == 0) {  
-    DIR* dir = opendir(c.name);
-    if (dir) {
-      closedir(dir);
-    }
-    else if (ENOENT == errno) {
-      std::cerr << "No such file or directory.\n";
-      exit(1);
-    }
-  }
-
-  //invalid command
-  if ( (numOps > 2) || (numIn>0 && c.inIndex==c.argSize-1) || (numOut>0 && c.outIndex==c.argSize-1) || (numIn>0 && isOperator((char*)c.args[c.inIndex+1])==1) || (numOut>0 && isOperator((char*)c.args[c.outIndex+1])==1))
-  {
-    std::cerr << "invalid command.";
-    std::cout << "> ";
-    exit(1);
-  }
+      //invalid command checks
+      if ( (pipeline[p].numOps > 2) || (pipeline[p].numIn>0 && pipeline[p].inIndex==pipeline[p].argSize-1) || (pipeline[p].numOut>0 && pipeline[p].outIndex==pipeline[p].argSize-1) || (pipeline[p].numIn>0 && isOperator((char*)pipeline[p].args[pipeline[p].inIndex+1])==1) || (pipeline[p].numOut>0 && isOperator((char*)pipeline[p].args[pipeline[p].outIndex+1])==1) )
+	{
+	  std::cerr << "invalid command.";
+	  std::cout << "> ";
+	  exit(1);
+	}
+      
+    }//end pipe loop
   
   //for each command in the line
   std::vector<pid_t> pids;
   pid_t pid;
-  //std::vector<bool> bg_pids;
-  int status=0;
-  std::string i_file = "bad";
-  std::string o_file = "bad";
 
-  //dummy loop change later for pipe
-  for (uint j = 0; j < 1; j++) {
+  for (int j = 0; j < pipeCount; j++) {
+    std::string i_file = "bad";
+    std::string o_file = "bad";
     
     pid = fork();
     if (pid==0) {
       
-      //redirection stuff here
-      if (numOps > 0){
-	if (numOut==1){
-	  o_file = c.args[c.outIndex + 1];
+      //redirection
+      if (pipeline[j].numOps > 0){
+	if (pipeline[j].numOut==1){
+	  o_file = pipeline[j].args[pipeline[j].outIndex + 1];
 	}
-	if (numIn==1){
-	  i_file = c.args[c.inIndex + 1];
+	if (pipeline[j].numIn==1){
+	  i_file = pipeline[j].args[pipeline[j].inIndex + 1];
 	}
-	redirect(i_file, o_file, c);
+	redirect(i_file, o_file, pipeline[j]);
       }
 
-      execv(c.name, (char**)(&(c.args[0])));
+      execv(pipeline[j].name, (char**)(&(pipeline[j].args[0])));
       std::cerr << "exec failed, exiting...\n";
       exit(1);
     }
     else {
       pids.push_back(pid);
-      /*
-      if (c.background) bg_pids.push_back(true);
-      else bg_pids.push_back(false);*/
     }
   }
-  
-  //save status into vector
-  //print status when next non-background process finishes
 
-  //structure for background processes, holds process name and status
-
-  //background process finishes, move into vector
-  // other process finishes, print status of bground processes in vector, empty it
-
-  //should this vector be global???
-  
+  int status;
   process_t temp;
   //for each command in the line
-  for (uint k=0; k<pids.size(); k++) {
-    if (!c.background) waitpid(pids[k], &status, 0);
+  for (int k=0; k<pipeCount; k++) {
+    if (!pipeline[k].background) waitpid(pids[k], &status, 0);
     else waitpid(pids[k], &status, WNOHANG);
 
     //if(background) // save status to vector;
-    if (c.background) {
-      temp.name = c.name;
+    if (pipeline[k].background) {
+      temp.name = pipeline[k].name;
       temp.status = status;
       bground.push_back(temp);
     }
     
     else {
-      printf("%s exit status: %d\n", c.name, WEXITSTATUS(status));
+      printf("%s exit status: %d\n", pipeline[k].name, WEXITSTATUS(status));
       // check the background vector and print finished processes
       if (!bground.empty()){
 	for (uint m=0; m<bground.size(); m++) {
