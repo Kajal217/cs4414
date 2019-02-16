@@ -1,3 +1,5 @@
+// Austin Baney // ab5ep
+
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -16,11 +18,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-// for all piped processwes stdin change to readin of prev pipe, stdout to write-out of current pipe
-
 typedef struct
 {
-  const char* args[30];
+  const char* args[80];
   char* name = 0;
 
   int numOps = 0;
@@ -50,7 +50,7 @@ int isOperator(char* token) {
 void redirect(std::string infile, std::string outfile, command_t c){
   int in, out;
   std::vector<char*> out_args;
-  if(outfile == "bad" && infile == "bad")
+  if(outfile == "no" && infile == "no")
   {
     std::cerr << "invalid command.";
     std::cout << "> ";
@@ -58,13 +58,13 @@ void redirect(std::string infile, std::string outfile, command_t c){
   }
   else
   {
-    if(infile != "bad")
+    if(infile != "no")
     {
       in = open(infile.c_str(), O_RDONLY);
       dup2(in, 0);
       close(in);
     }
-    if(outfile != "bad")
+    if(outfile != "no")
     { 
       out = open(outfile.c_str(), O_WRONLY | O_APPEND | O_TRUNC | O_CREAT, 0600);
       dup2(out, 1);
@@ -85,7 +85,7 @@ void parse_and_run_command(const std::string &cmd) {
 
   int pipeCount = 1;
   
-  // parse input
+  // parse the input
   std::istringstream s(cmd);
   std::vector<std::string> tokens;
   std::string token;
@@ -94,6 +94,11 @@ void parse_and_run_command(const std::string &cmd) {
     if (token=="|") pipeCount++;
   }
 
+  if (tokens[tokens.size()-1]=="|" || tokens[0]=="|") {
+    std::cerr << "invalid command.";
+    std::cout << "> ";
+    exit(1);
+  }
   
   //create commands
   std::vector<command_t> pipeline;
@@ -103,12 +108,18 @@ void parse_and_run_command(const std::string &cmd) {
   for (int n=0; n<pipeCount; n++)
     {
       command_t c;
-      
+      memset(c.args, 0, sizeof(c.args));
       for (i=0; i+tokenIndex < tokens.size(); i++)
 	{
 	  if (tokens[i+tokenIndex] == "&")
 	    {
-	      if (i==tokens.size()-1) c.background = true;
+	      if (i==tokens.size()-1){
+		c.background = true;
+		//set all cmds in pipeline to background
+		for (int y=0; y<pipeCount-1; y++){
+		  pipeline[y].background = true;
+		}
+	      }
 	      else {
 		std::cerr << "invalid command.";
 		std::cout << "> ";
@@ -191,14 +202,27 @@ void parse_and_run_command(const std::string &cmd) {
   //for each command in the line
   std::vector<pid_t> pids;
   pid_t pid;
+  int pipes[40][2];
 
   for (int j = 0; j < pipeCount; j++) {
-    std::string i_file = "bad";
-    std::string o_file = "bad";
+    std::string i_file = "no";
+    std::string o_file = "no";
+    if (pipeCount != 1) {
+      if(pipe(pipes[j]) < 0) {
+	std::cerr << "pipe error";
+	exit(1);
+      }
+    }
     
     pid = fork();
     if (pid==0) {
-      
+
+      if (pipeCount != 1) {
+	if (j!=pipeCount-1) dup2(pipes[j][1], STDOUT_FILENO);
+	if (j!=0) dup2(pipes[j][0], STDIN_FILENO);
+	close(pipes[j][0]);
+	close(pipes[j][1]);
+      }
       //redirection
       if (pipeline[j].numOps > 0){
 	if (pipeline[j].numOut==1){
@@ -210,19 +234,35 @@ void parse_and_run_command(const std::string &cmd) {
 	redirect(i_file, o_file, pipeline[j]);
       }
 
+      //execute command
       execv(pipeline[j].name, (char**)(&(pipeline[j].args[0])));
       std::cerr << "exec failed, exiting...\n";
       exit(1);
     }
-    else {
+    else if (pid > 0) {
       pids.push_back(pid);
+    }
+    else {
+      //fork failure
+      std::cerr << "fork failure\n";
+      std::cout << "> ";
+      exit(1);
     }
   }
 
+  // close all pipes
+  if (pipeCount != 1){
+    for (int a=0; a<pipeCount; a++) {
+      close(pipes[a][0]);
+      close(pipes[a][1]);
+    }
+  }
+  
   int status;
   process_t temp;
   //for each command in the line
   for (int k=0; k<pipeCount; k++) {
+    status = 0;
     if (!pipeline[k].background) waitpid(pids[k], &status, 0);
     else waitpid(pids[k], &status, WNOHANG);
 
