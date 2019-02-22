@@ -1,5 +1,6 @@
 struct stat;
 struct rtcdate;
+struct processes_info;
 
 // system calls
 int fork(void);
@@ -25,6 +26,8 @@ int sleep(int);
 int uptime(void);
 int yield(void);
 int shutdown(void);
+int settickets(int);
+int getprocessesinfo(struct processes_info*);
 
 // ulib.c
 int stat(char*, struct stat*);

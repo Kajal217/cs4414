@@ -7,7 +7,8 @@
 #include "mmu.h"
 #include "proc.h"
 
-extern int settickets(int, int);
+extern int settickets(int);
+extern int getprocessesinfo(struct processes_info*); 
 
 int
 sys_fork(void)
@@ -109,15 +110,15 @@ sys_shutdown(void)
 int
 sys_settickets(void)
 {
-  int tickets, pid;
-  if (argint(1, &tickets) < 0 || argint(0, &pid) < 1) return -1;
-  return settickets(pid, tickets);
+  int tickets;
+  if (argint(0, &tickets) < 0) return -1;
+  return settickets(tickets);
 }
 
 int
 sys_getprocessesinfo(void)
 {
   struct processes_info* p;
-  if (argptr(0,p,sizeof(struct processes_info)) < 0) return -1;
+  if (argptr(0,(void*)&p,sizeof(struct processes_info*)) < 0) return -1;
   return getprocessesinfo(p);
 }

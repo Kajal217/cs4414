@@ -71,5 +71,5 @@ struct processes_info
   int tickets[NPROC];
 };
 
-extern int settickets(int pid, int tickets);
+extern int settickets(int tickets);
 extern int getprocessesinfo(struct processes_info* p);

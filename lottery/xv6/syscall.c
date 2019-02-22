@@ -132,8 +132,8 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_yield]   sys_yield,
 [SYS_shutdown] sys_shutdown,
-[SYS_getprocessesinfo] sys_getprocessesinfo,
 [SYS_settickets] sys_settickets,
+[SYS_getprocessesinfo] sys_getprocessesinfo,
 };
 
 void

@@ -563,19 +563,20 @@ struct proc* getptable_proc(void) {
   return ptable.proc;
 }
 
-int settickets(int pid, int tickets) {
+int settickets(int tickets) {
   struct proc* p;
+  struct proc* curproc = myproc();
   acquire(&ptable.lock);
   
   for (p=ptable.proc; p<&ptable.proc[NPROC]; p++) {
-    if (p->pid==pid) {
+    if (p->pid == curproc->pid) {
       p->tickets = tickets;
       break;
     }
   }
 
   release(&ptable.lock);
-  return pid; //why return pid?
+  return p->pid; //why return pid?
 }
 
 int ticket_total(void) { //lock?
