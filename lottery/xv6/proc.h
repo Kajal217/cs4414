@@ -1,5 +1,5 @@
 #define DEFAULT_TICKETS 10
-#define DEFAULT 1
+#define DEFAULT 1 //REMOVE!! **
 //define LOTTERY 1?
 
 // Per-CPU state

@@ -140,6 +140,7 @@ userinit(void)
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
   p->tickets = DEFAULT_TICKETS;
+  p->tickcount=0;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -202,7 +203,8 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  np->tickets = DEFAULT_TICKETS;
+  np->tickets = curproc->tickets; // inherit parent's tickets
+  np->tickcount = 0; // restart ticks for child
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -365,6 +367,7 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      p->tickcount++;
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
@@ -559,15 +562,12 @@ procdump(void)
   }
 }
 
-struct proc* getptable_proc(void) {
-  return ptable.proc;
-}
-
 int settickets(int tickets) {
   struct proc* p;
   struct proc* curproc = myproc();
   acquire(&ptable.lock);
   
+  if (tickets>100000) return -1; //MAX TICKETS
   for (p=ptable.proc; p<&ptable.proc[NPROC]; p++) {
     if (p->pid == curproc->pid) {
       p->tickets = tickets;
@@ -576,7 +576,7 @@ int settickets(int tickets) {
   }
 
   release(&ptable.lock);
-  return p->pid; //why return pid?
+  return 0;
 }
 
 int ticket_total(void) { //lock?
@@ -599,10 +599,10 @@ int getprocessesinfo(struct processes_info *p) {
     if (proc->state != UNUSED){
       p->pids[p->num_processes] = proc->pid;
       if (proc->state == RUNNING){
-        p->ticks[p->num_processes] = proc->tickcount; //change?
+        p->ticks[p->num_processes] = proc->tickcount;
         p->tickets[p->num_processes] = proc->tickets;
       }
-      p->num_processes++; //must increment after indexing ticks & tickets ***
+      p->num_processes++;
     }
   }
   release(&ptable.lock);
