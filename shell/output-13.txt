@@ -1,0 +1,211 @@
+Failed test only redirections is invalid
+Test input:
+  > foo.txt < bar.txt
+  exit
+Actual stdout:
+  > < exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> < exit status: 1.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> < exit status: 1.', '> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in []
+Failed test redirect stdin inode
+Test input:
+  /usr/bin/stat -L -c %i/%d /proc/self/fd/0 < test/input.txt
+  exit
+Actual stdout:
+  > /usr/bin/stat exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 316514/2049
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> 316514/2049] in line [> /usr/bin/stat exit status: 1.]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [> ]
+  in stdout: could not find match for pattern [> 316514/2049] in ['> /usr/bin/stat exit status: 1.', '> ']
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  ==14718==LeakSanitizer has encountered a fatal error.
+  ==14718==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==14718==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exit status: 0.', '> ']
+Failed test redirect stdout
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > /bin/echo exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exit status: 1.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exit status: 1.', '> ']
+  in created file test/redirect-stdout-output.txt: could not find match for pattern [testing one two three] in []
+Failed test redirect in middle of command
+Test input:
+  /bin/echo testing one two > test/redirect-stdout-output.txt three 
+  exit
+Actual stdout:
+  > /bin/echo exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exit status: 1.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exit status: 1.', '> ']
+  in created file test/redirect-stdout-output.txt: could not find match for pattern [testing one two three] in []
+Failed test redirect at beginning of command
+Test input:
+  > test/redirect-stdout-output.txt /bin/echo testing one two three 
+  exit
+Actual stdout:
+  > /bin/echo exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exit status: 1.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exit status: 1.', '> ']
+  in created file test/redirect-stdout-output.txt: could not find match for pattern [testing one two three] in []
+Failed test extra whitespace in redirect at beginning
+Test input:
+    >    	test/redirect-stdout-output.txt	  /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > /bin/echo exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exit status: 1.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exit status: 1.', '> ']
+  in created file test/redirect-stdout-output.txt: could not find match for pattern [testing one two three] in []
+Failed test redirect output truncates file
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > /bin/echo exit status: 1.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exit status: 1.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exit status: 1.', '> ']
+  in created file test/redirect-stdout-output.txt: could not find match for pattern [testing one two three] in []
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*saving.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/signaler.pid was not created
+Failed test background command, then other slow command
+Test input:
+  test/sleep_and_print.sh 0.5 foo &
+  /bin/sleep 2
+  exit
+Actual stdout:
+  > foo &
+  test/sleep_and_print.sh exit status: 0.
+  > /bin/sleep exit status: 0.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > foo
+  /bin/sleep.* exit status: 0
+  test/sleep_and_print.* exit status: 0
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> > foo] in line [> foo &]
+  in stdout: could not find a match for pattern [> > foo] in line [test/sleep_and_print.sh exit status: 0.]
+  in stdout: could not find a match for pattern [> > foo] in line [> /bin/sleep exit status: 0.]
+  in stdout: could not find a match for pattern [> > foo] in line [> ]
+  in stdout: could not find match for pattern [> > foo] in ['> foo &', 'test/sleep_and_print.sh exit status: 0.', '> /bin/sleep exit status: 0.', '> ']
+30 tests passed and 10 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+

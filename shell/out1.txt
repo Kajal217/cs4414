@@ -1,0 +1,280 @@
+python3 shell_test.py
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exit status: 0
+  > 
+Actual stderr:
+  ==20357==LeakSanitizer has encountered a fatal error.
+  ==20357==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==20357==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exit status: 0]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exit status: 0', '> ']
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  > > saving PID to signal to test/printer.pid; reading PID to signal afterwards from test/signaler.pid
+  /bin/sleep exit status: 0
+  test/wait_print_signal.sh exit status: 0
+  > saved signal_wait PID to test/signaler.pid; about to signal using PID from test/printer.pid
+  foo
+  [plus 2 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*saved.*] in line [test/wait_print_signal.sh exit status: 0]
+  in stdout: could not find a match for pattern [test/wait_print_signal.sh.* exit status: 0] in line [> ]
+  in stdout: could not find match for pattern [test/wait_print_signal.sh.* exit status: 0] in ['> ']
+Failed test pipe in the end without a command is invalid
+Test input:
+  /bin/ls |
+  exit
+Actual stdout:
+  > /bin/ls exit status: 2
+  > 
+Actual stderr:
+  /bin/ls: cannot access '|': No such file or directory
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/ls exit status: 2]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/ls exit status: 2', '> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in ["/bin/ls: cannot access '|': No such file or directory"]
+Failed test fork fails in a pipeline 
+Test input:
+  /bin/cat | /bin/cat | /bin/cat | /bin/cat
+  exit
+Actual stdout:
+  > /bin/cat exit status: 0
+  > 
+Actual stderr:
+  ==20819==LeakSanitizer has encountered a fatal error.
+  ==20819==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==20819==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/cat exit status: 0]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/cat exit status: 0', '> ']
+Failed test |s without spaces mixed with | with spaces (output)
+Test input:
+  /bin/echo this|argument|has|pipes | /bin/sed -e s/argument/XXX/
+  exit
+Actual stdout:
+  > this|argument|has|pipes | /bin/sed -e s/argument/XXX/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*this\|XXX\|has\|pipes
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*this\|XXX\|has\|pipes] in ['> this|argument|has|pipes | /bin/sed -e s/argument/XXX/', '/bin/echo exit status: 0', '> ']
+Failed test |s without spaces mixed with | with spaces (exit statuses)
+Test input:
+  /bin/echo this|argument|has|pipes | /bin/sed -e s/argument/XXX/
+  exit
+Actual stdout:
+  > this|argument|has|pipes | /bin/sed -e s/argument/XXX/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> ']
+Failed test simple pipe output
+Test input:
+  /bin/echo testing  one two three | /bin/sed -e s/one/XXX/
+  exit
+Actual stdout:
+  > testing one two three | /bin/sed -e s/one/XXX/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*testing XXX two three
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*testing XXX two three] in ['> testing one two three | /bin/sed -e s/one/XXX/', '/bin/echo exit status: 0', '> ']
+Failed test simple pipe exit status
+Test input:
+  /bin/echo testing one two three | /bin/sed -e s/one/XXX/
+  exit
+Actual stdout:
+  > testing one two three | /bin/sed -e s/one/XXX/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> ']
+Failed test longer pipeline (output)
+Test input:
+  /bin/echo testing one two three | /bin/sed -e s/one/XXX/ | /bin/sed -e s/two/YYY/
+  exit
+Actual stdout:
+  > testing one two three | /bin/sed -e s/one/XXX/ | /bin/sed -e s/two/YYY/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*testing XXX YYY three
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*testing XXX YYY three] in ['> testing one two three | /bin/sed -e s/one/XXX/ | /bin/sed -e s/two/YYY/', '/bin/echo exit status: 0', '> ']
+Failed test longer pipeline exit status (all 0s)
+Test input:
+  /bin/echo testing one two three | /bin/sed -e s/one/XXX/ | /bin/sed -e s/two/YYY/
+  exit
+Actual stdout:
+  > testing one two three | /bin/sed -e s/one/XXX/ | /bin/sed -e s/two/YYY/
+  /bin/echo exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> ']
+Failed test pipeline with two exit status 1s and one 0 has 1s
+Test input:
+  /bin/true ignored 1 | /bin/false ignored 2 | /bin/false ignored 3
+  exit
+Actual stdout:
+  > /bin/true exit status: 0
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 1.*
+  .*exit status: 1.*
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 1.*] in ['> /bin/true exit status: 0', '> ']
+Failed test 100 pipelines (with limit of 50 open files)
+Test input:
+  /bin/echo a test | /bin/sed -e s/test/xxx/
+  /bin/echo a test | /bin/sed -e s/test/xxx/
+  /bin/echo a test | /bin/sed -e s/test/xxx/
+  /bin/echo a test | /bin/sed -e s/test/xxx/
+  /bin/echo a test | /bin/sed -e s/test/xxx/
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > a test | /bin/sed -e s/test/xxx/
+  /bin/echo exit status: 0
+  > a test | /bin/sed -e s/test/xxx/
+  /bin/echo exit status: 0
+  > a test | /bin/sed -e s/test/xxx/
+  [plus 196 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*a xxx
+  .*a xxx
+  .*a xxx
+  .*a xxx
+  .*a xxx
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find match for pattern [.*a xxx] in ['> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> a test | /bin/sed -e s/test/xxx/', '/bin/echo exit status: 0', '> ']
+Failed test redirect from operator is invalid
+Test input:
+  /bin/false < | 
+  exit
+Actual stdout:
+  > /bin/false exit status: 1
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/false exit status: 1]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/false exit status: 1', '> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in []
+Failed test large amount of data through pipe
+Test input:
+  /usr/bin/head -c 1M /dev/zero | /bin/cat | /usr/bin/wc -c
+  exit
+Actual stdout:
+  > /usr/bin/head exit status: 1
+  > 
+Actual stderr:
+  /usr/bin/head: option requires an argument -- 'c'
+  Try '/usr/bin/head --help' for more information.
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*1048576.*
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*1048576.*] in ['> /usr/bin/head exit status: 1', '> ']
+  in stderr: unexpected extra output [["/usr/bin/head: option requires an argument -- 'c'", "Try '/usr/bin/head --help' for more information."]]
+40 tests passed and 14 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+

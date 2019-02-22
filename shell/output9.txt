@@ -1,0 +1,924 @@
+Failed test exit immediately
+Test input:
+  exit
+Actual stdout:
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test trivial command, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test trivial command with extra space, exit status 0
+Test input:
+   /bin/true
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test trivial command with extra tab, exit status 0
+Test input:
+  	/bin/true
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test trivial command with extra vertical tab, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test trivial command, exit status 1
+Test input:
+  /bin/false
+  exit
+Actual stdout:
+  > /bin/false exit status: 1.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > /bin/false.*[Ee]xit status: 1.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test only redirections is invalid
+Test input:
+  > foo.txt < bar.txt
+  exit
+Actual stdout:
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [No such file or directory.]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['No such file or directory.']
+Failed test redirection to nothing is invalid
+Test input:
+  /bin/true > 
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exit status: 0.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exit status: 0.', '> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [No such file or directory.]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['No such file or directory.']
+Failed test redirection from nothing is invalid
+Test input:
+  /bin/true < 
+  exit
+Actual stdout:
+  > /bin/true exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exit status: 0.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exit status: 0.', '> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [No such file or directory.]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['No such file or directory.']
+Failed test pass arguments
+Test input:
+  test/argument_test.sh first second_with_underscore third
+  exit
+Actual stdout:
+  > 
+  number of arguments: 2
+  argument 1: second_with_underscore
+  argument 2: third
+  argument 3: 
+  [plus 3 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 3
+  argument 1: first
+  argument 2: second_with_underscore
+  argument 3: third
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [number of arguments: 2]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 1: second_with_underscore]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 2: third]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 3: ]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 4: ]
+  [plus 4 more lines, not shown]
+Failed test " is not quote
+Test input:
+  test/argument_test.sh "not quoted"
+  exit
+Actual stdout:
+  > 
+  number of arguments: 1
+  argument 1: quoted"
+  argument 2: 
+  argument 3: 
+  [plus 3 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 2
+  argument 1: "not
+  argument 2: quoted"
+  argument 3: 
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [number of arguments: 1]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 1: quoted"]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 2: ]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 3: ]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 4: ]
+  [plus 4 more lines, not shown]
+Failed test varying argument counts and lengths
+Test input:
+  test/argument_test.sh aX bX cX dX eX
+  test/argument_test.sh f g hZZ i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > 
+  number of arguments: 4
+  argument 1: bX
+  argument 2: cX
+  argument 3: dX
+  [plus 17 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: aX
+  argument 2: bX
+  argument 3: cX
+  [plus 17 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [number of arguments: 4]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 1: bX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 2: cX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 3: dX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 4: eX]
+  [plus 18 more lines, not shown]
+Failed test varing command lengths (1)
+Test input:
+  ./test/argument_test.sh a b c d e
+  /bin/echo f g h i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > 
+  number of arguments: 4
+  argument 1: b
+  argument 2: c
+  argument 3: d
+  [plus 12 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: a
+  argument 2: b
+  argument 3: c
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [number of arguments: 4]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 1: b]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 2: c]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 3: d]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 4: e]
+  [plus 13 more lines, not shown]
+Failed test varing command lengths (2)
+Test input:
+  /bin/echo f g h i
+  ./test/argument_test.sh aXX bXX cXX dXX eXX
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > g h i
+  /bin/echo exit status: 0.
+  > 
+  number of arguments: 4
+  argument 1: bXX
+  [plus 12 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > f g h i
+  .*exit status: 0.*
+  > 
+  number of arguments: 5
+  argument 1: aXX
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> f g h i] in line [> g h i]
+  in stdout: could not find a match for pattern [> f g h i] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> f g h i] in line [> ]
+  in stdout: could not find a match for pattern [> f g h i] in line [number of arguments: 4]
+  in stdout: could not find a match for pattern [> f g h i] in line [argument 1: bXX]
+  [plus 14 more lines, not shown]
+Failed test very long argument
+Test input:
+  /bin/echo short
+  /bin/echo QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  exit
+Actual stdout:
+  > 
+  /bin/echo exit status: 0.
+  > 
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> ]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> short] in line [> ]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> short] in line [> ]
+  [plus 2 more lines, not shown]
+Failed test lots of arguments
+Test input:
+  /bin/echo short
+  test/argument_test.sh A B C D E F G H I J K L M N O P Q R S T
+  exit
+Actual stdout:
+  > 
+  /bin/echo exit status: 0.
+  > test/argument_test.sh exit status: 1.
+  > 
+Actual stderr:
+  exec failed, exiting...No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > 
+  number of arguments: 20
+  argument 1: A
+  [plus 5 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> ]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> short] in line [> test/argument_test.sh exit status: 1.]
+  in stdout: could not find a match for pattern [> short] in line [> ]
+  in stdout: could not find match for pattern [> short] in ['> ', '/bin/echo exit status: 0.', '> test/argument_test.sh exit status: 1.', '> ']
+  [plus 1 more lines, not shown]
+Failed test extra whitespace without redirects
+Test input:
+     		 /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > one two three
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > testing one two three
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> testing one two three] in line [> one two three]
+  in stdout: could not find a match for pattern [> testing one two three] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> testing one two three] in line [> ]
+  in stdout: could not find match for pattern [> testing one two three] in ['> one two three', '/bin/echo exit status: 0.', '> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test redirections require whitespace around >
+Test input:
+  /bin/echo  this is a >test
+  exit
+Actual stdout:
+  > is a >test
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > this is a >test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >test] in line [> is a >test]
+  in stdout: could not find a match for pattern [> this is a >test] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> this is a >test] in line [> ]
+  in stdout: could not find match for pattern [> this is a >test] in ['> is a >test', '/bin/echo exit status: 0.', '> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test redirections require whitespace around <
+Test input:
+  /bin/echo  this is a <test
+  exit
+Actual stdout:
+  > is a <test
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > this is a <test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a <test] in line [> is a <test]
+  in stdout: could not find a match for pattern [> this is a <test] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> this is a <test] in line [> ]
+  in stdout: could not find match for pattern [> this is a <test] in ['> is a <test', '/bin/echo exit status: 0.', '> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test >> is not a redirection operator
+Test input:
+  /bin/echo  this is a >> test
+  exit
+Actual stdout:
+  > is a >> test
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > this is a >> test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >> test] in line [> is a >> test]
+  in stdout: could not find a match for pattern [> this is a >> test] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> this is a >> test] in line [> ]
+  in stdout: could not find match for pattern [> this is a >> test] in ['> is a >> test', '/bin/echo exit status: 0.', '> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test redirect stdin inode
+Test input:
+  /usr/bin/stat -L -c %i/%d /proc/self/fd/0 < test/input.txt
+  exit
+Actual stdout:
+  > 82129/4
+  316514/2049
+  /usr/bin/stat exit status: 1.
+  > 
+Actual stderr:
+  -L: cannot stat '<': No such file or directory
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > 316514/2049
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> 316514/2049] in line [> 82129/4]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [316514/2049]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [/usr/bin/stat exit status: 1.]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [> ]
+  in stdout: could not find match for pattern [> 316514/2049] in ['> 82129/4', '316514/2049', '/usr/bin/stat exit status: 1.', '> ']
+  [plus 1 more lines, not shown]
+Failed test redirect stdin contents
+Test input:
+  /bin/cat < test/input.txt
+  exit
+Actual stdout:
+  > This is an example input file.
+  Which has multiple lines.
+  /bin/cat exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exit status: 2320605.
+  > 
+Actual stderr:
+  No such file or directory.
+  ==4609==LeakSanitizer has encountered a fatal error.
+  ==4609==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==4609==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exit status: 2320605.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exit status: 2320605.', '> ']
+Failed test redirect stdout
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > one two three > test/redirect-stdout-output.txt
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> one two three > test/redirect-stdout-output.txt]
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect stdout does not redirect stderr
+Test input:
+  test/sample_outputs.sh > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > This is the contents of stdout.
+  test/sample_outputs.sh exit status: 0.
+  > 
+Actual stderr:
+  This is the contents of stderr.
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  This is the contents of stderr.
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> This is the contents of stdout.]
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect in middle of command
+Test input:
+  /bin/echo testing one two > test/redirect-stdout-output.txt three 
+  exit
+Actual stdout:
+  > one two > test/redirect-stdout-output.txt three
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> one two > test/redirect-stdout-output.txt three]
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect at beginning of command
+Test input:
+  > test/redirect-stdout-output.txt /bin/echo testing one two three 
+  exit
+Actual stdout:
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-stdout-output.txt was not created
+Failed test extra whitespace in redirect at beginning
+Test input:
+    >    	test/redirect-stdout-output.txt	  /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect output then use normal output
+Test input:
+  /bin/echo foo > /dev/null
+  /bin/echo bar
+  exit
+Actual stdout:
+  > > /dev/null
+  /bin/echo exit status: 0.
+  > > /dev/null
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > .*exit status: 0.*
+  > bar
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [> > /dev/null]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [> > /dev/null]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [/bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [> ]
+  [plus 2 more lines, not shown]
+Failed test redirect input then use normal input
+Test input:
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  /bin/cat < test/input.txt
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  exit
+Actual stdout:
+  > symbolic link
+  /usr/bin/stat exit status: 0.
+  > This is an example input file.
+  Which has multiple lines.
+  /bin/cat exit status: 1.
+  [plus 3 more lines, not shown]
+Actual stderr:
+  <: %F: No such file or directory
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > fifo
+  .*exit status: 0.*
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> fifo] in line [> symbolic link]
+  in stdout: could not find a match for pattern [> fifo] in line [/usr/bin/stat exit status: 0.]
+  in stdout: could not find a match for pattern [> fifo] in line [> This is an example input file.]
+  in stdout: could not find a match for pattern [> fifo] in line [Which has multiple lines.]
+  in stdout: could not find a match for pattern [> fifo] in line [/bin/cat exit status: 1.]
+  [plus 5 more lines, not shown]
+Failed test redirect output truncates file
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > one two three > test/redirect-stdout-output.txt
+  /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> one two three > test/redirect-stdout-output.txt]
+  in stderr: unexpected extra output [['No such file or directory.']]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [This is a long string meant to ensure that echo]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [will not overwrite it if the shell does not open]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [the file with O_TRUNC.]
+  [plus 4 more lines, not shown]
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*saving.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/printer.pid was not created
+  file test/signaler.pid was not created
+Failed test background command, then other slow command
+Test input:
+  test/sleep_and_print.sh 0.5 foo &
+  /bin/sleep 2
+  exit
+Actual stdout:
+  > &
+  test/sleep_and_print.sh exit status: 0.
+  > /bin/sleep exit status: 1.
+  > 
+Actual stderr:
+  sleep: invalid time interval ‘foo’
+  Try 'sleep --help' for more information.
+  2: invalid time interval ‘foo’
+  2: invalid time interval ‘&’
+  Try '2 --help' for more information.
+  [plus 2 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > foo
+  /bin/sleep.* exit status: 0
+  test/sleep_and_print.* exit status: 0
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> > foo] in line [> &]
+  in stdout: could not find a match for pattern [> > foo] in line [test/sleep_and_print.sh exit status: 0.]
+  in stdout: could not find a match for pattern [> > foo] in line [> /bin/sleep exit status: 1.]
+  in stdout: could not find a match for pattern [> > foo] in line [> ]
+  in stdout: could not find match for pattern [> > foo] in ['> &', 'test/sleep_and_print.sh exit status: 0.', '> /bin/sleep exit status: 1.', '> ']
+  [plus 1 more lines, not shown]
+Failed test echo 100 times output
+Test input:
+  /bin/echo 0
+  /bin/echo 1
+  /bin/echo 2
+  /bin/echo 3
+  /bin/echo 4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > 
+  /bin/echo exit status: 0.
+  > 
+  /bin/echo exit status: 0.
+  > 
+  [plus 196 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*0
+  .*1
+  .*2
+  .*3
+  .*4
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*0] in ['> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ', '/bin/echo exit status: 0.', '> ']
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test echo 100 times exit status
+Test input:
+  /bin/echo 0
+  /bin/echo 1
+  /bin/echo 2
+  /bin/echo 3
+  /bin/echo 4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > 
+  /bin/echo exit status: 0.
+  > 
+  /bin/echo exit status: 0.
+  > 
+  [plus 196 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test 100 output redirections (with limit of 50 open files)
+Test input:
+  /bin/echo valuefrom0 > test/redirect-output-0
+  /bin/echo valuefrom1 > test/redirect-output-1
+  /bin/echo valuefrom2 > test/redirect-output-2
+  /bin/echo valuefrom3 > test/redirect-output-3
+  /bin/echo valuefrom4 > test/redirect-output-4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > > test/redirect-output-0
+  /bin/echo exit status: 0.
+  > > test/redirect-output-1
+  /bin/echo exit status: 0.
+  > > test/redirect-output-2
+  [plus 196 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+  file test/redirect-output-0 was not created
+  file test/redirect-output-1 was not created
+  file test/redirect-output-10 was not created
+  file test/redirect-output-11 was not created
+  [plus 96 more lines, not shown]
+Failed test 100 input redirections (with limit of 50 open files)
+Test input:
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > This is an example input file.
+  Which has multiple lines.
+  /bin/cat exit status: 0.
+  > This is an example input file.
+  Which has multiple lines.
+  [plus 296 more lines, not shown]
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stderr: unexpected extra output [['No such file or directory.']]
+Failed test redirect to operator is invalid
+Test input:
+  /bin/false > > 
+  exit
+Actual stdout:
+  > /bin/false exit status: 1.
+  > 
+Actual stderr:
+  No such file or directory.
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/false exit status: 1.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/false exit status: 1.', '> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [No such file or directory.]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['No such file or directory.']
+2 tests passed and 38 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+

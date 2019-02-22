@@ -1,0 +1,961 @@
+Failed test exit immediately
+Test input:
+  exit
+Actual stdout:
+  >  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1724==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5636559754b3 bp 0x606000000020 sp 0x7ffdbcbc0ab0 T0)
+  ==1724==The signal is caused by a READ memory access.
+  ==1724==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> ] in line [>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> ] in ['>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1724==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5636559754b3 bp 0x606000000020 sp 0x7ffdbcbc0ab0 T0)', '==1724==The signal is caused by a READ memory access.', '==1724==Hint: address points to the zero page.', '    #0 0x5636559754b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5636559754b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5636559754b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x56365597328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f969446ab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x563655973599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1724==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1723==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f9694b76bbe bp 0x606000000080 sp 0x7ffdbcbc0a70 T0)', '==1723==The signal is caused by a READ memory access.', '==1723==Hint: address points to the zero page.', '    #0 0x7f9694b76bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x563655974ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x563655974ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x563655974ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x56365597328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f969446ab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x563655973599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1723==ABORTING']]
+Failed test trivial command, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1727==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x565317e844b3 bp 0x606000000020 sp 0x7fff6f2220f0 T0)
+  ==1727==The signal is caused by a READ memory access.
+  ==1727==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/true.*[Ee]xit status: 0.*] in line [>  exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in ['>  exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1727==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x565317e844b3 bp 0x606000000020 sp 0x7fff6f2220f0 T0)', '==1727==The signal is caused by a READ memory access.', '==1727==Hint: address points to the zero page.', '    #0 0x565317e844b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x565317e844b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x565317e844b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x565317e8228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f21478d8b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x565317e82599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1727==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1728==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x565317e844b3 bp 0x606000000080 sp 0x7fff6f2220f0 T0)', '==1728==The signal is caused by a READ memory access.', '==1728==Hint: address points to the zero page.', '    #0 0x565317e844b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x565317e844b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x565317e844b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x565317e8228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f21478d8b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x565317e82599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1728==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1725==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f2147fe4bbe bp 0x6060000000e0 sp 0x7fff6f2220b0 T0)', '==1725==The signal is caused by a READ memory access.', '==1725==Hint: address points to the zero page.', '    #0 0x7f2147fe4bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x565317e83ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x565317e83ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x565317e83ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x565317e8228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f21478d8b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x565317e82599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1725==ABORTING']]
+Failed test trivial command with extra space, exit status 0
+Test input:
+   /bin/true
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1730==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5570373184b3 bp 0x606000000020 sp 0x7ffc7a00aa20 T0)
+  ==1730==The signal is caused by a READ memory access.
+  ==1730==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/true.*[Ee]xit status: 0.*] in line [>  exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in ['>  exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1730==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5570373184b3 bp 0x606000000020 sp 0x7ffc7a00aa20 T0)', '==1730==The signal is caused by a READ memory access.', '==1730==Hint: address points to the zero page.', '    #0 0x5570373184b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5570373184b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5570373184b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55703731628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fd5277ebb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x557037316599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1730==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1731==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5570373184b3 bp 0x606000000080 sp 0x7ffc7a00aa20 T0)', '==1731==The signal is caused by a READ memory access.', '==1731==Hint: address points to the zero page.', '    #0 0x5570373184b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5570373184b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5570373184b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55703731628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fd5277ebb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x557037316599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1731==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1729==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fd527ef7bbe bp 0x6060000000e0 sp 0x7ffc7a00a9e0 T0)', '==1729==The signal is caused by a READ memory access.', '==1729==Hint: address points to the zero page.', '    #0 0x7fd527ef7bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x557037317ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x557037317ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x557037317ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55703731628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fd5277ebb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x557037316599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1729==ABORTING']]
+Failed test trivial command with extra tab, exit status 0
+Test input:
+  	/bin/true
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1733==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x556a73e574b3 bp 0x606000000020 sp 0x7fff2e1cf7c0 T0)
+  ==1733==The signal is caused by a READ memory access.
+  ==1733==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*[Ee]xit status: 0.*] in line [>  exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in ['>  exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1733==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x556a73e574b3 bp 0x606000000020 sp 0x7fff2e1cf7c0 T0)', '==1733==The signal is caused by a READ memory access.', '==1733==Hint: address points to the zero page.', '    #0 0x556a73e574b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x556a73e574b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x556a73e574b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x556a73e5528a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f9f6660cb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x556a73e55599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1733==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1742==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x556a73e574b3 bp 0x606000000080 sp 0x7fff2e1cf7c0 T0)', '==1742==The signal is caused by a READ memory access.', '==1742==Hint: address points to the zero page.', '    #0 0x556a73e574b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x556a73e574b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x556a73e574b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x556a73e5528a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f9f6660cb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x556a73e55599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1742==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1732==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f9f66d18bbe bp 0x6060000000e0 sp 0x7fff2e1cf780 T0)', '==1732==The signal is caused by a READ memory access.', '==1732==Hint: address points to the zero page.', '    #0 0x7f9f66d18bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x556a73e56ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x556a73e56ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x556a73e56ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x556a73e5528a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f9f6660cb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x556a73e55599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1732==ABORTING']]
+Failed test trivial command with extra vertical tab, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1767==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5584538134b3 bp 0x606000000020 sp 0x7ffd7f37aaf0 T0)
+  ==1767==The signal is caused by a READ memory access.
+  ==1767==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*[Ee]xit status: 0.*] in line [>  exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in ['>  exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1767==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5584538134b3 bp 0x606000000020 sp 0x7ffd7f37aaf0 T0)', '==1767==The signal is caused by a READ memory access.', '==1767==Hint: address points to the zero page.', '    #0 0x5584538134b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5584538134b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5584538134b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55845381128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f30b2fbfb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x558453811599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1767==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1768==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5584538134b3 bp 0x606000000080 sp 0x7ffd7f37aaf0 T0)', '==1768==The signal is caused by a READ memory access.', '==1768==Hint: address points to the zero page.', '    #0 0x5584538134b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5584538134b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5584538134b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55845381128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f30b2fbfb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x558453811599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1768==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1766==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f30b36cbbbe bp 0x6060000000e0 sp 0x7ffd7f37aab0 T0)', '==1766==The signal is caused by a READ memory access.', '==1766==Hint: address points to the zero page.', '    #0 0x7f30b36cbbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x558453812ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x558453812ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x558453812ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55845381128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f30b2fbfb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x558453811599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1766==ABORTING']]
+Failed test trivial command, exit status 1
+Test input:
+  /bin/false
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1770==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d9761744b3 bp 0x606000000020 sp 0x7ffc8be5abb0 T0)
+  ==1770==The signal is caused by a READ memory access.
+  ==1770==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > /bin/false.*[Ee]xit status: 1.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/false.*[Ee]xit status: 1.*] in line [>  exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> /bin/false.*[Ee]xit status: 1.*] in ['>  exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1770==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d9761744b3 bp 0x606000000020 sp 0x7ffc8be5abb0 T0)', '==1770==The signal is caused by a READ memory access.', '==1770==Hint: address points to the zero page.', '    #0 0x55d9761744b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55d9761744b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55d9761744b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55d97617228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f98c6843b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55d976172599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1770==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1771==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d9761744b3 bp 0x606000000080 sp 0x7ffc8be5abb0 T0)', '==1771==The signal is caused by a READ memory access.', '==1771==Hint: address points to the zero page.', '    #0 0x55d9761744b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55d9761744b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55d9761744b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55d97617228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f98c6843b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55d976172599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1771==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1769==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f98c6f4fbbe bp 0x6060000000e0 sp 0x7ffc8be5ab70 T0)', '==1769==The signal is caused by a READ memory access.', '==1769==Hint: address points to the zero page.', '    #0 0x7f98c6f4fbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55d976173ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55d976173ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55d976173ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55d97617228a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f98c6843b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55d976172599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1769==ABORTING']]
+Failed test only redirections is invalid
+Test input:
+  > foo.txt < bar.txt
+  exit
+Actual stdout:
+  > > exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1775==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55ad4d9224b3 bp 0x606000000140 sp 0x7ffe803f8470 T0)
+  ==1775==The signal is caused by a READ memory access.
+  ==1775==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> > exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> > ] in ['> > exited with status: 0>  exited with status: 256> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [exec failed, exiting...ASAN:DEADLYSIGNAL]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [=================================================================]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [==1775==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55ad4d9224b3 bp 0x606000000140 sp 0x7ffe803f8470 T0)]
+  [plus 29 more lines, not shown]
+Failed test redirection to nothing is invalid
+Test input:
+  /bin/true > 
+  exit
+Actual stdout:
+  > /bin/true exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1777==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d960e714b3 bp 0x606000000080 sp 0x7ffdc2a63e40 T0)
+  ==1777==The signal is caused by a READ memory access.
+  ==1777==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exited with status: 256>  exited with status: 256> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [ASAN:DEADLYSIGNAL]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [=================================================================]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [==1777==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d960e714b3 bp 0x606000000080 sp 0x7ffdc2a63e40 T0)]
+  [plus 44 more lines, not shown]
+Failed test redirection from nothing is invalid
+Test input:
+  /bin/true < 
+  exit
+Actual stdout:
+  > /bin/true exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1811==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5583ff6d84b3 bp 0x606000000080 sp 0x7ffc5199ed40 T0)
+  ==1811==The signal is caused by a READ memory access.
+  ==1811==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exited with status: 256>  exited with status: 256> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [ASAN:DEADLYSIGNAL]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [=================================================================]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [==1811==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5583ff6d84b3 bp 0x606000000080 sp 0x7ffc5199ed40 T0)]
+  [plus 44 more lines, not shown]
+Failed test pass arguments
+Test input:
+  test/argument_test.sh first second_with_underscore third
+  exit
+Actual stdout:
+  > test/argument_test.sh exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1816==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x556f1f3ed4b3 bp 0x606000000200 sp 0x7ffc0fa07120 T0)
+  ==1816==The signal is caused by a READ memory access.
+  ==1816==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 3
+  argument 1: first
+  argument 2: second_with_underscore
+  argument 3: third
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> ] in line [> test/argument_test.sh exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> ] in ['> test/argument_test.sh exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1816==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x556f1f3ed4b3 bp 0x606000000200 sp 0x7ffc0fa07120 T0)', '==1816==The signal is caused by a READ memory access.', '==1816==Hint: address points to the zero page.', '    #0 0x556f1f3ed4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x556f1f3ed4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x556f1f3ed4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x556f1f3eb28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f9ca8ae4b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x556f1f3eb599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1816==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1813==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f9ca91f0bbe bp 0x606000000260 sp 0x7ffc0fa070e0 T0)', '==1813==The signal is caused by a READ memory access.', '==1813==Hint: address points to the zero page.', '    #0 0x7f9ca91f0bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x556f1f3ecab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x556f1f3ecab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x556f1f3ecab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x556f1f3eb28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f9ca8ae4b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x556f1f3eb599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1813==ABORTING']]
+Failed test " is not quote
+Test input:
+  test/argument_test.sh "not quoted"
+  exit
+Actual stdout:
+  > 
+  number of arguments: 0
+  argument 1: 
+  argument 2: 
+  argument 3: 
+  [plus 2 more lines, not shown]
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1819==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55fe1c4454b3 bp 0x606000000140 sp 0x7ffc2853b600 T0)
+  ==1819==The signal is caused by a READ memory access.
+  ==1819==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 2
+  argument 1: "not
+  argument 2: quoted"
+  argument 3: 
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [number of arguments: 0]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 1: ]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 2: ]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 3: ]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 4: ]
+  [plus 3 more lines, not shown]
+Failed test varying argument counts and lengths
+Test input:
+  test/argument_test.sh aX bX cX dX eX
+  test/argument_test.sh f g hZZ i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > test/argument_test.sh exited with status: 0> test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...exec failed, exiting...
+  =================================================================
+  ==1823==ERROR: LeakSanitizer: detected memory leaks
+  
+  Direct leak of 56 byte(s) in 1 object(s) allocated from:
+  [plus 69 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: aX
+  argument 2: bX
+  argument 3: cX
+  [plus 17 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> ] in line [> test/argument_test.sh exited with status: 0> test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> ] in ['> test/argument_test.sh exited with status: 0> test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...exec failed, exiting...', '=================================================================', '==1823==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 56 byte(s) in 1 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562a2897e4e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 128 byte(s) in 1 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562a28980014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x562a28980014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x562a28980014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x562a28980014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffd4d89cbaf  (<unknown module>)', '', 'Indirect leak of 31 byte(s) in 1 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x7efe50717c36 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124c36)', '', 'SUMMARY: AddressSanitizer: 215 byte(s) leaked in 3 allocation(s).', 'exec failed, exiting...', '=================================================================', '==1825==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 112 byte(s) in 2 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562a2897e4e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 256 byte(s) in 2 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562a28980014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x562a28980014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x562a28980014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x562a28980014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffd4d89cbaf  (<unknown module>)', '', 'Indirect leak of 62 byte(s) in 2 object(s) allocated from:', '    #0 0x7efe50a5c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x7efe50717c36 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124c36)', '', 'SUMMARY: AddressSanitizer: 430 byte(s) leaked in 6 allocation(s).', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1844==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x562a2897f4b3 bp 0x606000000440 sp 0x7ffd4d89c1b0 T0)', '==1844==The signal is caused by a READ memory access.', '==1844==Hint: address points to the zero page.', '    #0 0x562a2897f4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x562a2897f4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x562a2897f4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x562a2897d28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7efe5000bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x562a2897d599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1844==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1820==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7efe50717bbe bp 0x6060000004a0 sp 0x7ffd4d89c170 T0)', '==1820==The signal is caused by a READ memory access.', '==1820==Hint: address points to the zero page.', '    #0 0x7efe50717bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x562a2897eab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x562a2897eab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x562a2897eab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x562a2897d28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7efe5000bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x562a2897d599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1820==ABORTING']]
+Failed test varing command lengths (1)
+Test input:
+  ./test/argument_test.sh a b c d e
+  /bin/echo f g h i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > ./test/argument_test.sh exited with status: 0> /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...exec failed, exiting...
+  =================================================================
+  ==1862==ERROR: LeakSanitizer: detected memory leaks
+  
+  Direct leak of 56 byte(s) in 1 object(s) allocated from:
+  [plus 69 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: a
+  argument 2: b
+  argument 3: c
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> ] in line [> ./test/argument_test.sh exited with status: 0> /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> ] in ['> ./test/argument_test.sh exited with status: 0> /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...exec failed, exiting...', '=================================================================', '==1862==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 56 byte(s) in 1 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55cd5b4874e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 128 byte(s) in 1 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55cd5b489014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x55cd5b489014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x55cd5b489014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x55cd5b489014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffe9fde960f  (<unknown module>)', '', 'Indirect leak of 31 byte(s) in 1 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x7f07eca05c36 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124c36)', '', 'SUMMARY: AddressSanitizer: 215 byte(s) leaked in 3 allocation(s).', 'exec failed, exiting...', '=================================================================', '==1864==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 112 byte(s) in 2 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55cd5b4874e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 256 byte(s) in 2 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55cd5b489014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x55cd5b489014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x55cd5b489014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x55cd5b489014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffe9fde960f  (<unknown module>)', '', 'Indirect leak of 31 byte(s) in 1 object(s) allocated from:', '    #0 0x7f07ecd4a458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x7f07eca05c36 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124c36)', '', 'SUMMARY: AddressSanitizer: 399 byte(s) leaked in 5 allocation(s).', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1866==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55cd5b4884b3 bp 0x6060000003e0 sp 0x7ffe9fde8c10 T0)', '==1866==The signal is caused by a READ memory access.', '==1866==Hint: address points to the zero page.', '    #0 0x55cd5b4884b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55cd5b4884b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55cd5b4884b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55cd5b48628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f07ec2f9b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55cd5b486599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1866==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1859==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f07eca05bbe bp 0x606000000440 sp 0x7ffe9fde8bd0 T0)', '==1859==The signal is caused by a READ memory access.', '==1859==Hint: address points to the zero page.', '    #0 0x7f07eca05bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55cd5b487ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55cd5b487ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55cd5b487ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55cd5b48628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f07ec2f9b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55cd5b486599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1859==ABORTING']]
+Failed test varing command lengths (2)
+Test input:
+  /bin/echo f g h i
+  ./test/argument_test.sh aXX bXX cXX dXX eXX
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0> ./test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...exec failed, exiting...
+  =================================================================
+  ==1870==ERROR: LeakSanitizer: detected memory leaks
+  
+  Direct leak of 56 byte(s) in 1 object(s) allocated from:
+  [plus 65 more lines, not shown]
+Expected stdout regular expression pattern:
+  > f g h i
+  .*exit status: 0.*
+  > 
+  number of arguments: 5
+  argument 1: aXX
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> f g h i] in line [> /bin/echo exited with status: 0> ./test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> f g h i] in ['> /bin/echo exited with status: 0> ./test/argument_test.sh exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...exec failed, exiting...', '=================================================================', '==1870==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 56 byte(s) in 1 object(s) allocated from:', '    #0 0x7f8aad69c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x5626342324e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 128 byte(s) in 1 object(s) allocated from:', '    #0 0x7f8aad69c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562634234014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x562634234014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x562634234014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x562634234014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffdd567173f  (<unknown module>)', '', 'SUMMARY: AddressSanitizer: 184 byte(s) leaked in 2 allocation(s).', 'exec failed, exiting...', '=================================================================', '==1873==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 112 byte(s) in 2 object(s) allocated from:', '    #0 0x7f8aad69c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x5626342324e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 256 byte(s) in 2 object(s) allocated from:', '    #0 0x7f8aad69c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x562634234014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x562634234014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x562634234014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x562634234014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7ffdd567173f  (<unknown module>)', '', 'Indirect leak of 31 byte(s) in 1 object(s) allocated from:', '    #0 0x7f8aad69c458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x7f8aad357c36 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124c36)', '', 'SUMMARY: AddressSanitizer: 399 byte(s) leaked in 5 allocation(s).', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1875==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5626342334b3 bp 0x6060000003e0 sp 0x7ffdd5670d40 T0)', '==1875==The signal is caused by a READ memory access.', '==1875==Hint: address points to the zero page.', '    #0 0x5626342334b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5626342334b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5626342334b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x56263423128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f8aacc4bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x562634231599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1875==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1867==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f8aad357bbe bp 0x606000000440 sp 0x7ffdd5670d00 T0)', '==1867==The signal is caused by a READ memory access.', '==1867==Hint: address points to the zero page.', '    #0 0x7f8aad357bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x562634232ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x562634232ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x562634232ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x56263423128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f8aacc4bb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x562634231599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1867==ABORTING']]
+Failed test very long argument
+Test input:
+  /bin/echo short
+  /bin/echo QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 256> /bin/echo exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1908==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x560aeb9e14b3 bp 0x606000000080 sp 0x7ffccc478520 T0)
+  ==1908==The signal is caused by a READ memory access.
+  ==1908==Hint: address points to the zero page.
+  [plus 57 more lines, not shown]
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> /bin/echo exited with status: 256> /bin/echo exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> short] in ['> /bin/echo exited with status: 256> /bin/echo exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1908==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x560aeb9e14b3 bp 0x606000000080 sp 0x7ffccc478520 T0)', '==1908==The signal is caused by a READ memory access.', '==1908==Hint: address points to the zero page.', '    #0 0x560aeb9e14b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x560aeb9e14b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x560aeb9e14b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x560aeb9df28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f19ed563b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x560aeb9df599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1908==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1909==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x560aeb9e14b3 bp 0x6060000001a0 sp 0x7ffccc478520 T0)', '==1909==The signal is caused by a READ memory access.', '==1909==Hint: address points to the zero page.', '    #0 0x560aeb9e14b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x560aeb9e14b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x560aeb9e14b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x560aeb9df28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f19ed563b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x560aeb9df599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1909==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1910==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x560aeb9e14b3 bp 0x606000000200 sp 0x7ffccc478520 T0)', '==1910==The signal is caused by a READ memory access.', '==1910==Hint: address points to the zero page.', '    #0 0x560aeb9e14b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x560aeb9e14b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x560aeb9e14b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x560aeb9df28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f19ed563b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x560aeb9df599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1910==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1903==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f19edc6fbbe bp 0x606000000260 sp 0x7ffccc4784e0 T0)', '==1903==The signal is caused by a READ memory access.', '==1903==Hint: address points to the zero page.', '    #0 0x7f19edc6fbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x560aeb9e0ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x560aeb9e0ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x560aeb9e0ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x560aeb9df28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f19ed563b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x560aeb9df599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1903==ABORTING']]
+Failed test lots of arguments
+Test input:
+  /bin/echo short
+  test/argument_test.sh A B C D E F G H I J K L M N O P Q R S T
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1912==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x555e4b51d4b3 bp 0x606000000080 sp 0x7fff0c4d6180 T0)
+  ==1912==The signal is caused by a READ memory access.
+  ==1912==Hint: address points to the zero page.
+  [plus 121 more lines, not shown]
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > 
+  number of arguments: 20
+  argument 1: A
+  [plus 5 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> short] in ['> /bin/echo exited with status: 256> test/argument_test.sh exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==1912==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x555e4b51d4b3 bp 0x606000000080 sp 0x7fff0c4d6180 T0)', '==1912==The signal is caused by a READ memory access.', '==1912==Hint: address points to the zero page.', '    #0 0x555e4b51d4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x555e4b51d4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x555e4b51d4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x555e4b51b28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f533d812b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x555e4b51b599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1912==ABORTING', '=================================================================', '==1913==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fff0c4d6990 at pc 0x555e4b51d686 bp 0x7fff0c4d6170 sp 0x7fff0c4d6160', 'WRITE of size 8 at 0x7fff0c4d6990 thread T0', '    #0 0x555e4b51d685 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #1 0x555e4b51d685 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #2 0x555e4b51b28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #3 0x7f533d812b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #4 0x555e4b51b599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'Address 0x7fff0c4d6990 is located in stack of thread T0 at offset 1968 in frame', '    #0 0x555e4b51b9bf in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:33', '', '  This frame has 31 object(s):', "    [32, 33) '<unknown>'", "    [96, 97) '<unknown>'", "    [160, 161) '<unknown>'", "    [224, 225) '<unknown>'", "    [288, 289) '<unknown>'", "    [352, 353) '<unknown>'", "    [416, 417) '<unknown>'", "    [480, 481) '<unknown>'", "    [544, 545) '<unknown>'", "    [608, 609) '<unknown>'", "    [672, 673) '<unknown>'", "    [736, 737) '<unknown>'", "    [800, 801) '<unknown>'", "    [864, 865) '<unknown>'", "    [928, 929) '<unknown>'", "    [992, 993) '<unknown>'", "    [1056, 1057) '<unknown>'", "    [1120, 1121) '<unknown>'", "    [1184, 1188) 'status'", "    [1248, 1252) 'pid'", "    [1312, 1320) '<unknown>'", "    [1376, 1384) '<unknown>'", "    [1440, 1448) '<unknown>'", "    [1504, 1528) 'tokens'", "    [1568, 1592) 'pids'", "    [1632, 1656) '<unknown>'", "    [1696, 1720) '__tmp'", "    [1760, 1792) 'token'", "    [1824, 1856) '<unknown>'", "    [1888, 1968) 'arr' <== Memory access at offset 1968 overflows this variable", "    [2016, 2400) 's'", 'HINT: this may be a false positive if your program uses some custom stack unwind mechanism or swapcontext', '      (longjmp and C++ exceptions *are* supported)', 'SUMMARY: AddressSanitizer: stack-buffer-overflow /home/user/Desktop/cs4414/shell/main.cc:27 in command::argArray()', 'Shadow bytes around the buggy address:', '  0x100061892ce0: f8 f2 f2 f2 f2 f2 f2 f2 f8 f2 f2 f2 f2 f2 f2 f2', '  0x100061892cf0: 00 f2 f2 f2 f2 f2 f2 f2 00 00 00 f2 f2 f2 f2 f2', '  0x100061892d00: 00 00 00 f2 f2 f2 f2 f2 f8 f8 f8 f2 f2 f2 f2 f2', '  0x100061892d10: f8 f8 f8 f2 f2 f2 f2 f2 00 00 00 00 f2 f2 f2 f2', '  0x100061892d20: f8 f8 f8 f8 f2 f2 f2 f2 00 00 00 00 00 00 00 00', '=>0x100061892d30: 00 00[f2]f2 f2 f2 f2 f2 00 00 00 00 00 00 00 00', '  0x100061892d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00', '  0x100061892d50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00', '  0x100061892d60: 00 00 00 00 00 00 00 00 f3 f3 f3 f3 00 00 00 00', '  0x100061892d70: 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1 f8 f2', '  0x100061892d80: f2 f2 f2 f2 f2 f2 00 00 00 00 f3 f3 f3 f3 00 00', 'Shadow byte legend (one shadow byte represents 8 application bytes):', '  Addressable:           00', '  Partially addressable: 01 02 03 04 05 06 07 ', '  Heap left redzone:       fa', '  Freed heap region:       fd', '  Stack left redzone:      f1', '  Stack mid redzone:       f2', '  Stack right redzone:     f3', '  Stack after return:      f5', '  Stack use after scope:   f8', '  Global redzone:          f9', '  Global init order:       f6', '  Poisoned by user:        f7', '  Container overflow:      fc', '  Array cookie:            ac', '  Intra object redzone:    bb', '  ASan internal:           fe', '  Left alloca redzone:     ca', '  Right alloca redzone:    cb', '==1913==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1914==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x555e4b51d4b3 bp 0x6060000002c0 sp 0x7fff0c4d6180 T0)', '==1914==The signal is caused by a READ memory access.', '==1914==Hint: address points to the zero page.', '    #0 0x555e4b51d4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x555e4b51d4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x555e4b51d4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x555e4b51b28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f533d812b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x555e4b51b599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1914==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1911==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f533df1ebbe bp 0x606000000320 sp 0x7fff0c4d6140 T0)', '==1911==The signal is caused by a READ memory access.', '==1911==Hint: address points to the zero page.', '    #0 0x7f533df1ebbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x555e4b51cab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x555e4b51cab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x555e4b51cab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x555e4b51b28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f533d812b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x555e4b51b599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1911==ABORTING']]
+Failed test extra whitespace without redirects
+Test input:
+     		 /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1918==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55b5b829b4b3 bp 0x6060000001a0 sp 0x7ffeb953db80 T0)
+  ==1918==The signal is caused by a READ memory access.
+  ==1918==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > testing one two three
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> testing one two three] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> testing one two three] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1918==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55b5b829b4b3 bp 0x6060000001a0 sp 0x7ffeb953db80 T0)', '==1918==The signal is caused by a READ memory access.', '==1918==Hint: address points to the zero page.', '    #0 0x55b5b829b4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55b5b829b4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55b5b829b4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55b5b829928a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f8cbe465b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55b5b8299599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1918==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1915==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f8cbeb71bbe bp 0x606000000200 sp 0x7ffeb953db40 T0)', '==1915==The signal is caused by a READ memory access.', '==1915==Hint: address points to the zero page.', '    #0 0x7f8cbeb71bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55b5b829aab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55b5b829aab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55b5b829aab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55b5b829928a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f8cbe465b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55b5b8299599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1915==ABORTING']]
+Failed test redirections require whitespace around >
+Test input:
+  /bin/echo  this is a >test
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1946==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5591e03684b3 bp 0x606000000140 sp 0x7ffdc92a3460 T0)
+  ==1946==The signal is caused by a READ memory access.
+  ==1946==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a >test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >test] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> this is a >test] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1946==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5591e03684b3 bp 0x606000000140 sp 0x7ffdc92a3460 T0)', '==1946==The signal is caused by a READ memory access.', '==1946==Hint: address points to the zero page.', '    #0 0x5591e03684b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5591e03684b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5591e03684b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x5591e036628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f60c9a82b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x5591e0366599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1946==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1924==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f60ca18ebbe bp 0x6060000001a0 sp 0x7ffdc92a3420 T0)', '==1924==The signal is caused by a READ memory access.', '==1924==Hint: address points to the zero page.', '    #0 0x7f60ca18ebbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x5591e0367ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x5591e0367ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x5591e0367ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x5591e036628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f60c9a82b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x5591e0366599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1924==ABORTING']]
+Failed test redirections require whitespace around <
+Test input:
+  /bin/echo  this is a <test
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1957==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d62954c4b3 bp 0x606000000140 sp 0x7fffa83532f0 T0)
+  ==1957==The signal is caused by a READ memory access.
+  ==1957==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a <test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a <test] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> this is a <test] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1957==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d62954c4b3 bp 0x606000000140 sp 0x7fffa83532f0 T0)', '==1957==The signal is caused by a READ memory access.', '==1957==Hint: address points to the zero page.', '    #0 0x55d62954c4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55d62954c4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55d62954c4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55d62954a28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fca5b13eb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55d62954a599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1957==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1954==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fca5b84abbe bp 0x6060000001a0 sp 0x7fffa83532b0 T0)', '==1954==The signal is caused by a READ memory access.', '==1954==Hint: address points to the zero page.', '    #0 0x7fca5b84abbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55d62954bab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55d62954bab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55d62954bab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55d62954a28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fca5b13eb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55d62954a599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1954==ABORTING']]
+Failed test >> is not a redirection operator
+Test input:
+  /bin/echo  this is a >> test
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1961==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55824c22b4b3 bp 0x606000000140 sp 0x7fff24fe1ff0 T0)
+  ==1961==The signal is caused by a READ memory access.
+  ==1961==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a >> test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >> test] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> this is a >> test] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1961==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55824c22b4b3 bp 0x606000000140 sp 0x7fff24fe1ff0 T0)', '==1961==The signal is caused by a READ memory access.', '==1961==Hint: address points to the zero page.', '    #0 0x55824c22b4b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55824c22b4b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55824c22b4b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55824c22928a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f9e182cab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55824c229599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1961==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1958==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f9e189d6bbe bp 0x6060000001a0 sp 0x7fff24fe1fb0 T0)', '==1958==The signal is caused by a READ memory access.', '==1958==Hint: address points to the zero page.', '    #0 0x7f9e189d6bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55824c22aab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55824c22aab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55824c22aab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55824c22928a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f9e182cab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55824c229599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1958==ABORTING']]
+Failed test redirect stdin inode
+Test input:
+  /usr/bin/stat -L -c %i/%d /proc/self/fd/0 < test/input.txt
+  exit
+Actual stdout:
+  > /usr/bin/stat exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==1967==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x561d5cbb04b3 bp 0x606000000200 sp 0x7ffd1d397850 T0)
+  ==1967==The signal is caused by a READ memory access.
+  ==1967==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 316514/2049
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> 316514/2049] in line [> /usr/bin/stat exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> 316514/2049] in ['> /usr/bin/stat exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==1967==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x561d5cbb04b3 bp 0x606000000200 sp 0x7ffd1d397850 T0)', '==1967==The signal is caused by a READ memory access.', '==1967==Hint: address points to the zero page.', '    #0 0x561d5cbb04b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x561d5cbb04b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x561d5cbb04b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x561d5cbae28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fba0af00b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x561d5cbae599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==1967==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1964==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fba0b60cbbe bp 0x606000000260 sp 0x7ffd1d397810 T0)', '==1964==The signal is caused by a READ memory access.', '==1964==Hint: address points to the zero page.', '    #0 0x7fba0b60cbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x561d5cbafab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x561d5cbafab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x561d5cbafab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x561d5cbae28a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fba0af00b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x561d5cbae599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1964==ABORTING']]
+Failed test redirect stdin contents
+Test input:
+  /bin/cat < test/input.txt
+  exit
+Actual stdout:
+  > /bin/cat exited with status: 134>  exited with status: 256> 
+Actual stderr:
+  A NULL argv[0] was passed through an exec system call.
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2008==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5577835e84b3 bp 0x6060000000e0 sp 0x7ffe0297c140 T0)
+  ==2008==The signal is caused by a READ memory access.
+  [plus 28 more lines, not shown]
+Expected stdout regular expression pattern:
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> This is an example input file.] in line [> /bin/cat exited with status: 134>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> This is an example input file.] in ['> /bin/cat exited with status: 134>  exited with status: 256> ']
+  in stderr: unexpected extra output [['A NULL argv[0] was passed through an exec system call.', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2008==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5577835e84b3 bp 0x6060000000e0 sp 0x7ffe0297c140 T0)', '==2008==The signal is caused by a READ memory access.', '==2008==Hint: address points to the zero page.', '    #0 0x5577835e84b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5577835e84b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5577835e84b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x5577835e628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fb01b920b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x5577835e6599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2008==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==1969==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fb01c02cbbe bp 0x606000000140 sp 0x7ffe0297c100 T0)', '==1969==The signal is caused by a READ memory access.', '==1969==Hint: address points to the zero page.', '    #0 0x7fb01c02cbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x5577835e7ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x5577835e7ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x5577835e7ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x5577835e628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fb01b920b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x5577835e6599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==1969==ABORTING']]
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 1>  exited with status: 1> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2009==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7ffbedcd7bbe bp 0x606000000200 sp 0x7ffc173f1910 T0)
+  ==2009==The signal is caused by a READ memory access.
+  ==2009==Hint: address points to the zero page.
+  [plus 12 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exited with status: 1>  exited with status: 1> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exited with status: 1>  exited with status: 1> ']
+Failed test redirect stdout
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2047==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55827beb64b3 bp 0x6060000001a0 sp 0x7fff1f9c4210 T0)
+  ==2047==The signal is caused by a READ memory access.
+  ==2047==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2047==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55827beb64b3 bp 0x6060000001a0 sp 0x7fff1f9c4210 T0)', '==2047==The signal is caused by a READ memory access.', '==2047==Hint: address points to the zero page.', '    #0 0x55827beb64b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55827beb64b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55827beb64b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55827beb428a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f0078c69b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55827beb4599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2047==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2032==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f0079375bbe bp 0x606000000200 sp 0x7fff1f9c41d0 T0)', '==2032==The signal is caused by a READ memory access.', '==2032==Hint: address points to the zero page.', '    #0 0x7f0079375bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55827beb5ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55827beb5ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55827beb5ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55827beb428a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f0078c69b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55827beb4599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2032==ABORTING']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect stdout does not redirect stderr
+Test input:
+  test/sample_outputs.sh > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > This is the contents of stdout.
+  test/sample_outputs.sh exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  This is the contents of stderr.
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2050==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d7df5284b3 bp 0x606000000200 sp 0x7fffb6a75430 T0)
+  ==2050==The signal is caused by a READ memory access.
+  [plus 28 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  This is the contents of stderr.
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> This is the contents of stdout.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [test/sample_outputs.sh exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> This is the contents of stdout.', 'test/sample_outputs.sh exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['ASAN:DEADLYSIGNAL', '=================================================================', '==2050==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d7df5284b3 bp 0x606000000200 sp 0x7fffb6a75430 T0)', '==2050==The signal is caused by a READ memory access.', '==2050==Hint: address points to the zero page.', '    #0 0x55d7df5284b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55d7df5284b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55d7df5284b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55d7df52628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f73d1b99b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55d7df526599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2050==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2048==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f73d22a5bbe bp 0x606000000260 sp 0x7fffb6a753f0 T0)', '==2048==The signal is caused by a READ memory access.', '==2048==Hint: address points to the zero page.', '    #0 0x7f73d22a5bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55d7df527ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55d7df527ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55d7df527ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55d7df52628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f73d1b99b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55d7df526599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2048==ABORTING']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect in middle of command
+Test input:
+  /bin/echo testing one two > test/redirect-stdout-output.txt three 
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2054==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5644a15434b3 bp 0x6060000001a0 sp 0x7fffa94a0310 T0)
+  ==2054==The signal is caused by a READ memory access.
+  ==2054==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2054==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5644a15434b3 bp 0x6060000001a0 sp 0x7fffa94a0310 T0)', '==2054==The signal is caused by a READ memory access.', '==2054==Hint: address points to the zero page.', '    #0 0x5644a15434b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5644a15434b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5644a15434b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x5644a154128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f8e23d08b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x5644a1541599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2054==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2051==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f8e24414bbe bp 0x606000000200 sp 0x7fffa94a02d0 T0)', '==2051==The signal is caused by a READ memory access.', '==2051==Hint: address points to the zero page.', '    #0 0x7f8e24414bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x5644a1542ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x5644a1542ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x5644a1542ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x5644a154128a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f8e23d08b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x5644a1541599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2051==ABORTING']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect at beginning of command
+Test input:
+  > test/redirect-stdout-output.txt /bin/echo testing one two three 
+  exit
+Actual stdout:
+  > > exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2058==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55c4018994b3 bp 0x6060000001a0 sp 0x7ffc435994f0 T0)
+  ==2058==The signal is caused by a READ memory access.
+  ==2058==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> > exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> > exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2058==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55c4018994b3 bp 0x6060000001a0 sp 0x7ffc435994f0 T0)', '==2058==The signal is caused by a READ memory access.', '==2058==Hint: address points to the zero page.', '    #0 0x55c4018994b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55c4018994b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55c4018994b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55c40189728a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fc86e67ab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55c401897599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2058==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2055==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fc86ed86bbe bp 0x606000000200 sp 0x7ffc435994b0 T0)', '==2055==The signal is caused by a READ memory access.', '==2055==Hint: address points to the zero page.', '    #0 0x7fc86ed86bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55c401898ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55c401898ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55c401898ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55c40189728a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fc86e67ab96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55c401897599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2055==ABORTING']]
+  file test/redirect-stdout-output.txt was not created
+Failed test extra whitespace in redirect at beginning
+Test input:
+    >    	test/redirect-stdout-output.txt	  /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > > exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2063==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d8f79784b3 bp 0x6060000001a0 sp 0x7ffd0e18dee0 T0)
+  ==2063==The signal is caused by a READ memory access.
+  ==2063==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> > exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> > exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2063==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55d8f79784b3 bp 0x6060000001a0 sp 0x7ffd0e18dee0 T0)', '==2063==The signal is caused by a READ memory access.', '==2063==Hint: address points to the zero page.', '    #0 0x55d8f79784b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55d8f79784b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55d8f79784b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55d8f797628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fc0fa8cdb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55d8f7976599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2063==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2060==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fc0fafd9bbe bp 0x606000000200 sp 0x7ffd0e18dea0 T0)', '==2060==The signal is caused by a READ memory access.', '==2060==Hint: address points to the zero page.', '    #0 0x7fc0fafd9bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55d8f7977ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55d8f7977ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55d8f7977ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55d8f797628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fc0fa8cdb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55d8f7976599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2060==ABORTING']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect output then use normal output
+Test input:
+  /bin/echo foo > /dev/null
+  /bin/echo bar
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0> /bin/echo exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2069==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55e0913454b3 bp 0x6060000001a0 sp 0x7ffe0ada73c0 T0)
+  ==2069==The signal is caused by a READ memory access.
+  ==2069==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > .*exit status: 0.*
+  > bar
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [> /bin/echo exited with status: 0> /bin/echo exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> .*exit status: 0.*] in ['> /bin/echo exited with status: 0> /bin/echo exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2069==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55e0913454b3 bp 0x6060000001a0 sp 0x7ffe0ada73c0 T0)', '==2069==The signal is caused by a READ memory access.', '==2069==Hint: address points to the zero page.', '    #0 0x55e0913454b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55e0913454b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55e0913454b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55e09134328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f8f6f661b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55e091343599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2069==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2086==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55e0913454b3 bp 0x606000000200 sp 0x7ffe0ada73c0 T0)', '==2086==The signal is caused by a READ memory access.', '==2086==Hint: address points to the zero page.', '    #0 0x55e0913454b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55e0913454b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55e0913454b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55e09134328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7f8f6f661b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55e091343599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2086==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2064==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7f8f6fd6dbbe bp 0x606000000260 sp 0x7ffe0ada7380 T0)', '==2064==The signal is caused by a READ memory access.', '==2064==Hint: address points to the zero page.', '    #0 0x7f8f6fd6dbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55e091344ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55e091344ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55e091344ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55e09134328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7f8f6f661b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55e091343599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2064==ABORTING']]
+Failed test redirect input then use normal input
+Test input:
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  /bin/cat < test/input.txt
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  exit
+Actual stdout:
+  > /usr/bin/stat exited with status: 0> /bin/cat exited with status: 134> /usr/bin/stat exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...A NULL argv[0] was passed through an exec system call.
+  exec failed, exiting...
+  =================================================================
+  ==2109==ERROR: LeakSanitizer: detected memory leaks
+  
+  [plus 45 more lines, not shown]
+Expected stdout regular expression pattern:
+  > fifo
+  .*exit status: 0.*
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> fifo] in line [> /usr/bin/stat exited with status: 0> /bin/cat exited with status: 134> /usr/bin/stat exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> fifo] in ['> /usr/bin/stat exited with status: 0> /bin/cat exited with status: 134> /usr/bin/stat exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...A NULL argv[0] was passed through an exec system call.', 'exec failed, exiting...', '=================================================================', '==2109==ERROR: LeakSanitizer: detected memory leaks', '', 'Direct leak of 112 byte(s) in 2 object(s) allocated from:', '    #0 0x7fd12c04d458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55eca39f44e1 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:45', '', 'Indirect leak of 160 byte(s) in 2 object(s) allocated from:', '    #0 0x7fd12c04d458 in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe0458)', '    #1 0x55eca39f6014 in __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) /usr/include/c++/7/ext/new_allocator.h:111', '    #2 0x55eca39f6014 in std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) /usr/include/c++/7/bits/alloc_traits.h:436', '    #3 0x55eca39f6014 in std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) /usr/include/c++/7/bits/stl_vector.h:172', '    #4 0x55eca39f6014 in void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/vector.tcc:406', '    #5 0x7fffde4efb5f  (<unknown module>)', '', 'SUMMARY: AddressSanitizer: 272 byte(s) leaked in 4 allocation(s).', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2112==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55eca39f54b3 bp 0x6060000003e0 sp 0x7fffde4ef160 T0)', '==2112==The signal is caused by a READ memory access.', '==2112==Hint: address points to the zero page.', '    #0 0x55eca39f54b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55eca39f54b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55eca39f54b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55eca39f328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fd12b5fcb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55eca39f3599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2112==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2101==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fd12bd08bbe bp 0x606000000440 sp 0x7fffde4ef120 T0)', '==2101==The signal is caused by a READ memory access.', '==2101==Hint: address points to the zero page.', '    #0 0x7fd12bd08bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55eca39f4ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55eca39f4ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55eca39f4ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55eca39f328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fd12b5fcb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55eca39f3599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2101==ABORTING']]
+Failed test redirect output truncates file
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2116==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x557aaa7554b3 bp 0x6060000001a0 sp 0x7ffef4213c10 T0)
+  ==2116==The signal is caused by a READ memory access.
+  ==2116==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> /bin/echo exited with status: 0>  exited with status: 256> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> /bin/echo exited with status: 0>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2116==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x557aaa7554b3 bp 0x6060000001a0 sp 0x7ffef4213c10 T0)', '==2116==The signal is caused by a READ memory access.', '==2116==Hint: address points to the zero page.', '    #0 0x557aaa7554b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x557aaa7554b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x557aaa7554b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x557aaa75328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fcce42e4b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x557aaa753599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2116==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2113==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fcce49f0bbe bp 0x606000000200 sp 0x7ffef4213bd0 T0)', '==2113==The signal is caused by a READ memory access.', '==2113==Hint: address points to the zero page.', '    #0 0x7fcce49f0bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x557aaa754ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x557aaa754ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x557aaa754ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x557aaa75328a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fcce42e4b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x557aaa753599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2113==ABORTING']]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [This is a long string meant to ensure that echo]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [will not overwrite it if the shell does not open]
+  [plus 5 more lines, not shown]
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*saving.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/printer.pid was not created
+  file test/signaler.pid was not created
+Failed test background command, then other slow command
+Test input:
+  test/sleep_and_print.sh 0.5 foo &
+  /bin/sleep 2
+  exit
+Actual stdout:
+  > test/sleep_and_print.sh exited with status: 0> /bin/sleep exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  exec failed, exiting...ASAN:DEADLYSIGNAL
+  =================================================================
+  ==2322==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5647860b94b3 bp 0x606000000200 sp 0x7ffcc5239160 T0)
+  ==2322==The signal is caused by a READ memory access.
+  ==2322==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > foo
+  /bin/sleep.* exit status: 0
+  test/sleep_and_print.* exit status: 0
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> > foo] in line [> test/sleep_and_print.sh exited with status: 0> /bin/sleep exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> > foo] in ['> test/sleep_and_print.sh exited with status: 0> /bin/sleep exited with status: 256>  exited with status: 256> ']
+  in stderr: unexpected extra output [['exec failed, exiting...ASAN:DEADLYSIGNAL', '=================================================================', '==2322==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5647860b94b3 bp 0x606000000200 sp 0x7ffcc5239160 T0)', '==2322==The signal is caused by a READ memory access.', '==2322==Hint: address points to the zero page.', '    #0 0x5647860b94b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5647860b94b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5647860b94b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x5647860b728a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fbcc08efb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x5647860b7599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2322==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2323==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x5647860b94b3 bp 0x606000000260 sp 0x7ffcc5239160 T0)', '==2323==The signal is caused by a READ memory access.', '==2323==Hint: address points to the zero page.', '    #0 0x5647860b94b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x5647860b94b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x5647860b94b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x5647860b728a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7fbcc08efb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x5647860b7599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==2323==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==2319==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7fbcc0ffbbbe bp 0x6060000002c0 sp 0x7ffcc5239120 T0)', '==2319==The signal is caused by a READ memory access.', '==2319==Hint: address points to the zero page.', '    #0 0x7fbcc0ffbbbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x5647860b8ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x5647860b8ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x5647860b8ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x5647860b728a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7fbcc08efb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x5647860b7599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==2319==ABORTING']]
+Failed test echo 100 times output
+Test input:
+  /bin/echo 0
+  /bin/echo 1
+  /bin/echo 2
+  /bin/echo 3
+  /bin/echo 4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*0
+  .*1
+  .*2
+  .*3
+  .*4
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*0] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test echo 100 times exit status
+Test input:
+  /bin/echo 0
+  /bin/echo 1
+  /bin/echo 2
+  /bin/echo 3
+  /bin/echo 4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test 100 output redirections (with limit of 50 open files)
+Test input:
+  /bin/echo valuefrom0 > test/redirect-output-0
+  /bin/echo valuefrom1 > test/redirect-output-1
+  /bin/echo valuefrom2 > test/redirect-output-2
+  /bin/echo valuefrom3 > test/redirect-output-3
+  /bin/echo valuefrom4 > test/redirect-output-4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/redirect-output-0 was not created
+  file test/redirect-output-1 was not created
+  [plus 98 more lines, not shown]
+Failed test 100 input redirections (with limit of 50 open files)
+Test input:
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  /bin/cat < test/input.txt
+  [plus 96 more lines, not shown]
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  .*This is an example input file.
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*This is an example input file.] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test redirect to operator is invalid
+Test input:
+  /bin/false > > 
+  exit
+Actual stdout:
+  > /bin/false exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==3272==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55fec34824b3 bp 0x6060000000e0 sp 0x7ffc826741c0 T0)
+  ==3272==The signal is caused by a READ memory access.
+  ==3272==Hint: address points to the zero page.
+  [plus 27 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/false exited with status: 256>  exited with status: 256> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/false exited with status: 256>  exited with status: 256> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [ASAN:DEADLYSIGNAL]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [=================================================================]
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [==3272==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55fec34824b3 bp 0x6060000000e0 sp 0x7ffc826741c0 T0)]
+  [plus 29 more lines, not shown]
+Failed test non-existing command
+Test input:
+  /bin/trex
+  exit
+Actual stdout:
+  >  exited with status: 256>  exited with status: 256> 
+Actual stderr:
+  ASAN:DEADLYSIGNAL
+  =================================================================
+  ==3274==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55b3283384b3 bp 0x606000000020 sp 0x7ffcea2ca1a0 T0)
+  ==3274==The signal is caused by a READ memory access.
+  ==3274==Hint: address points to the zero page.
+  [plus 42 more lines, not shown]
+Expected stdout regular expression pattern: (extra lines allowed)
+  <empty>
+Expected stderr regular expression pattern: (extra lines allowed)
+  .*(?:No such file or directory|Command not found).*
+Errors:
+  in stderr: could not find match for pattern [.*(?:No such file or directory|Command not found).*] in ['ASAN:DEADLYSIGNAL', '=================================================================', '==3274==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55b3283384b3 bp 0x606000000020 sp 0x7ffcea2ca1a0 T0)', '==3274==The signal is caused by a READ memory access.', '==3274==Hint: address points to the zero page.', '    #0 0x55b3283384b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55b3283384b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55b3283384b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55b32833628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7efed1804b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55b328336599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==3274==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==3275==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x55b3283384b3 bp 0x606000000080 sp 0x7ffcea2ca1a0 T0)', '==3275==The signal is caused by a READ memory access.', '==3275==Hint: address points to the zero page.', '    #0 0x55b3283384b2 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const /usr/include/c++/7/bits/basic_string.h:2272', '    #1 0x55b3283384b2 in command::argArray() /home/user/Desktop/cs4414/shell/main.cc:27', '    #2 0x55b3283384b2 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:60', '    #3 0x55b32833628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #4 0x7efed1804b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #5 0x55b328336599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV /usr/include/c++/7/bits/basic_string.h:2272 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::c_str() const', '==3275==ABORTING', 'ASAN:DEADLYSIGNAL', '=================================================================', '==3273==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000008 (pc 0x7efed1f10bbe bp 0x6060000000e0 sp 0x7ffcea2ca160 T0)', '==3273==The signal is caused by a READ memory access.', '==3273==Hint: address points to the zero page.', '    #0 0x7efed1f10bbd in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd)', '    #1 0x55b328337ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:1347', '    #2 0x55b328337ab6 in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /usr/include/c++/7/bits/basic_string.h:685', '    #3 0x55b328337ab6 in parse_and_run_command(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/user/Desktop/cs4414/shell/main.cc:47', '    #4 0x55b32833628a in main /home/user/Desktop/cs4414/shell/main.cc:79', '    #5 0x7efed1804b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)', '    #6 0x55b328336599 in _start (/home/user/Desktop/cs4414/shell/msh+0x2599)', '', 'AddressSanitizer can not provide additional info.', 'SUMMARY: AddressSanitizer: SEGV (/usr/lib/x86_64-linux-gnu/libstdc++.so.6+0x124bbd) in std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)', '==3273==ABORTING']
+1 tests passed and 39 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+

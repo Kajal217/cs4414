@@ -1,0 +1,797 @@
+Failed test trivial command, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/true.*[Ee]xit status: 0.*] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in ['> /bin/true exited with status: 0> ']
+Failed test trivial command with extra space, exit status 0
+Test input:
+   /bin/true
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/true.*[Ee]xit status: 0.*] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in ['> /bin/true exited with status: 0> ']
+Failed test trivial command with extra tab, exit status 0
+Test input:
+  	/bin/true
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*[Ee]xit status: 0.*] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in ['> /bin/true exited with status: 0> ']
+Failed test trivial command with extra vertical tab, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*[Ee]xit status: 0.*] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in ['> /bin/true exited with status: 0> ']
+Failed test trivial command, exit status 1
+Test input:
+  /bin/false
+  exit
+Actual stdout:
+  > /bin/false exited with status: 256> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > /bin/false.*[Ee]xit status: 1.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> /bin/false.*[Ee]xit status: 1.*] in line [> /bin/false exited with status: 256> ]
+  in stdout: could not find match for pattern [> /bin/false.*[Ee]xit status: 1.*] in ['> /bin/false exited with status: 256> ']
+Failed test only redirections is invalid
+Test input:
+  > foo.txt < bar.txt
+  exit
+Actual stdout:
+  > > exited with status: 0> 
+Actual stderr:
+  exec failed, exiting...
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> > exited with status: 0> ]
+  in stdout: could not find match for pattern [> > ] in ['> > exited with status: 0> ']
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [exec failed, exiting...]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['exec failed, exiting...']
+Failed test redirection to nothing is invalid
+Test input:
+  /bin/true > 
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exited with status: 0> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in []
+Failed test redirection from nothing is invalid
+Test input:
+  /bin/true < 
+  exit
+Actual stdout:
+  > /bin/true exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/true exited with status: 0> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/true exited with status: 0> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in []
+Failed test pass arguments
+Test input:
+  test/argument_test.sh first second_with_underscore third
+  exit
+Actual stdout:
+  > 
+  number of arguments: 9
+  argument 1: third
+  argument 2: third
+  argument 3: third
+  [plus 2 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 3
+  argument 1: first
+  argument 2: second_with_underscore
+  argument 3: third
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 1: third]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 2: third]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 3: third]
+  in stdout: could not find a match for pattern [number of arguments: 3] in line [argument 4: third]
+  [plus 2 more lines, not shown]
+Failed test " is not quote
+Test input:
+  test/argument_test.sh "not quoted"
+  exit
+Actual stdout:
+  > 
+  number of arguments: 9
+  argument 1: quoted"
+  argument 2: quoted"
+  argument 3: quoted"
+  [plus 2 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 2
+  argument 1: "not
+  argument 2: quoted"
+  argument 3: 
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 1: quoted"]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 2: quoted"]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 3: quoted"]
+  in stdout: could not find a match for pattern [number of arguments: 2] in line [argument 4: quoted"]
+  [plus 2 more lines, not shown]
+Failed test varying argument counts and lengths
+Test input:
+  test/argument_test.sh aX bX cX dX eX
+  test/argument_test.sh f g hZZ i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > 
+  number of arguments: 9
+  argument 1: eX
+  argument 2: eX
+  argument 3: eX
+  [plus 14 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: aX
+  argument 2: bX
+  argument 3: cX
+  [plus 17 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 1: eX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 2: eX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 3: eX]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 4: eX]
+  [plus 14 more lines, not shown]
+Failed test varing command lengths (1)
+Test input:
+  ./test/argument_test.sh a b c d e
+  /bin/echo f g h i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > 
+  number of arguments: 9
+  argument 1: e
+  argument 2: e
+  argument 3: e
+  [plus 9 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: a
+  argument 2: b
+  argument 3: c
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 1: e]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 2: e]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 3: e]
+  in stdout: could not find a match for pattern [number of arguments: 5] in line [argument 4: e]
+  [plus 9 more lines, not shown]
+Failed test varing command lengths (2)
+Test input:
+  /bin/echo f g h i
+  ./test/argument_test.sh aXX bXX cXX dXX eXX
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  > i i i i i i i i i
+  /bin/echo exited with status: 0> 
+  number of arguments: 9
+  argument 1: eXX
+  argument 2: eXX
+  [plus 9 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > f g h i
+  .*exit status: 0.*
+  > 
+  number of arguments: 5
+  argument 1: aXX
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> f g h i] in line [> i i i i i i i i i]
+  in stdout: could not find a match for pattern [> f g h i] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find a match for pattern [> f g h i] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [> f g h i] in line [argument 1: eXX]
+  in stdout: could not find a match for pattern [> f g h i] in line [argument 2: eXX]
+  [plus 10 more lines, not shown]
+Failed test very long argument
+Test input:
+  /bin/echo short
+  /bin/echo QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  exit
+Actual stdout:
+  > short short short short short short short short short
+  /bin/echo exited with status: 0>         
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> short short short short short short short short short]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exited with status: 0>         ]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> short] in ['> short short short short short short short short short', '/bin/echo exited with status: 0> \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01 \x01', '/bin/echo exited with status: 0> ']
+Failed test lots of arguments
+Test input:
+  /bin/echo short
+  test/argument_test.sh A B C D E F G H I J K L M N O P Q R S T
+  exit
+Actual stdout:
+  > short short short short short short short short short
+  /bin/echo exited with status: 0> 
+  number of arguments: 9
+  argument 1: T
+  argument 2: T
+  [plus 3 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > 
+  number of arguments: 20
+  argument 1: A
+  [plus 5 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> short] in line [> short short short short short short short short short]
+  in stdout: could not find a match for pattern [> short] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find a match for pattern [> short] in line [number of arguments: 9]
+  in stdout: could not find a match for pattern [> short] in line [argument 1: T]
+  in stdout: could not find a match for pattern [> short] in line [argument 2: T]
+  [plus 4 more lines, not shown]
+Failed test extra whitespace without redirects
+Test input:
+     		 /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > three three three three three three three three three
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > testing one two three
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> testing one two three] in line [> three three three three three three three three three]
+  in stdout: could not find a match for pattern [> testing one two three] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> testing one two three] in ['> three three three three three three three three three', '/bin/echo exited with status: 0> ']
+Failed test redirections require whitespace around >
+Test input:
+  /bin/echo  this is a >test
+  exit
+Actual stdout:
+  > >test >test >test >test >test >test >test >test >test
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > this is a >test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >test] in line [> >test >test >test >test >test >test >test >test >test]
+  in stdout: could not find a match for pattern [> this is a >test] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> this is a >test] in ['> >test >test >test >test >test >test >test >test >test', '/bin/echo exited with status: 0> ']
+Failed test redirections require whitespace around <
+Test input:
+  /bin/echo  this is a <test
+  exit
+Actual stdout:
+  > <test <test <test <test <test <test <test <test <test
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > this is a <test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a <test] in line [> <test <test <test <test <test <test <test <test <test]
+  in stdout: could not find a match for pattern [> this is a <test] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> this is a <test] in ['> <test <test <test <test <test <test <test <test <test', '/bin/echo exited with status: 0> ']
+Failed test >> is not a redirection operator
+Test input:
+  /bin/echo  this is a >> test
+  exit
+Actual stdout:
+  > test test test test test test test test test
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > this is a >> test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> this is a >> test] in line [> test test test test test test test test test]
+  in stdout: could not find a match for pattern [> this is a >> test] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> this is a >> test] in ['> test test test test test test test test test', '/bin/echo exited with status: 0> ']
+Failed test redirect stdin inode
+Test input:
+  /usr/bin/stat -L -c %i/%d /proc/self/fd/0 < test/input.txt
+  exit
+Actual stdout:
+  >   File: test/input.txt
+    Size: 57        	Blocks: 8          IO Block: 4096   regular file
+  Device: 801h/2049d	Inode: 316514      Links: 1
+  Access: (0644/-rw-r--r--)  Uid: ( 1000/    user)   Gid: ( 1000/    user)
+  Access: 2019-01-31 17:12:38.244345000 -0500
+  [plus 68 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > 316514/2049
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> 316514/2049] in line [>   File: test/input.txt]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [  Size: 57        	Blocks: 8          IO Block: 4096   regular file]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [Device: 801h/2049d	Inode: 316514      Links: 1]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [Access: (0644/-rw-r--r--)  Uid: ( 1000/    user)   Gid: ( 1000/    user)]
+  in stdout: could not find a match for pattern [> 316514/2049] in line [Access: 2019-01-31 17:12:38.244345000 -0500]
+  [plus 69 more lines, not shown]
+Failed test redirect stdin contents
+Test input:
+  /bin/cat < test/input.txt
+  exit
+Actual stdout:
+  > This is an example input file.
+  Which has multiple lines.
+  This is an example input file.
+  Which has multiple lines.
+  This is an example input file.
+  [plus 14 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [This is an example input file.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [Which has multiple lines.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [This is an example input file.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [Which has multiple lines.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [This is an example input file.]
+  [plus 13 more lines, not shown]
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exited with status: 0> 
+Actual stderr:
+  ==13599==LeakSanitizer has encountered a fatal error.
+  ==13599==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==13599==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exited with status: 0> ']
+Failed test redirect stdout
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  >         
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [>         ]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> \x1f \x1f \x1f \x1f \x1f \x1f \x1f \x1f \x1f', '/bin/echo exited with status: 0> ']
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect stdout does not redirect stderr
+Test input:
+  test/sample_outputs.sh > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  > This is the contents of stdout.
+  test/sample_outputs.sh exited with status: 0> 
+Actual stderr:
+  This is the contents of stderr.
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  This is the contents of stderr.
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> This is the contents of stdout.]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [test/sample_outputs.sh exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> This is the contents of stdout.', 'test/sample_outputs.sh exited with status: 0> ']
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect in middle of command
+Test input:
+  /bin/echo testing one two > test/redirect-stdout-output.txt three 
+  exit
+Actual stdout:
+  > three three three three three three three three three
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> three three three three three three three three three]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> three three three three three three three three three', '/bin/echo exited with status: 0> ']
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect at beginning of command
+Test input:
+  > test/redirect-stdout-output.txt /bin/echo testing one two three 
+  exit
+Actual stdout:
+  > > exited with status: 0> 
+Actual stderr:
+  exec failed, exiting...
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> > exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> > exited with status: 0> ']
+  in stderr: unexpected extra output [['exec failed, exiting...']]
+  file test/redirect-stdout-output.txt was not created
+Failed test extra whitespace in redirect at beginning
+Test input:
+    >    	test/redirect-stdout-output.txt	  /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  > > exited with status: 0> 
+Actual stderr:
+  exec failed, exiting...
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [> > exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> > exited with status: 0> ']
+  in stderr: unexpected extra output [['exec failed, exiting...']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect output then use normal output
+Test input:
+  /bin/echo foo > /dev/null
+  /bin/echo bar
+  exit
+Actual stdout:
+  > /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null
+  /bin/echo exited with status: 0> bar bar bar bar bar bar bar bar bar
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > .*exit status: 0.*
+  > bar
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [> /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [/bin/echo exited with status: 0> bar bar bar bar bar bar bar bar bar]
+  in stdout: could not find a match for pattern [> .*exit status: 0.*] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [> .*exit status: 0.*] in ['> /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null /dev/null', '/bin/echo exited with status: 0> bar bar bar bar bar bar bar bar bar', '/bin/echo exited with status: 0> ']
+Failed test redirect input then use normal input
+Test input:
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  /bin/cat < test/input.txt
+  /usr/bin/stat -L -c %F /proc/self/fd/0
+  exit
+Actual stdout:
+  >   File: /proc/self/fd/0 -> pipe:[109057]
+    Size: 64        	Blocks: 0          IO Block: 1024   symbolic link
+  Device: 4h/4d	Inode: 109077      Links: 1
+  Access: (0500/lr-x------)  Uid: ( 1000/    user)   Gid: ( 1000/    user)
+  Access: 2019-02-04 19:24:17.157785999 -0500
+  [plus 158 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > fifo
+  .*exit status: 0.*
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [> fifo] in line [>   File: /proc/self/fd/0 -> pipe:[109057]]
+  in stdout: could not find a match for pattern [> fifo] in line [  Size: 64        	Blocks: 0          IO Block: 1024   symbolic link]
+  in stdout: could not find a match for pattern [> fifo] in line [Device: 4h/4d	Inode: 109077      Links: 1]
+  in stdout: could not find a match for pattern [> fifo] in line [Access: (0500/lr-x------)  Uid: ( 1000/    user)   Gid: ( 1000/    user)]
+  in stdout: could not find a match for pattern [> fifo] in line [Access: 2019-02-04 19:24:17.157785999 -0500]
+  [plus 159 more lines, not shown]
+Failed test redirect output truncates file
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  >         
+  /bin/echo exited with status: 0> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [>         ]
+  in stdout: could not find a match for pattern [.*exit status: 0.*] in line [/bin/echo exited with status: 0> ]
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> \x1f \x1f \x1f \x1f \x1f \x1f \x1f \x1f \x1f', '/bin/echo exited with status: 0> ']
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [This is a long string meant to ensure that echo]
+  in created file test/redirect-stdout-output.txt: could not find a match for pattern [testing one two three] in line [will not overwrite it if the shell does not open]
+  [plus 5 more lines, not shown]
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*saving.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/printer.pid was not created
+  file test/signaler.pid was not created
+Failed test background command, then other slow command
+Test input:
+  test/sleep_and_print.sh 0.5 foo &
+  /bin/sleep 2
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > > foo
+  /bin/sleep.* exit status: 0
+  test/sleep_and_print.* exit status: 0
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> > foo] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test echo 100 times exit status
+Test input:
+  /bin/echo 0
+  /bin/echo 1
+  /bin/echo 2
+  /bin/echo 3
+  /bin/echo 4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  > 0 0 0 0 0 0 0 0 0
+  /bin/echo exited with status: 0> 1 1 1 1 1 1 1 1 1
+  /bin/echo exited with status: 0> 2 2 2 2 2 2 2 2 2
+  /bin/echo exited with status: 0> 3 3 3 3 3 3 3 3 3
+  /bin/echo exited with status: 0> 4 4 4 4 4 4 4 4 4
+  [plus 96 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> 0 0 0 0 0 0 0 0 0', '/bin/echo exited with status: 0> 1 1 1 1 1 1 1 1 1', '/bin/echo exited with status: 0> 2 2 2 2 2 2 2 2 2', '/bin/echo exited with status: 0> 3 3 3 3 3 3 3 3 3', '/bin/echo exited with status: 0> 4 4 4 4 4 4 4 4 4', '/bin/echo exited with status: 0> 5 5 5 5 5 5 5 5 5', '/bin/echo exited with status: 0> 6 6 6 6 6 6 6 6 6', '/bin/echo exited with status: 0> 7 7 7 7 7 7 7 7 7', '/bin/echo exited with status: 0> 8 8 8 8 8 8 8 8 8', '/bin/echo exited with status: 0> 9 9 9 9 9 9 9 9 9', '/bin/echo exited with status: 0> 10 10 10 10 10 10 10 10 10', '/bin/echo exited with status: 0> 11 11 11 11 11 11 11 11 11', '/bin/echo exited with status: 0> 12 12 12 12 12 12 12 12 12', '/bin/echo exited with status: 0> 13 13 13 13 13 13 13 13 13', '/bin/echo exited with status: 0> 14 14 14 14 14 14 14 14 14', '/bin/echo exited with status: 0> 15 15 15 15 15 15 15 15 15', '/bin/echo exited with status: 0> 16 16 16 16 16 16 16 16 16', '/bin/echo exited with status: 0> 17 17 17 17 17 17 17 17 17', '/bin/echo exited with status: 0> 18 18 18 18 18 18 18 18 18', '/bin/echo exited with status: 0> 19 19 19 19 19 19 19 19 19', '/bin/echo exited with status: 0> 20 20 20 20 20 20 20 20 20', '/bin/echo exited with status: 0> 21 21 21 21 21 21 21 21 21', '/bin/echo exited with status: 0> 22 22 22 22 22 22 22 22 22', '/bin/echo exited with status: 0> 23 23 23 23 23 23 23 23 23', '/bin/echo exited with status: 0> 24 24 24 24 24 24 24 24 24', '/bin/echo exited with status: 0> 25 25 25 25 25 25 25 25 25', '/bin/echo exited with status: 0> 26 26 26 26 26 26 26 26 26', '/bin/echo exited with status: 0> 27 27 27 27 27 27 27 27 27', '/bin/echo exited with status: 0> 28 28 28 28 28 28 28 28 28', '/bin/echo exited with status: 0> 29 29 29 29 29 29 29 29 29', '/bin/echo exited with status: 0> 30 30 30 30 30 30 30 30 30', '/bin/echo exited with status: 0> 31 31 31 31 31 31 31 31 31', '/bin/echo exited with status: 0> 32 32 32 32 32 32 32 32 32', '/bin/echo exited with status: 0> 33 33 33 33 33 33 33 33 33', '/bin/echo exited with status: 0> 34 34 34 34 34 34 34 34 34', '/bin/echo exited with status: 0> 35 35 35 35 35 35 35 35 35', '/bin/echo exited with status: 0> 36 36 36 36 36 36 36 36 36', '/bin/echo exited with status: 0> 37 37 37 37 37 37 37 37 37', '/bin/echo exited with status: 0> 38 38 38 38 38 38 38 38 38', '/bin/echo exited with status: 0> 39 39 39 39 39 39 39 39 39', '/bin/echo exited with status: 0> 40 40 40 40 40 40 40 40 40', '/bin/echo exited with status: 0> 41 41 41 41 41 41 41 41 41', '/bin/echo exited with status: 0> 42 42 42 42 42 42 42 42 42', '/bin/echo exited with status: 0> 43 43 43 43 43 43 43 43 43', '/bin/echo exited with status: 0> 44 44 44 44 44 44 44 44 44', '/bin/echo exited with status: 0> 45 45 45 45 45 45 45 45 45', '/bin/echo exited with status: 0> 46 46 46 46 46 46 46 46 46', '/bin/echo exited with status: 0> 47 47 47 47 47 47 47 47 47', '/bin/echo exited with status: 0> 48 48 48 48 48 48 48 48 48', '/bin/echo exited with status: 0> 49 49 49 49 49 49 49 49 49', '/bin/echo exited with status: 0> 50 50 50 50 50 50 50 50 50', '/bin/echo exited with status: 0> 51 51 51 51 51 51 51 51 51', '/bin/echo exited with status: 0> 52 52 52 52 52 52 52 52 52', '/bin/echo exited with status: 0> 53 53 53 53 53 53 53 53 53', '/bin/echo exited with status: 0> 54 54 54 54 54 54 54 54 54', '/bin/echo exited with status: 0> 55 55 55 55 55 55 55 55 55', '/bin/echo exited with status: 0> 56 56 56 56 56 56 56 56 56', '/bin/echo exited with status: 0> 57 57 57 57 57 57 57 57 57', '/bin/echo exited with status: 0> 58 58 58 58 58 58 58 58 58', '/bin/echo exited with status: 0> 59 59 59 59 59 59 59 59 59', '/bin/echo exited with status: 0> 60 60 60 60 60 60 60 60 60', '/bin/echo exited with status: 0> 61 61 61 61 61 61 61 61 61', '/bin/echo exited with status: 0> 62 62 62 62 62 62 62 62 62', '/bin/echo exited with status: 0> 63 63 63 63 63 63 63 63 63', '/bin/echo exited with status: 0> 64 64 64 64 64 64 64 64 64', '/bin/echo exited with status: 0> 65 65 65 65 65 65 65 65 65', '/bin/echo exited with status: 0> 66 66 66 66 66 66 66 66 66', '/bin/echo exited with status: 0> 67 67 67 67 67 67 67 67 67', '/bin/echo exited with status: 0> 68 68 68 68 68 68 68 68 68', '/bin/echo exited with status: 0> 69 69 69 69 69 69 69 69 69', '/bin/echo exited with status: 0> 70 70 70 70 70 70 70 70 70', '/bin/echo exited with status: 0> 71 71 71 71 71 71 71 71 71', '/bin/echo exited with status: 0> 72 72 72 72 72 72 72 72 72', '/bin/echo exited with status: 0> 73 73 73 73 73 73 73 73 73', '/bin/echo exited with status: 0> 74 74 74 74 74 74 74 74 74', '/bin/echo exited with status: 0> 75 75 75 75 75 75 75 75 75', '/bin/echo exited with status: 0> 76 76 76 76 76 76 76 76 76', '/bin/echo exited with status: 0> 77 77 77 77 77 77 77 77 77', '/bin/echo exited with status: 0> 78 78 78 78 78 78 78 78 78', '/bin/echo exited with status: 0> 79 79 79 79 79 79 79 79 79', '/bin/echo exited with status: 0> 80 80 80 80 80 80 80 80 80', '/bin/echo exited with status: 0> 81 81 81 81 81 81 81 81 81', '/bin/echo exited with status: 0> 82 82 82 82 82 82 82 82 82', '/bin/echo exited with status: 0> 83 83 83 83 83 83 83 83 83', '/bin/echo exited with status: 0> 84 84 84 84 84 84 84 84 84', '/bin/echo exited with status: 0> 85 85 85 85 85 85 85 85 85', '/bin/echo exited with status: 0> 86 86 86 86 86 86 86 86 86', '/bin/echo exited with status: 0> 87 87 87 87 87 87 87 87 87', '/bin/echo exited with status: 0> 88 88 88 88 88 88 88 88 88', '/bin/echo exited with status: 0> 89 89 89 89 89 89 89 89 89', '/bin/echo exited with status: 0> 90 90 90 90 90 90 90 90 90', '/bin/echo exited with status: 0> 91 91 91 91 91 91 91 91 91', '/bin/echo exited with status: 0> 92 92 92 92 92 92 92 92 92', '/bin/echo exited with status: 0> 93 93 93 93 93 93 93 93 93', '/bin/echo exited with status: 0> 94 94 94 94 94 94 94 94 94', '/bin/echo exited with status: 0> 95 95 95 95 95 95 95 95 95', '/bin/echo exited with status: 0> 96 96 96 96 96 96 96 96 96', '/bin/echo exited with status: 0> 97 97 97 97 97 97 97 97 97', '/bin/echo exited with status: 0> 98 98 98 98 98 98 98 98 98', '/bin/echo exited with status: 0> 99 99 99 99 99 99 99 99 99', '/bin/echo exited with status: 0> ']
+Failed test 100 output redirections (with limit of 50 open files)
+Test input:
+  /bin/echo valuefrom0 > test/redirect-output-0
+  /bin/echo valuefrom1 > test/redirect-output-1
+  /bin/echo valuefrom2 > test/redirect-output-2
+  /bin/echo valuefrom3 > test/redirect-output-3
+  /bin/echo valuefrom4 > test/redirect-output-4
+  [plus 96 more lines, not shown]
+Actual stdout:
+  >         
+  /bin/echo exited with status: 0>         
+  /bin/echo exited with status: 0>         
+  /bin/echo exited with status: 0>         
+  /bin/echo exited with status: 0>         
+  [plus 96 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern: (extra lines allowed)
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  .*exit status: 0.*
+  [plus 95 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in ['> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16 \x16', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17 \x17', '/bin/echo exited with status: 0> ']
+  file test/redirect-output-0 was not created
+  file test/redirect-output-1 was not created
+  file test/redirect-output-10 was not created
+  file test/redirect-output-11 was not created
+  [plus 96 more lines, not shown]
+Failed test redirect to operator is invalid
+Test input:
+  /bin/false > > 
+  exit
+Actual stdout:
+  > /bin/false exited with status: 256> 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/false exited with status: 256> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/false exited with status: 256> ']
+  in stderr: could not find match for pattern [.*invalid command.*] in []
+Failed test non-existing command
+Test input:
+  /bin/trex
+  exit
+Actual stdout:
+  > /bin/trex exited with status: 0> 
+Actual stderr:
+  exec failed, exiting...
+Expected stdout regular expression pattern: (extra lines allowed)
+  <empty>
+Expected stderr regular expression pattern: (extra lines allowed)
+  .*(?:No such file or directory|Command not found).*
+Errors:
+  in stderr: could not find match for pattern [.*(?:No such file or directory|Command not found).*] in ['exec failed, exiting...']
+4 tests passed and 36 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+

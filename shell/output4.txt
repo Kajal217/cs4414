@@ -1,0 +1,567 @@
+Failed test exit immediately
+Test input:
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> ] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test trivial command, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test trivial command with extra space, exit status 0
+Test input:
+   /bin/true
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > /bin/true.*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> /bin/true.*[Ee]xit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test trivial command with extra tab, exit status 0
+Test input:
+  	/bin/true
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test trivial command with extra vertical tab, exit status 0
+Test input:
+  /bin/true
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > .*[Ee]xit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> .*[Ee]xit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test trivial command, exit status 1
+Test input:
+  /bin/false
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > /bin/false.*[Ee]xit status: 1.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> /bin/false.*[Ee]xit status: 1.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test only redirections is invalid
+Test input:
+  > foo.txt < bar.txt
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> > ] in []
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [<error output not available>]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['<error output not available>']
+Failed test redirection to nothing is invalid
+Test input:
+  /bin/true > 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> > ] in []
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [<error output not available>]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['<error output not available>']
+Failed test redirection from nothing is invalid
+Test input:
+  /bin/true < 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern:
+  .*invalid command.*
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> > ] in []
+  in stderr: could not find a match for pattern [.*invalid command.*] in line [<error output not available>]
+  in stderr: could not find match for pattern [.*invalid command.*] in ['<error output not available>']
+Failed test pass arguments
+Test input:
+  test/argument_test.sh first second_with_underscore third
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 3
+  argument 1: first
+  argument 2: second_with_underscore
+  argument 3: third
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> ] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test " is not quote
+Test input:
+  test/argument_test.sh "not quoted"
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 2
+  argument 1: "not
+  argument 2: quoted"
+  argument 3: 
+  [plus 3 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [> ] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+Failed test varying argument counts and lengths
+Test input:
+  test/argument_test.sh aX bX cX dX eX
+  test/argument_test.sh f g hZZ i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25947==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25947==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: aX
+  argument 2: bX
+  argument 3: cX
+  [plus 17 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> ] in []
+  in stderr: unexpected extra output [['==25947==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25947==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x55fbf768a000-0x55fbf7691000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55fbf7890000-0x55fbf7891000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55fbf7891000-0x55fbf7892000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7fe19f89a000-0x7fe19fbec000\t', '\t0x7fe19fbec000-0x7fe19fd89000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe19fd89000-0x7fe19ff88000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe19ff88000-0x7fe19ff89000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe19ff89000-0x7fe19ff8a000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe19ff8a000-0x7fe19ffa4000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe19ffa4000-0x7fe1a01a3000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe1a01a3000-0x7fe1a01a4000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe1a01a4000-0x7fe1a01a5000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe1a01a5000-0x7fe1a01a9000\t', '\t0x7fe1a01a9000-0x7fe1a01b0000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe1a01b0000-0x7fe1a03af000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe1a03af000-0x7fe1a03b0000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe1a03b0000-0x7fe1a03b1000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe1a03b1000-0x7fe1a03b4000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe1a03b4000-0x7fe1a05b3000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe1a05b3000-0x7fe1a05b4000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe1a05b4000-0x7fe1a05b5000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe1a05b5000-0x7fe1a079c000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe1a079c000-0x7fe1a099c000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe1a099c000-0x7fe1a09a0000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe1a09a0000-0x7fe1a09a2000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe1a09a2000-0x7fe1a09a6000\t', '\t0x7fe1a09a6000-0x7fe1a09bd000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe1a09bd000-0x7fe1a0bbc000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe1a0bbc000-0x7fe1a0bbd000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe1a0bbd000-0x7fe1a0bbe000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe1a0bbe000-0x7fe1a0d37000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe1a0d37000-0x7fe1a0f37000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe1a0f37000-0x7fe1a0f41000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe1a0f41000-0x7fe1a0f43000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe1a0f43000-0x7fe1a0f47000\t', '\t0x7fe1a0f47000-0x7fe1a1097000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe1a1097000-0x7fe1a1297000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe1a1297000-0x7fe1a129a000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe1a129a000-0x7fe1a129d000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe1a129d000-0x7fe1a1f02000\t', '\t0x7fe1a1f02000-0x7fe1a1f29000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe1a20e6000-0x7fe1a2114000\t', '\t0x7fe1a2119000-0x7fe1a2129000\t', '\t0x7fe1a2129000-0x7fe1a212a000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe1a212a000-0x7fe1a212b000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe1a212b000-0x7fe1a212c000\t', '\t0x7ffd9d04b000-0x7ffd9d06c000\t[stack]', '\t0x7ffd9d1e9000-0x7ffd9d1ec000\t[vvar]', '\t0x7ffd9d1ec000-0x7ffd9d1ee000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25947==End of process memory map.', '==25947==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7fe1a1030c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7fe1a104f595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7fe1a103a492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7fe1a10468a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7fe1a104fa3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7fe1a10349db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7fe1a1034aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7fe1a103377f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7fe1a1f12805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7fe1a1f030c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test varing command lengths (1)
+Test input:
+  ./test/argument_test.sh a b c d e
+  /bin/echo f g h i
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25973==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25973==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 
+  number of arguments: 5
+  argument 1: a
+  argument 2: b
+  argument 3: c
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> ] in []
+  in stderr: unexpected extra output [['==25973==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25973==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x55834b1af000-0x55834b1b6000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55834b3b5000-0x55834b3b6000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55834b3b6000-0x55834b3b7000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f692bf54000-0x7f692c2a6000\t', '\t0x7f692c2a6000-0x7f692c443000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f692c443000-0x7f692c642000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f692c642000-0x7f692c643000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f692c643000-0x7f692c644000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f692c644000-0x7f692c65e000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f692c65e000-0x7f692c85d000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f692c85d000-0x7f692c85e000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f692c85e000-0x7f692c85f000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f692c85f000-0x7f692c863000\t', '\t0x7f692c863000-0x7f692c86a000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f692c86a000-0x7f692ca69000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f692ca69000-0x7f692ca6a000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f692ca6a000-0x7f692ca6b000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f692ca6b000-0x7f692ca6e000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f692ca6e000-0x7f692cc6d000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f692cc6d000-0x7f692cc6e000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f692cc6e000-0x7f692cc6f000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f692cc6f000-0x7f692ce56000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f692ce56000-0x7f692d056000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f692d056000-0x7f692d05a000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f692d05a000-0x7f692d05c000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f692d05c000-0x7f692d060000\t', '\t0x7f692d060000-0x7f692d077000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f692d077000-0x7f692d276000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f692d276000-0x7f692d277000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f692d277000-0x7f692d278000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f692d278000-0x7f692d3f1000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f692d3f1000-0x7f692d5f1000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f692d5f1000-0x7f692d5fb000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f692d5fb000-0x7f692d5fd000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f692d5fd000-0x7f692d601000\t', '\t0x7f692d601000-0x7f692d751000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f692d751000-0x7f692d951000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f692d951000-0x7f692d954000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f692d954000-0x7f692d957000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f692d957000-0x7f692e5bc000\t', '\t0x7f692e5bc000-0x7f692e5e3000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f692e7a0000-0x7f692e7ce000\t', '\t0x7f692e7d3000-0x7f692e7e3000\t', '\t0x7f692e7e3000-0x7f692e7e4000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f692e7e4000-0x7f692e7e5000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f692e7e5000-0x7f692e7e6000\t', '\t0x7ffd90860000-0x7ffd90881000\t[stack]', '\t0x7ffd90951000-0x7ffd90954000\t[vvar]', '\t0x7ffd90954000-0x7ffd90956000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25973==End of process memory map.', '==25973==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f692d6eac02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f692d709595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f692d6f4492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f692d7008a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f692d709a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f692d6ee9db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f692d6eeaa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f692d6ed77f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f692e5cc805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f692e5bd0c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test varing command lengths (2)
+Test input:
+  /bin/echo f g h i
+  ./test/argument_test.sh aXX bXX cXX dXX eXX
+  test/argument_test.sh j k l
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25984==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25984==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > f g h i
+  .*exit status: 0.*
+  > 
+  number of arguments: 5
+  argument 1: aXX
+  [plus 12 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> f g h i] in []
+  in stderr: unexpected extra output [['==25984==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25984==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x561598a67000-0x561598a6e000\t/home/user/Desktop/cs4414/shell/msh', '\t0x561598c6d000-0x561598c6e000\t/home/user/Desktop/cs4414/shell/msh', '\t0x561598c6e000-0x561598c6f000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f54acc2b000-0x7f54acf7d000\t', '\t0x7f54acf7d000-0x7f54ad11a000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f54ad11a000-0x7f54ad319000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f54ad319000-0x7f54ad31a000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f54ad31a000-0x7f54ad31b000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f54ad31b000-0x7f54ad335000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f54ad335000-0x7f54ad534000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f54ad534000-0x7f54ad535000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f54ad535000-0x7f54ad536000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f54ad536000-0x7f54ad53a000\t', '\t0x7f54ad53a000-0x7f54ad541000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f54ad541000-0x7f54ad740000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f54ad740000-0x7f54ad741000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f54ad741000-0x7f54ad742000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f54ad742000-0x7f54ad745000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f54ad745000-0x7f54ad944000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f54ad944000-0x7f54ad945000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f54ad945000-0x7f54ad946000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f54ad946000-0x7f54adb2d000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f54adb2d000-0x7f54add2d000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f54add2d000-0x7f54add31000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f54add31000-0x7f54add33000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f54add33000-0x7f54add37000\t', '\t0x7f54add37000-0x7f54add4e000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f54add4e000-0x7f54adf4d000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f54adf4d000-0x7f54adf4e000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f54adf4e000-0x7f54adf4f000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f54adf4f000-0x7f54ae0c8000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f54ae0c8000-0x7f54ae2c8000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f54ae2c8000-0x7f54ae2d2000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f54ae2d2000-0x7f54ae2d4000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f54ae2d4000-0x7f54ae2d8000\t', '\t0x7f54ae2d8000-0x7f54ae428000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f54ae428000-0x7f54ae628000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f54ae628000-0x7f54ae62b000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f54ae62b000-0x7f54ae62e000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f54ae62e000-0x7f54af293000\t', '\t0x7f54af293000-0x7f54af2ba000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f54af477000-0x7f54af4a5000\t', '\t0x7f54af4aa000-0x7f54af4ba000\t', '\t0x7f54af4ba000-0x7f54af4bb000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f54af4bb000-0x7f54af4bc000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f54af4bc000-0x7f54af4bd000\t', '\t0x7ffc3d84a000-0x7ffc3d86b000\t[stack]', '\t0x7ffc3d948000-0x7ffc3d94b000\t[vvar]', '\t0x7ffc3d94b000-0x7ffc3d94d000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25984==End of process memory map.', '==25984==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f54ae3c1c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f54ae3e0595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f54ae3cb492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f54ae3d78a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f54ae3e0a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f54ae3c59db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f54ae3c5aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f54ae3c477f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f54af2a3805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f54af2940c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test very long argument
+Test input:
+  /bin/echo short
+  /bin/echo QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25985==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25985==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> short] in []
+  in stderr: unexpected extra output [['==25985==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25985==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x55948fd34000-0x55948fd3b000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55948ff3a000-0x55948ff3b000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55948ff3b000-0x55948ff3c000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f38818dc000-0x7f3881c2e000\t', '\t0x7f3881c2e000-0x7f3881dcb000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f3881dcb000-0x7f3881fca000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f3881fca000-0x7f3881fcb000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f3881fcb000-0x7f3881fcc000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f3881fcc000-0x7f3881fe6000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f3881fe6000-0x7f38821e5000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f38821e5000-0x7f38821e6000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f38821e6000-0x7f38821e7000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f38821e7000-0x7f38821eb000\t', '\t0x7f38821eb000-0x7f38821f2000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f38821f2000-0x7f38823f1000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f38823f1000-0x7f38823f2000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f38823f2000-0x7f38823f3000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f38823f3000-0x7f38823f6000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f38823f6000-0x7f38825f5000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f38825f5000-0x7f38825f6000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f38825f6000-0x7f38825f7000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f38825f7000-0x7f38827de000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f38827de000-0x7f38829de000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f38829de000-0x7f38829e2000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f38829e2000-0x7f38829e4000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f38829e4000-0x7f38829e8000\t', '\t0x7f38829e8000-0x7f38829ff000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f38829ff000-0x7f3882bfe000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f3882bfe000-0x7f3882bff000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f3882bff000-0x7f3882c00000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f3882c00000-0x7f3882d79000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f3882d79000-0x7f3882f79000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f3882f79000-0x7f3882f83000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f3882f83000-0x7f3882f85000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f3882f85000-0x7f3882f89000\t', '\t0x7f3882f89000-0x7f38830d9000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f38830d9000-0x7f38832d9000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f38832d9000-0x7f38832dc000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f38832dc000-0x7f38832df000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f38832df000-0x7f3883f44000\t', '\t0x7f3883f44000-0x7f3883f6b000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f3884128000-0x7f3884156000\t', '\t0x7f388415b000-0x7f388416b000\t', '\t0x7f388416b000-0x7f388416c000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f388416c000-0x7f388416d000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f388416d000-0x7f388416e000\t', '\t0x7fff8b46b000-0x7fff8b48c000\t[stack]', '\t0x7fff8b4fb000-0x7fff8b4fe000\t[vvar]', '\t0x7fff8b4fe000-0x7fff8b500000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25985==End of process memory map.', '==25985==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f3883072c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f3883091595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f388307c492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f38830888a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f3883091a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f38830769db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f3883076aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f388307577f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f3883f54805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f3883f450c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test lots of arguments
+Test input:
+  /bin/echo short
+  test/argument_test.sh A B C D E F G H I J K L M N O P Q R S T
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25986==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25986==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > short
+  .*exit status: 0.*
+  > 
+  number of arguments: 20
+  argument 1: A
+  [plus 5 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> short] in []
+  in stderr: unexpected extra output [['==25986==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25986==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x5633b4271000-0x5633b4278000\t/home/user/Desktop/cs4414/shell/msh', '\t0x5633b4477000-0x5633b4478000\t/home/user/Desktop/cs4414/shell/msh', '\t0x5633b4478000-0x5633b4479000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7eff7d89d000-0x7eff7dbef000\t', '\t0x7eff7dbef000-0x7eff7dd8c000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7eff7dd8c000-0x7eff7df8b000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7eff7df8b000-0x7eff7df8c000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7eff7df8c000-0x7eff7df8d000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7eff7df8d000-0x7eff7dfa7000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7eff7dfa7000-0x7eff7e1a6000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7eff7e1a6000-0x7eff7e1a7000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7eff7e1a7000-0x7eff7e1a8000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7eff7e1a8000-0x7eff7e1ac000\t', '\t0x7eff7e1ac000-0x7eff7e1b3000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7eff7e1b3000-0x7eff7e3b2000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7eff7e3b2000-0x7eff7e3b3000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7eff7e3b3000-0x7eff7e3b4000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7eff7e3b4000-0x7eff7e3b7000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7eff7e3b7000-0x7eff7e5b6000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7eff7e5b6000-0x7eff7e5b7000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7eff7e5b7000-0x7eff7e5b8000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7eff7e5b8000-0x7eff7e79f000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7eff7e79f000-0x7eff7e99f000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7eff7e99f000-0x7eff7e9a3000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7eff7e9a3000-0x7eff7e9a5000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7eff7e9a5000-0x7eff7e9a9000\t', '\t0x7eff7e9a9000-0x7eff7e9c0000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7eff7e9c0000-0x7eff7ebbf000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7eff7ebbf000-0x7eff7ebc0000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7eff7ebc0000-0x7eff7ebc1000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7eff7ebc1000-0x7eff7ed3a000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7eff7ed3a000-0x7eff7ef3a000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7eff7ef3a000-0x7eff7ef44000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7eff7ef44000-0x7eff7ef46000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7eff7ef46000-0x7eff7ef4a000\t', '\t0x7eff7ef4a000-0x7eff7f09a000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7eff7f09a000-0x7eff7f29a000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7eff7f29a000-0x7eff7f29d000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7eff7f29d000-0x7eff7f2a0000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7eff7f2a0000-0x7eff7ff05000\t', '\t0x7eff7ff05000-0x7eff7ff2c000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7eff800e9000-0x7eff80117000\t', '\t0x7eff8011c000-0x7eff8012c000\t', '\t0x7eff8012c000-0x7eff8012d000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7eff8012d000-0x7eff8012e000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7eff8012e000-0x7eff8012f000\t', '\t0x7ffcaf9d3000-0x7ffcaf9f4000\t[stack]', '\t0x7ffcaf9fa000-0x7ffcaf9fd000\t[vvar]', '\t0x7ffcaf9fd000-0x7ffcaf9ff000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25986==End of process memory map.', '==25986==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7eff7f033c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7eff7f052595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7eff7f03d492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7eff7f0498a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7eff7f052a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7eff7f0379db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7eff7f037aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7eff7f03677f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7eff7ff15805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7eff7ff060c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test extra whitespace without redirects
+Test input:
+     		 /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25987==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25987==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > testing one two three
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> testing one two three] in []
+  in stderr: unexpected extra output [['==25987==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25987==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x5626927f9000-0x562692800000\t/home/user/Desktop/cs4414/shell/msh', '\t0x5626929ff000-0x562692a00000\t/home/user/Desktop/cs4414/shell/msh', '\t0x562692a00000-0x562692a01000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7fe034c09000-0x7fe034f5b000\t', '\t0x7fe034f5b000-0x7fe0350f8000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe0350f8000-0x7fe0352f7000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe0352f7000-0x7fe0352f8000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe0352f8000-0x7fe0352f9000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fe0352f9000-0x7fe035313000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe035313000-0x7fe035512000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe035512000-0x7fe035513000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe035513000-0x7fe035514000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fe035514000-0x7fe035518000\t', '\t0x7fe035518000-0x7fe03551f000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe03551f000-0x7fe03571e000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe03571e000-0x7fe03571f000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe03571f000-0x7fe035720000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fe035720000-0x7fe035723000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe035723000-0x7fe035922000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe035922000-0x7fe035923000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe035923000-0x7fe035924000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fe035924000-0x7fe035b0b000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe035b0b000-0x7fe035d0b000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe035d0b000-0x7fe035d0f000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe035d0f000-0x7fe035d11000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fe035d11000-0x7fe035d15000\t', '\t0x7fe035d15000-0x7fe035d2c000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe035d2c000-0x7fe035f2b000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe035f2b000-0x7fe035f2c000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe035f2c000-0x7fe035f2d000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fe035f2d000-0x7fe0360a6000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe0360a6000-0x7fe0362a6000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe0362a6000-0x7fe0362b0000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe0362b0000-0x7fe0362b2000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fe0362b2000-0x7fe0362b6000\t', '\t0x7fe0362b6000-0x7fe036406000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe036406000-0x7fe036606000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe036606000-0x7fe036609000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe036609000-0x7fe03660c000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fe03660c000-0x7fe037271000\t', '\t0x7fe037271000-0x7fe037298000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe037455000-0x7fe037483000\t', '\t0x7fe037488000-0x7fe037498000\t', '\t0x7fe037498000-0x7fe037499000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe037499000-0x7fe03749a000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fe03749a000-0x7fe03749b000\t', '\t0x7ffe516cf000-0x7ffe516f0000\t[stack]', '\t0x7ffe5172c000-0x7ffe5172f000\t[vvar]', '\t0x7ffe5172f000-0x7ffe51731000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25987==End of process memory map.', '==25987==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7fe03639fc02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7fe0363be595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7fe0363a9492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7fe0363b58a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7fe0363bea3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7fe0363a39db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7fe0363a3aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7fe0363a277f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7fe037281805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7fe0372720c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test redirections require whitespace around >
+Test input:
+  /bin/echo  this is a >test
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25988==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25988==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a >test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> this is a >test] in []
+  in stderr: unexpected extra output [['==25988==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25988==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x55ca70f28000-0x55ca70f2f000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55ca7112e000-0x55ca7112f000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55ca7112f000-0x55ca71130000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f7288eee000-0x7f7289240000\t', '\t0x7f7289240000-0x7f72893dd000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f72893dd000-0x7f72895dc000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f72895dc000-0x7f72895dd000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f72895dd000-0x7f72895de000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f72895de000-0x7f72895f8000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f72895f8000-0x7f72897f7000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f72897f7000-0x7f72897f8000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f72897f8000-0x7f72897f9000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f72897f9000-0x7f72897fd000\t', '\t0x7f72897fd000-0x7f7289804000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f7289804000-0x7f7289a03000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f7289a03000-0x7f7289a04000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f7289a04000-0x7f7289a05000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f7289a05000-0x7f7289a08000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f7289a08000-0x7f7289c07000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f7289c07000-0x7f7289c08000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f7289c08000-0x7f7289c09000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f7289c09000-0x7f7289df0000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f7289df0000-0x7f7289ff0000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f7289ff0000-0x7f7289ff4000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f7289ff4000-0x7f7289ff6000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f7289ff6000-0x7f7289ffa000\t', '\t0x7f7289ffa000-0x7f728a011000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f728a011000-0x7f728a210000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f728a210000-0x7f728a211000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f728a211000-0x7f728a212000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f728a212000-0x7f728a38b000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f728a38b000-0x7f728a58b000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f728a58b000-0x7f728a595000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f728a595000-0x7f728a597000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f728a597000-0x7f728a59b000\t', '\t0x7f728a59b000-0x7f728a6eb000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f728a6eb000-0x7f728a8eb000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f728a8eb000-0x7f728a8ee000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f728a8ee000-0x7f728a8f1000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f728a8f1000-0x7f728b556000\t', '\t0x7f728b556000-0x7f728b57d000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f728b73a000-0x7f728b768000\t', '\t0x7f728b76d000-0x7f728b77d000\t', '\t0x7f728b77d000-0x7f728b77e000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f728b77e000-0x7f728b77f000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f728b77f000-0x7f728b780000\t', '\t0x7fff481d3000-0x7fff481f4000\t[stack]', '\t0x7fff481fa000-0x7fff481fd000\t[vvar]', '\t0x7fff481fd000-0x7fff481ff000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25988==End of process memory map.', '==25988==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f728a684c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f728a6a3595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f728a68e492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f728a69a8a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f728a6a3a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f728a6889db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f728a688aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f728a68777f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f728b566805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f728b5570c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test redirections require whitespace around <
+Test input:
+  /bin/echo  this is a <test
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25989==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25989==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a <test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> this is a <test] in []
+  in stderr: unexpected extra output [['==25989==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25989==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x55a4ed82c000-0x55a4ed833000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55a4eda32000-0x55a4eda33000\t/home/user/Desktop/cs4414/shell/msh', '\t0x55a4eda33000-0x55a4eda34000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7fcc55f33000-0x7fcc56285000\t', '\t0x7fcc56285000-0x7fcc56422000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcc56422000-0x7fcc56621000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcc56621000-0x7fcc56622000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcc56622000-0x7fcc56623000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcc56623000-0x7fcc5663d000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcc5663d000-0x7fcc5683c000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcc5683c000-0x7fcc5683d000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcc5683d000-0x7fcc5683e000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcc5683e000-0x7fcc56842000\t', '\t0x7fcc56842000-0x7fcc56849000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcc56849000-0x7fcc56a48000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcc56a48000-0x7fcc56a49000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcc56a49000-0x7fcc56a4a000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcc56a4a000-0x7fcc56a4d000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcc56a4d000-0x7fcc56c4c000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcc56c4c000-0x7fcc56c4d000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcc56c4d000-0x7fcc56c4e000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcc56c4e000-0x7fcc56e35000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcc56e35000-0x7fcc57035000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcc57035000-0x7fcc57039000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcc57039000-0x7fcc5703b000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcc5703b000-0x7fcc5703f000\t', '\t0x7fcc5703f000-0x7fcc57056000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcc57056000-0x7fcc57255000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcc57255000-0x7fcc57256000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcc57256000-0x7fcc57257000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcc57257000-0x7fcc573d0000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcc573d0000-0x7fcc575d0000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcc575d0000-0x7fcc575da000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcc575da000-0x7fcc575dc000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcc575dc000-0x7fcc575e0000\t', '\t0x7fcc575e0000-0x7fcc57730000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcc57730000-0x7fcc57930000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcc57930000-0x7fcc57933000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcc57933000-0x7fcc57936000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcc57936000-0x7fcc5859b000\t', '\t0x7fcc5859b000-0x7fcc585c2000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcc5877f000-0x7fcc587ad000\t', '\t0x7fcc587b2000-0x7fcc587c2000\t', '\t0x7fcc587c2000-0x7fcc587c3000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcc587c3000-0x7fcc587c4000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcc587c4000-0x7fcc587c5000\t', '\t0x7ffe9b865000-0x7ffe9b886000\t[stack]', '\t0x7ffe9b96f000-0x7ffe9b972000\t[vvar]', '\t0x7ffe9b972000-0x7ffe9b974000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25989==End of process memory map.', '==25989==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7fcc576c9c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7fcc576e8595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7fcc576d3492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7fcc576df8a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7fcc576e8a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7fcc576cd9db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7fcc576cdaa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7fcc576cc77f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7fcc585ab805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7fcc5859c0c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test >> is not a redirection operator
+Test input:
+  /bin/echo  this is a >> test
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25990==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25990==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > this is a >> test
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> this is a >> test] in []
+  in stderr: unexpected extra output [['==25990==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25990==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x563e7ea66000-0x563e7ea6d000\t/home/user/Desktop/cs4414/shell/msh', '\t0x563e7ec6c000-0x563e7ec6d000\t/home/user/Desktop/cs4414/shell/msh', '\t0x563e7ec6d000-0x563e7ec6e000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7fcd0eb06000-0x7fcd0ee58000\t', '\t0x7fcd0ee58000-0x7fcd0eff5000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcd0eff5000-0x7fcd0f1f4000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcd0f1f4000-0x7fcd0f1f5000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcd0f1f5000-0x7fcd0f1f6000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fcd0f1f6000-0x7fcd0f210000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcd0f210000-0x7fcd0f40f000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcd0f40f000-0x7fcd0f410000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcd0f410000-0x7fcd0f411000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fcd0f411000-0x7fcd0f415000\t', '\t0x7fcd0f415000-0x7fcd0f41c000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcd0f41c000-0x7fcd0f61b000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcd0f61b000-0x7fcd0f61c000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcd0f61c000-0x7fcd0f61d000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fcd0f61d000-0x7fcd0f620000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcd0f620000-0x7fcd0f81f000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcd0f81f000-0x7fcd0f820000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcd0f820000-0x7fcd0f821000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fcd0f821000-0x7fcd0fa08000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcd0fa08000-0x7fcd0fc08000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcd0fc08000-0x7fcd0fc0c000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcd0fc0c000-0x7fcd0fc0e000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fcd0fc0e000-0x7fcd0fc12000\t', '\t0x7fcd0fc12000-0x7fcd0fc29000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcd0fc29000-0x7fcd0fe28000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcd0fe28000-0x7fcd0fe29000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcd0fe29000-0x7fcd0fe2a000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fcd0fe2a000-0x7fcd0ffa3000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcd0ffa3000-0x7fcd101a3000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcd101a3000-0x7fcd101ad000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcd101ad000-0x7fcd101af000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fcd101af000-0x7fcd101b3000\t', '\t0x7fcd101b3000-0x7fcd10303000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcd10303000-0x7fcd10503000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcd10503000-0x7fcd10506000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcd10506000-0x7fcd10509000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fcd10509000-0x7fcd1116e000\t', '\t0x7fcd1116e000-0x7fcd11195000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcd11352000-0x7fcd11380000\t', '\t0x7fcd11385000-0x7fcd11395000\t', '\t0x7fcd11395000-0x7fcd11396000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcd11396000-0x7fcd11397000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fcd11397000-0x7fcd11398000\t', '\t0x7ffc0bb37000-0x7ffc0bb58000\t[stack]', '\t0x7ffc0bb8b000-0x7ffc0bb8e000\t[vvar]', '\t0x7ffc0bb8e000-0x7ffc0bb90000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25990==End of process memory map.', '==25990==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7fcd1029cc02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7fcd102bb595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7fcd102a6492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7fcd102b28a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7fcd102bba3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7fcd102a09db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7fcd102a0aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7fcd1029f77f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7fcd1117e805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7fcd1116f0c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test redirect stdin inode
+Test input:
+  /usr/bin/stat -L -c %i/%d /proc/self/fd/0 < test/input.txt
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25991==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25991==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > 316514/2049
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> 316514/2049] in []
+  in stderr: unexpected extra output [['==25991==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25991==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x563bdab08000-0x563bdab0f000\t/home/user/Desktop/cs4414/shell/msh', '\t0x563bdad0e000-0x563bdad0f000\t/home/user/Desktop/cs4414/shell/msh', '\t0x563bdad0f000-0x563bdad10000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7fbd45878000-0x7fbd45bca000\t', '\t0x7fbd45bca000-0x7fbd45d67000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fbd45d67000-0x7fbd45f66000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fbd45f66000-0x7fbd45f67000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fbd45f67000-0x7fbd45f68000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7fbd45f68000-0x7fbd45f82000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fbd45f82000-0x7fbd46181000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fbd46181000-0x7fbd46182000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fbd46182000-0x7fbd46183000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7fbd46183000-0x7fbd46187000\t', '\t0x7fbd46187000-0x7fbd4618e000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fbd4618e000-0x7fbd4638d000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fbd4638d000-0x7fbd4638e000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fbd4638e000-0x7fbd4638f000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7fbd4638f000-0x7fbd46392000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fbd46392000-0x7fbd46591000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fbd46591000-0x7fbd46592000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fbd46592000-0x7fbd46593000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7fbd46593000-0x7fbd4677a000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fbd4677a000-0x7fbd4697a000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fbd4697a000-0x7fbd4697e000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fbd4697e000-0x7fbd46980000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7fbd46980000-0x7fbd46984000\t', '\t0x7fbd46984000-0x7fbd4699b000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fbd4699b000-0x7fbd46b9a000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fbd46b9a000-0x7fbd46b9b000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fbd46b9b000-0x7fbd46b9c000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7fbd46b9c000-0x7fbd46d15000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fbd46d15000-0x7fbd46f15000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fbd46f15000-0x7fbd46f1f000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fbd46f1f000-0x7fbd46f21000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7fbd46f21000-0x7fbd46f25000\t', '\t0x7fbd46f25000-0x7fbd47075000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fbd47075000-0x7fbd47275000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fbd47275000-0x7fbd47278000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fbd47278000-0x7fbd4727b000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7fbd4727b000-0x7fbd47ee0000\t', '\t0x7fbd47ee0000-0x7fbd47f07000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fbd480c4000-0x7fbd480f2000\t', '\t0x7fbd480f7000-0x7fbd48107000\t', '\t0x7fbd48107000-0x7fbd48108000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fbd48108000-0x7fbd48109000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7fbd48109000-0x7fbd4810a000\t', '\t0x7fff36b59000-0x7fff36b7a000\t[stack]', '\t0x7fff36bea000-0x7fff36bed000\t[vvar]', '\t0x7fff36bed000-0x7fff36bef000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25991==End of process memory map.', '==25991==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7fbd4700ec02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7fbd4702d595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7fbd47018492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7fbd470248a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7fbd4702da3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7fbd470129db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7fbd47012aa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7fbd4701177f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7fbd47ef0805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7fbd47ee10c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test redirect stdin contents
+Test input:
+  /bin/cat < test/input.txt
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25992==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25992==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > This is an example input file.
+  Which has multiple lines.
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [> This is an example input file.] in []
+  in stderr: unexpected extra output [['==25992==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25992==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x56210f2ae000-0x56210f2b5000\t/home/user/Desktop/cs4414/shell/msh', '\t0x56210f4b4000-0x56210f4b5000\t/home/user/Desktop/cs4414/shell/msh', '\t0x56210f4b5000-0x56210f4b6000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f2008322000-0x7f2008674000\t', '\t0x7f2008674000-0x7f2008811000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f2008811000-0x7f2008a10000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f2008a10000-0x7f2008a11000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f2008a11000-0x7f2008a12000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f2008a12000-0x7f2008a2c000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f2008a2c000-0x7f2008c2b000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f2008c2b000-0x7f2008c2c000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f2008c2c000-0x7f2008c2d000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f2008c2d000-0x7f2008c31000\t', '\t0x7f2008c31000-0x7f2008c38000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f2008c38000-0x7f2008e37000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f2008e37000-0x7f2008e38000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f2008e38000-0x7f2008e39000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f2008e39000-0x7f2008e3c000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f2008e3c000-0x7f200903b000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f200903b000-0x7f200903c000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f200903c000-0x7f200903d000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f200903d000-0x7f2009224000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f2009224000-0x7f2009424000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f2009424000-0x7f2009428000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f2009428000-0x7f200942a000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f200942a000-0x7f200942e000\t', '\t0x7f200942e000-0x7f2009445000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f2009445000-0x7f2009644000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f2009644000-0x7f2009645000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f2009645000-0x7f2009646000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f2009646000-0x7f20097bf000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f20097bf000-0x7f20099bf000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f20099bf000-0x7f20099c9000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f20099c9000-0x7f20099cb000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f20099cb000-0x7f20099cf000\t', '\t0x7f20099cf000-0x7f2009b1f000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f2009b1f000-0x7f2009d1f000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f2009d1f000-0x7f2009d22000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f2009d22000-0x7f2009d25000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f2009d25000-0x7f200a98a000\t', '\t0x7f200a98a000-0x7f200a9b1000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f200ab6e000-0x7f200ab9c000\t', '\t0x7f200aba1000-0x7f200abb1000\t', '\t0x7f200abb1000-0x7f200abb2000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f200abb2000-0x7f200abb3000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f200abb3000-0x7f200abb4000\t', '\t0x7ffd299d6000-0x7ffd299f7000\t[stack]', '\t0x7ffd299f8000-0x7ffd299fb000\t[vvar]', '\t0x7ffd299fb000-0x7ffd299fd000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25992==End of process memory map.', '==25992==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f2009ab8c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f2009ad7595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f2009ac2492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f2009ace8a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f2009ad7a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f2009abc9db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f2009abcaa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f2009abb77f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f200a99a805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f200a98b0c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25993==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25993==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find match for pattern [> > ] in []
+Failed test redirect stdout
+Test input:
+  /bin/echo testing one two three > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  
+Actual stderr:
+  ==25995==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)
+  ==25995==Process memory map follows:
+  	0x00007fff7000-0x00008fff7000	
+  	0x00008fff7000-0x02008fff7000	
+  	0x02008fff7000-0x10007fff8000	
+  [plus 66 more lines, not shown]
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: unexpected extra output [['==25995==ERROR: AddressSanitizer failed to allocate 0x2000000 (33554432) bytes of ThreadRegistry (error code: 12)', '==25995==Process memory map follows:', '\t0x00007fff7000-0x00008fff7000\t', '\t0x00008fff7000-0x02008fff7000\t', '\t0x02008fff7000-0x10007fff8000\t', '\t0x563693659000-0x563693660000\t/home/user/Desktop/cs4414/shell/msh', '\t0x56369385f000-0x563693860000\t/home/user/Desktop/cs4414/shell/msh', '\t0x563693860000-0x563693861000\t/home/user/Desktop/cs4414/shell/msh', '\t0x600000000000-0x640000000000\t', '\t0x640000000000-0x640000003000\t', '\t0x7f1f26650000-0x7f1f269a2000\t', '\t0x7f1f269a2000-0x7f1f26b3f000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f1f26b3f000-0x7f1f26d3e000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f1f26d3e000-0x7f1f26d3f000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f1f26d3f000-0x7f1f26d40000\t/lib/x86_64-linux-gnu/libm-2.27.so', '\t0x7f1f26d40000-0x7f1f26d5a000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f1f26d5a000-0x7f1f26f59000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f1f26f59000-0x7f1f26f5a000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f1f26f5a000-0x7f1f26f5b000\t/lib/x86_64-linux-gnu/libpthread-2.27.so', '\t0x7f1f26f5b000-0x7f1f26f5f000\t', '\t0x7f1f26f5f000-0x7f1f26f66000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f1f26f66000-0x7f1f27165000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f1f27165000-0x7f1f27166000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f1f27166000-0x7f1f27167000\t/lib/x86_64-linux-gnu/librt-2.27.so', '\t0x7f1f27167000-0x7f1f2716a000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f1f2716a000-0x7f1f27369000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f1f27369000-0x7f1f2736a000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f1f2736a000-0x7f1f2736b000\t/lib/x86_64-linux-gnu/libdl-2.27.so', '\t0x7f1f2736b000-0x7f1f27552000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f1f27552000-0x7f1f27752000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f1f27752000-0x7f1f27756000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f1f27756000-0x7f1f27758000\t/lib/x86_64-linux-gnu/libc-2.27.so', '\t0x7f1f27758000-0x7f1f2775c000\t', '\t0x7f1f2775c000-0x7f1f27773000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f1f27773000-0x7f1f27972000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f1f27972000-0x7f1f27973000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f1f27973000-0x7f1f27974000\t/lib/x86_64-linux-gnu/libgcc_s.so.1', '\t0x7f1f27974000-0x7f1f27aed000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f1f27aed000-0x7f1f27ced000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f1f27ced000-0x7f1f27cf7000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f1f27cf7000-0x7f1f27cf9000\t/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25', '\t0x7f1f27cf9000-0x7f1f27cfd000\t', '\t0x7f1f27cfd000-0x7f1f27e4d000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f1f27e4d000-0x7f1f2804d000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f1f2804d000-0x7f1f28050000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f1f28050000-0x7f1f28053000\t/usr/lib/x86_64-linux-gnu/libasan.so.4.0.0', '\t0x7f1f28053000-0x7f1f28cb8000\t', '\t0x7f1f28cb8000-0x7f1f28cdf000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f1f28e9c000-0x7f1f28eca000\t', '\t0x7f1f28ecf000-0x7f1f28edf000\t', '\t0x7f1f28edf000-0x7f1f28ee0000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f1f28ee0000-0x7f1f28ee1000\t/lib/x86_64-linux-gnu/ld-2.27.so', '\t0x7f1f28ee1000-0x7f1f28ee2000\t', '\t0x7ffc84c98000-0x7ffc84cb9000\t[stack]', '\t0x7ffc84d78000-0x7ffc84d7b000\t[vvar]', '\t0x7ffc84d7b000-0x7ffc84d7d000\t[vdso]', '\t0xffffffffff600000-0xffffffffff601000\t[vsyscall]', '==25995==End of process memory map.', '==25995==AddressSanitizer CHECK failed: ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cc:118 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)', '    #0 0x7f1f27de6c02  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xe9c02)', '    #1 0x7f1f27e05595 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108595)', '    #2 0x7f1f27df0492  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xf3492)', '    #3 0x7f1f27dfc8a5  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xff8a5)', '    #4 0x7f1f27e05a3e  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0x108a3e)', '    #5 0x7f1f27dea9db  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xed9db)', '    #6 0x7f1f27deaaa2  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xedaa2)', '    #7 0x7f1f27de977f  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xec77f)', '    #8 0x7f1f28cc8805  (/lib64/ld-linux-x86-64.so.2+0x10805)', '    #9 0x7f1f28cb90c9  (/lib64/ld-linux-x86-64.so.2+0x10c9)', '']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect stdout does not redirect stderr
+Test input:
+  test/sample_outputs.sh > test/redirect-stdout-output.txt
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  This is the contents of stderr.
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: could not find a match for pattern [This is the contents of stderr.] in line [<error output not available>]
+  in stderr: could not find match for pattern [This is the contents of stderr.] in ['<error output not available>']
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect in middle of command
+Test input:
+  /bin/echo testing one two > test/redirect-stdout-output.txt three 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/redirect-stdout-output.txt was not created
+Failed test redirect at beginning of command
+Test input:
+  > test/redirect-stdout-output.txt /bin/echo testing one two three 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  timed out after 5 seconds
+  in stdout: could not find match for pattern [.*exit status: 0.*] in []
+  in stderr: unexpected extra output [['<error output not available>']]
+  file test/redirect-stdout-output.txt was not created
+Failed test extra whitespace in redirect at beginning
+Test input:
+    >    	test/redirect-stdout-output.txt	  /bin/echo	testing    one   two three 
+  exit
+Actual stdout:
+  
+Actual stderr:
+  <error output not available>
+Expected stdout regular expression pattern:
+  .*exit status: 0.*
+  > 
+Expected stderr regular expression pattern:

@@ -1,0 +1,82 @@
+Failed test fork fails
+Test input:
+  /bin/echo testing one two three
+  exit
+Actual stdout:
+  > /bin/echo exit status: 0.
+  > 
+Actual stderr:
+  ==18361==LeakSanitizer has encountered a fatal error.
+  ==18361==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+  ==18361==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+  
+Expected stdout regular expression pattern:
+  > > 
+Expected stderr regular expression pattern: (extra lines allowed)
+  .+
+(This test also has some important extra setup code.)
+Errors:
+  in stdout: could not find a match for pattern [> > ] in line [> /bin/echo exit status: 0.]
+  in stdout: could not find a match for pattern [> > ] in line [> ]
+  in stdout: could not find match for pattern [> > ] in ['> /bin/echo exit status: 0.', '> ']
+Failed test background command, then command-killing command
+Test input:
+  test/wait_print_signal.sh test/printer.pid foo test/signaler.pid &
+  /bin/sleep 0.5
+  test/signal_wait.sh test/printer.pid test/signaler.pid
+  exit
+Actual stdout:
+  > > saving PID to signal to test/printer.pid; reading PID to signal afterwards from test/signaler.pid
+  /bin/sleep exit status: 0.
+   exit status: 0.
+  > saved signal_wait PID to test/signaler.pid; about to signal using PID from test/printer.pid
+  foo
+  [plus 2 more lines, not shown]
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  .*saving.*
+  .*/bin/sleep.* exit status.*
+  .*saved.*
+  foo
+  test/signal_wait.sh.* exit status: 0
+  [plus 2 more lines, not shown]
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [.*saved.*] in line [ exit status: 0.]
+  in stdout: could not find a match for pattern [test/signal_wait.sh.* exit status: 0] in line [test/signal_wait.sh exit status: 0.]
+  in stdout: could not find a match for pattern [test/signal_wait.sh.* exit status: 0] in line [> ]
+  in stdout: could not find match for pattern [test/signal_wait.sh.* exit status: 0] in ['test/signal_wait.sh exit status: 0.', '> ']
+Failed test background command, then other slow command
+Test input:
+  test/sleep_and_print.sh 0.5 foo &
+  /bin/sleep 2
+  exit
+Actual stdout:
+  > > foo
+  /bin/sleep exit status: 0.
+   exit status: 0.
+  > 
+Actual stderr:
+  
+Expected stdout regular expression pattern:
+  > > foo
+  /bin/sleep.* exit status: 0
+  test/sleep_and_print.* exit status: 0
+  > 
+Expected stderr regular expression pattern:
+  <empty>
+Errors:
+  in stdout: could not find a match for pattern [/bin/sleep.* exit status: 0] in line [/bin/sleep exit status: 0.]
+  in stdout: could not find a match for pattern [/bin/sleep.* exit status: 0] in line [ exit status: 0.]
+  in stdout: could not find a match for pattern [/bin/sleep.* exit status: 0] in line [> ]
+  in stdout: could not find match for pattern [/bin/sleep.* exit status: 0] in ['/bin/sleep exit status: 0.', '\x01 exit status: 0.', '> ']
+37 tests passed and 3 tests failed.
+---
+Note on interpreting test output patterns:
+All expected values matched against a "regular expression" where:
+    .* means any string (including empty strings)
+    .+ means any string (excluding empty strings)
+    everything is matched case-insensitively
+
