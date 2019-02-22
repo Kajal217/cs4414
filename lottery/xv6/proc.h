@@ -1,4 +1,4 @@
-#define DEFAULT_TICKETS 1
+#define DEFAULT_TICKETS 10
 #define DEFAULT 1
 //define LOTTERY 1?
 
