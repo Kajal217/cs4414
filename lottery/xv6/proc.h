@@ -1,5 +1,6 @@
 #define DEFAULT_TICKETS 1
 #define DEFAULT 1
+//define LOTTERY 1?
 
 // Per-CPU state
 struct cpu {
@@ -53,7 +54,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int tickets;
-  int tickets_used;
+  int ticks;
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -70,7 +71,5 @@ struct processes_info
   int tickets[NPROC];
 };
 
-extern int settickets(int pid, int tickets)
-{
-  
-}
+extern int settickets(int pid, int tickets);
+extern int getprocessesinfo(struct processes_info* p);

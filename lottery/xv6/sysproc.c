@@ -113,3 +113,11 @@ sys_settickets(void)
   if (argint(1, &tickets) < 0 || argint(0, &pid) < 1) return -1;
   return settickets(pid, tickets);
 }
+
+int
+sys_getprocessesinfo(void)
+{
+  struct processes_info* p;
+  if (argptr(0,p,sizeof(struct processes_info)) < 0) return -1;
+  return getprocessesinfo(p);
+}

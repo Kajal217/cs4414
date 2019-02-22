@@ -575,10 +575,10 @@ int settickets(int pid, int tickets) {
   }
 
   release(&ptable.lock);
-  return pid;
+  return pid; //why return pid?
 }
 
-int ticket_total(void) {
+int ticket_total(void) { //lock?
   struct proc* p;
   int ticket_count = 0;
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
@@ -589,20 +589,24 @@ int ticket_total(void) {
   return ticket_count;
 }
 
-int processesinfo(struct processes_info *p) {
-  struct proc *proc;
+int getprocessesinfo(struct processes_info *p) {
+  struct proc* proc;
+  acquire(&ptable.lock);
+
   p->num_processes = 0;
-  for (proc = ptable.proc; proc < &ptable.proc[NPROC]; proc++){
+  for (proc = ptable.proc; proc < &ptable.proc[NPROC]; proc++){//for each proc in table
     if (proc->state != UNUSED){
       p->pids[p->num_processes] = proc->pid;
-      p->num_processes++;
       if (proc->state == RUNNING){
-        p->ticks[p->num_processes] = proc->numticks; //CHANGE
-        p->tickets[p->num_processes = proc->tickets;
+        p->ticks[p->num_processes] = proc->ticks; //change?
+        p->tickets[p->num_processes] = proc->tickets;
       }
+      p->num_processes++; //must increment after indexing ticks & tickets ***
     }
   }
-  for (int i=0; i < p->num_processes; i++){
-    p->pids[i] = 
-  }
+  // for (int i=0; i < p->num_processes; i++){  ???
+  //   p->pids[i] = 
+  // }
+  release(&ptable.lock);
+  return 0; //?*
 }
