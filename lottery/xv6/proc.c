@@ -599,15 +599,12 @@ int getprocessesinfo(struct processes_info *p) {
     if (proc->state != UNUSED){
       p->pids[p->num_processes] = proc->pid;
       if (proc->state == RUNNING){
-        p->ticks[p->num_processes] = proc->ticks; //change?
+        p->ticks[p->num_processes] = proc->tickcount; //change?
         p->tickets[p->num_processes] = proc->tickets;
       }
       p->num_processes++; //must increment after indexing ticks & tickets ***
     }
   }
-  // for (int i=0; i < p->num_processes; i++){  ???
-  //   p->pids[i] = 
-  // }
   release(&ptable.lock);
   return 0; //?*
 }
