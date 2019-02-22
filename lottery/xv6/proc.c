@@ -203,7 +203,7 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  np->tickets = DEFAULT_TICKETS;
+  np->tickets = curproc->tickets;
   np->tickcount = 0; // restart ticks for child
 
   // Clear %eax so that fork returns 0 in the child.
@@ -218,7 +218,7 @@ fork(void)
 
   pid = np->pid;
 
-  settickets(curproc->tickcount); //CHILD INHERITS TICKET COUNT
+  //settickets(curproc->tickcount); //CHILD INHERITS TICKET COUNT
 
   acquire(&ptable.lock);
 
@@ -600,10 +600,8 @@ int getprocessesinfo(struct processes_info *p) {
   for (proc = ptable.proc; proc < &ptable.proc[NPROC]; proc++){//for each proc in table
     if (proc->state != UNUSED){
       p->pids[p->num_processes] = proc->pid;
-      if (proc->state == RUNNING){
-        p->ticks[p->num_processes] = proc->tickcount;
-        p->tickets[p->num_processes] = proc->tickets;
-      }
+      p->ticks[p->num_processes] = proc->tickcount;
+      p->tickets[p->num_processes] = proc->tickets;
       p->num_processes++;
     }
   }
