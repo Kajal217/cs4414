@@ -203,7 +203,7 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  np->tickets = curproc->tickets; // inherit parent's tickets
+  np->tickets = DEFAULT_TICKETS;
   np->tickcount = 0; // restart ticks for child
 
   // Clear %eax so that fork returns 0 in the child.
@@ -217,6 +217,8 @@ fork(void)
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
   pid = np->pid;
+
+  settickets(curproc->tickcount); //CHILD INHERITS TICKET COUNT
 
   acquire(&ptable.lock);
 
