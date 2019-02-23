@@ -361,54 +361,42 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    struct lottery lotto;
-    lotto.numprocs = 0;
-    lotto.tot_tickets = 0;
-
+    // loop thru ptable to tally up total # tickets
+    int tot_tickets = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-
       if(p->state != RUNNABLE)
         continue;
       
-      lotto.procs[lotto.numprocs] = p;
-      lotto.mins[lotto.numprocs] = lotto.tot_tickets;
-      lotto.tot_tickets += p->tickets;
-      lotto.maxs[lotto.numprocs] = lotto.tot_tickets;
-      lotto.numprocs++;
+      tot_tickets += p->tickets;
     }
 
-    unsigned rando = next_random() % (lotto.tot_tickets+1);
-    struct proc* winner;
-    winner = 0;
-
-    for (int i=0; i<lotto.numprocs; i++){
-      if ((lotto.mins[i] <= rando) && (rando < lotto.maxs[i])) {
-        winner = lotto.procs[i];
-        break;
-      }
-    }
-
-    // Switch to chosen process.  It is the process's job
+    // loop again to choose a lotto winner
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      
+      unsigned rando = next_random() % (tot_tickets+1);
+      if (rando > p->tickets)
+        continue;
+      
+      // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      
-      
-    winner->tickcount++;
-    c->proc = winner;
-    switchuvm(winner);
-    winner->state = RUNNING;
+      p->tickcount++;
+      c->proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
 
-    swtch(&(c->scheduler), winner->context);
-    switchkvm();
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
 
-    // Process is done running for now.
-    // It should have changed its p->state before coming back.
-    c->proc = 0;
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
 
-    release(&ptable.lock);
-
+      release(&ptable.lock);
+    }
   }
 }
 
