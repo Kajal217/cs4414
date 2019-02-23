@@ -1,5 +1,4 @@
 #include "types.h"
-#include "mmu.h"
 #include "param.h"
 static unsigned random_seed = 1;
 
@@ -41,7 +40,9 @@ unsigned next_random() {
     return lcg_parkmiller(&random_seed);
 }
 
+/*
 int main(int argc, char *argv[]) {
   cprintf("%d", next_random());
   exit();
 }
+*/
