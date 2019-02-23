@@ -384,7 +384,7 @@ scheduler(void)
     struct proc* winner;
 
     for (int i=0; i<lotto.numprocs; i++){
-      if (lotto.mins[i] <= rando < lotto.maxs[i]) {
+      if ((lotto.mins[i] <= rando) && (rando < lotto.maxs[i])) {
         winner = &lotto.procs[i];
         break;
       }
