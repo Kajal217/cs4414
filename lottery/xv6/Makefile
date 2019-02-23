@@ -8,7 +8,7 @@ OBJS = \
 	ioapic.o\
 	kalloc.o\
 	kbd.o\
-        kshutdown.o\
+    kshutdown.o\
 	lapic.o\
 	log.o\
 	main.o\

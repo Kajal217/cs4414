@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "random.c" // supplied Park-Miller RNG
 
 struct {
   struct spinlock lock;
@@ -203,7 +204,7 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  np->tickets = curproc->tickets;
+  np->tickets = curproc->tickets; // inherit tickets from parent
   np->tickcount = 0; // restart ticks for child
 
   // Clear %eax so that fork returns 0 in the child.
@@ -217,8 +218,6 @@ fork(void)
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
   pid = np->pid;
-
-  //settickets(curproc->tickcount); //CHILD INHERITS TICKET COUNT
 
   acquire(&ptable.lock);
 
@@ -606,5 +605,5 @@ int getprocessesinfo(struct processes_info *p) {
     }
   }
   release(&ptable.lock);
-  return 0; //?*
+  return 0;
 }
