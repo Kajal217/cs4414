@@ -372,7 +372,7 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
       
-      lotto.procs[lotto.numprocs] = *p;
+      lotto.procs[lotto.numprocs] = p;
       lotto.mins[lotto.numprocs] = lotto.tot_tickets;
       lotto.tot_tickets += p->tickets;
       lotto.maxs[lotto.numprocs] = lotto.tot_tickets;
@@ -385,7 +385,7 @@ scheduler(void)
 
     for (int i=0; i<lotto.numprocs; i++){
       if ((lotto.mins[i] <= rando) && (rando < lotto.maxs[i])) {
-        winner = &lotto.procs[i];
+        winner = lotto.procs[i];
         break;
       }
     }
