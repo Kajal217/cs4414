@@ -6,10 +6,9 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-//#include "random.c" // supplied Park-Miller RNG
-
 
 //    RANDOM NUMBER GENERATOR
+// (supplied Park-Miller rng)
 static unsigned random_seed = 1;
 
 #define RANDOM_MAX ((1u << 31u) - 1u)
@@ -364,49 +363,50 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    struct lottery lotto;
+    lotto.numprocs = 0;
+    lotto.tot_tickets = 0;
+
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-      #ifdef DEFAULT
-      if(p->state != RUNNABLE)
-        continue;
-
-      #else
-      #ifdef LOTTERY
       if(p->state != RUNNABLE)
         continue;
       
-      int ticket_tot = ticket_total();
-      int rand = -1;
+      lotto.procs[lotto.numprocs] = *p;
+      lotto.mins[lotto.numprocs] = lotto.tot_tickets;
+      lotto.tot_tickets += p->tickets;
+      lotto.maxs[lotto.numprocs] = lotto.tot_tickets;
+      lotto.numprocs++;
+    }
 
-      if (rand <=0 || tick_tot > 0)
-        rand = random(ticket_tot);
+    unsigned rando = next_random() % (lotto.tot_tickets+1);
+    struct proc* winner;
 
-      rand = rand - p->tickets;//?
+    for (int i=0; i<lotto.numprocs; i++){
+      if (lotto.mins[i] <= rando < lotto.maxs[i]) {
+        winner = &lotto.procs[i];
+        break;
+      }
+    }
 
-      if (rand >= 0)
-        continue;
-
-      #endif
-      #endif
-      
-      // Switch to chosen process.  It is the process's job
+    // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      unsigned randy = next_random();
-      cprintf("%d \n", randy);
       
-      p->tickcount++;
-      c->proc = p;
+      
+      winner->tickcount++;
+      c->proc = winner;
       switchuvm(p);
-      p->state = RUNNING;
+      winner->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), winner->context);
       switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
-    }
+
     release(&ptable.lock);
 
   }

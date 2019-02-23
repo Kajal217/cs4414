@@ -1,6 +1,4 @@
 #define DEFAULT_TICKETS 10
-#define DEFAULT 1 //REMOVE!! **
-//define LOTTERY 1?
 
 // Per-CPU state
 struct cpu {
@@ -73,3 +71,12 @@ struct processes_info
 
 extern int settickets(int tickets);
 extern int getprocessesinfo(struct processes_info* p);
+
+struct lottery
+{
+  struct proc procs[NPROC];
+  int mins[NPROC];
+  int maxs[NPROC];
+  int numprocs;
+  int tot_tickets;
+};
