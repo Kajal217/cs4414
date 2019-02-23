@@ -378,7 +378,7 @@ scheduler(void)
       
       //if random(0 to tot_tix) < p->tix... WINNER FOUND!!
       unsigned rando = next_random() % (tot_tickets+1);
-      if (rando > p->tickets)
+      if (rando >= p->tickets)
         continue;
       
       // Switch to chosen process.  It is the process's job
