@@ -376,6 +376,7 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
       
+      //if random(0 to tot_tix) < p->tix... WINNER FOUND!!
       unsigned rando = next_random() % (tot_tickets+1);
       if (rando > p->tickets)
         continue;
@@ -394,9 +395,8 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
-
-      release(&ptable.lock);
     }
+    release(&ptable.lock);
   }
 }
 
@@ -593,17 +593,6 @@ int settickets(int tickets) {
 
   release(&ptable.lock);
   return 0;
-}
-
-int ticket_total(void) { //lock?
-  struct proc* p;
-  int ticket_count = 0;
-  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-    if (p->state == RUNNABLE) {
-      ticket_count += p->tickets;
-    }
-  }
-  return ticket_count;
 }
 
 int getprocessesinfo(struct processes_info *p) {
