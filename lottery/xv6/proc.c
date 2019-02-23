@@ -382,6 +382,7 @@ scheduler(void)
 
     unsigned rando = next_random() % (lotto.tot_tickets+1);
     struct proc* winner;
+    winner = 0;
 
     for (int i=0; i<lotto.numprocs; i++){
       if ((lotto.mins[i] <= rando) && (rando < lotto.maxs[i])) {
@@ -395,17 +396,17 @@ scheduler(void)
       // before jumping back to us.
       
       
-      winner->tickcount++;
-      c->proc = winner;
-      switchuvm(p);
-      winner->state = RUNNING;
+    winner->tickcount++;
+    c->proc = winner;
+    switchuvm(p);
+    winner->state = RUNNING;
 
-      swtch(&(c->scheduler), winner->context);
-      switchkvm();
+    swtch(&(c->scheduler), winner->context);
+    switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
 
     release(&ptable.lock);
 
