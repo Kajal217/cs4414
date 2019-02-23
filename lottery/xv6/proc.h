@@ -74,7 +74,7 @@ extern int getprocessesinfo(struct processes_info* p);
 
 struct lottery
 {
-  struct proc procs[NPROC];
+  struct proc* procs[NPROC];
   int mins[NPROC];
   int maxs[NPROC];
   int numprocs;

@@ -356,14 +356,13 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
     struct lottery lotto;
     lotto.numprocs = 0;
     lotto.tot_tickets = 0;
@@ -398,7 +397,7 @@ scheduler(void)
       
     winner->tickcount++;
     c->proc = winner;
-    switchuvm(p);
+    switchuvm(winner);
     winner->state = RUNNING;
 
     swtch(&(c->scheduler), winner->context);
