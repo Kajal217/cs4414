@@ -6,7 +6,31 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-#include "random.c" // supplied Park-Miller RNG
+//#include "random.c" // supplied Park-Miller RNG
+
+
+//    RANDOM NUMBER GENERATOR
+static unsigned random_seed = 1;
+
+#define RANDOM_MAX ((1u << 31u) - 1u)
+unsigned lcg_parkmiller(unsigned *state)
+{
+    const unsigned N = 0x7fffffff;
+    const unsigned G = 48271u;
+    unsigned div = *state / (N / G);  /* max : 2,147,483,646 / 44,488 = 48,271 */
+    unsigned rem = *state % (N / G);  /* max : 2,147,483,646 % 44,488 = 44,487 */
+
+    unsigned a = rem * G;        /* max : 44,487 * 48,271 = 2,147,431,977 */
+    unsigned b = div * (N % G);  /* max : 48,271 * 3,399 = 164,073,129 */
+
+    return *state = (a > b) ? (a - b) : (a + (N - b));
+}
+
+unsigned next_random() {
+    return lcg_parkmiller(&random_seed);
+}
+
+
 
 struct {
   struct spinlock lock;
@@ -368,7 +392,7 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      int randy = next_random();
+      unsigned randy = next_random();
       cprintf("%d \n", randy);
       
       p->tickcount++;
