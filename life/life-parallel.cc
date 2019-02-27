@@ -6,7 +6,7 @@
 void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
     LifeBoard next_state{state.width(), state.height()};
     pthread_barrier_t* barrier;
-    pthread_t life_threads[threads];
+    pthread_t life_threads[8];
     int cellsPerThread = ceil((state.height()-2)*(state.width()-2)/threads);
 
     //args: [board pointer, next pointer, numSteps, numThreads, startIndex, endIndex]
