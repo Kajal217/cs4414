@@ -4,6 +4,120 @@
 #include <sys/wait.h>
 
 struct arguments {
+  LifeBoard eState;
+  LifeBoard oState;
+  int steps;
+  int startIndex;
+  int endIndex;
+  pthread_barrier_t* barrier;
+};
+
+void simulate_life_parallel(int threads, LifeBoard &eState, int steps) {
+    LifeBoard oState{eState.width(), eState.height()};
+    pthread_barrier_t barrier;
+    pthread_barrier_init(&barrier, NULL, threads+1);
+    pthread_t life_threads[8];
+    int cellsPerThread = ceil((eState.height()-2)*(eState.width()-2)/threads);
+
+    //args: [board pointer, next pointer, numSteps, numThreads, startIndex, endIndex]
+    struct arguments args;
+    args.eState = eState;
+    args.oState = oState;
+    args.steps = steps;
+    args.startIndex = 0;
+    args.endIndex = cellsPerThread;
+    args.barrier = &barrier;
+
+    for (int i=0; i<threads; i++) {
+        if (i==threads-1) args.endIndex = (eState.height()-2)*(eState.width()-2);
+        pthread_create(&life_threads[i], NULL, thread_simulate, (void*)&args);
+        args.startIndex += cellsPerThread;
+        args.endIndex += cellsPerThread;
+    }
+
+    for (int step = 0; step < steps; ++step) {
+        pthread_barrier_wait(&barrier);
+        //swap(state, next_state);
+    }
+
+    for (int j=0; j<threads; j++) {
+      pthread_join(life_threads[j], NULL);
+    }
+
+    if (steps%2==1){
+        swap(eState, oState);
+    }
+
+    pthread_barrier_destroy(&barrier);
+
+}
+
+void* thread_simulate(void* a) {
+
+  struct arguments *arguments = (struct arguments*) a;
+
+    LifeBoard eState = arguments->eState;
+    LifeBoard oState = arguments->oState;
+    int steps = arguments->steps;
+    int startIndex = arguments->startIndex;
+    int endIndex = arguments->endIndex;
+    pthread_barrier_t* barrier = arguments->barrier;
+
+    // each iteration = 1 generation
+    for (int step = 0; step < steps; ++step) {
+        // operate on cells from start to end index
+        int index = 0;
+
+        for (int y = 1; y < eState.height() - 1; ++y) {
+            for (int x = 1; x < eState.width() - 1; ++x) {
+                if (index < startIndex) {
+                    index++;
+                    continue;
+                }
+                if (index == endIndex) break;
+
+                int live_in_window = 0;
+                /* For each cell, examine a 3x3 "window" of cells around it,
+                 * and count the number of live (true) cells in the window. */
+                for (int y_offset = -1; y_offset <= 1; ++y_offset) {
+                    for (int x_offset = -1; x_offset <= 1; ++x_offset) {
+                        if (step%2==0 && eState.at(x + x_offset, y + y_offset)) {
+                            ++live_in_window;
+                        }
+                        else if (step%2==1 && oState.at(x + x_offset, y + y_offset)) {
+                            ++live_in_window;
+                        }
+                    }
+                }
+                /* Cells with 3 live neighbors remain or become live.
+                   Live cells with 2 live neighbors remain live. */
+                if (step%2==0){
+                    oState.at(x, y) = (
+                        live_in_window == 3 /* dead cell with 3 neighbors or live cell with 2 */ ||
+                        (live_in_window == 4 && eState.at(x, y)) /* live cell with 3 neighbors */
+                    );
+                }
+                else if (step%2==1){
+                    eState.at(x, y) = (
+                        live_in_window == 3 /* dead cell with 3 neighbors or live cell with 2 */ ||
+                        (live_in_window == 4 && oState.at(x, y)) /* live cell with 3 neighbors */
+                    );
+                }
+
+                index++;
+            }
+            if (index == endIndex) break;
+        }
+
+        // this generation's work is done. wait for all threads before moving on...
+        pthread_barrier_wait(barrier);
+    }
+    return NULL;
+}
+
+
+/*
+struct arguments {
   LifeBoard state;
   LifeBoard next_state;
   int steps;
@@ -97,4 +211,4 @@ void* thread_simulate(void* a) {
         pthread_barrier_wait(barrier);
     }
     return NULL;
-}
+}*/
