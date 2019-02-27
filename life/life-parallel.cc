@@ -186,8 +186,8 @@ void* thread_simulate(void* a) {
                 if (index == endIndex) break;
 
                 int live_in_window = 0;
-                /* For each cell, examine a 3x3 "window" of cells around it,
-                 * and count the number of live (true) cells in the window. */
+                // For each cell, examine a 3x3 "window" of cells around it,
+                // and count the number of live (true) cells in the window.
                 for (int y_offset = -1; y_offset <= 1; ++y_offset) {
                     for (int x_offset = -1; x_offset <= 1; ++x_offset) {
                         if (state.at(x + x_offset, y + y_offset)) {
@@ -195,11 +195,11 @@ void* thread_simulate(void* a) {
                         }
                     }
                 }
-                /* Cells with 3 live neighbors remain or become live.
-                   Live cells with 2 live neighbors remain live. */
+                // Cells with 3 live neighbors remain or become live.
+                // Live cells with 2 live neighbors remain live.
                 next_state.at(x, y) = (
-                    live_in_window == 3 /* dead cell with 3 neighbors or live cell with 2 */ ||
-                    (live_in_window == 4 && state.at(x, y)) /* live cell with 3 neighbors */
+                    live_in_window == 3  ||
+                    (live_in_window == 4 && state.at(x, y))
                 );
 
                 index++;
