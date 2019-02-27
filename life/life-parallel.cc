@@ -21,7 +21,7 @@ void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
 
     for (int i=0; i<threads; i++) {
         if (i==threads-1) arguments[5] = (state.height()-2)*(state.width()-2);
-        pthread_create(&life_threads[i], NULL, thread_simulate, arguments);
+        pthread_create(&life_threads[i], NULL, thread_simulate, (void*) arguments);
         arguments[4] += cellsPerThread;
         arguments[5] += cellsPerThread;
     }
@@ -83,5 +83,5 @@ void* thread_simulate(void* arguments) {
         // this generation's work is done. wait for all threads before moving on...
         pthread_barrier_wait(barrier);
     }
-
+    return NULL;
 }
