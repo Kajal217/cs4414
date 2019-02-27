@@ -79,5 +79,6 @@ inline void swap(LifeBoard &first, LifeBoard &second) {
  */ 
 extern void simulate_life_serial(LifeBoard &state, int steps);
 extern void simulate_life_parallel(int threads, LifeBoard &state, int steps);
+extern void* thread_simulate(void* arguments);
 
 #endif
