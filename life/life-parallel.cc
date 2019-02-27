@@ -3,47 +3,60 @@
 #include <cmath>
 #include <sys/wait.h>
 
+struct arguments {
+  LifeBoard state;
+  LifeBoard next_state;
+  int steps;
+  int startIndex;
+  int endIndex;
+  pthread_barrier_t* barrier;
+};
+
 void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
     LifeBoard next_state{state.width(), state.height()};
-    pthread_barrier_t* barrier;
+    pthread_barrier_t barrier;
+    pthread_barrier_init(&barrier, NULL, threads+1);
     pthread_t life_threads[8];
     int cellsPerThread = ceil((state.height()-2)*(state.width()-2)/threads);
 
     //args: [board pointer, next pointer, numSteps, numThreads, startIndex, endIndex]
-    void* arguments[8];
-    arguments[0] = state;
-    arguments[1] = next_state;
-    arguments[2] = steps;
-    arguments[3] = threads;
-    arguments[4] = 0;
-    arguments[5] = cellsPerThread;
-    arguments[6] = barrier;
+    struct arguments args;
+    args.state = state;
+    args.next_state = next_state;
+    args.steps = steps;
+    args.startIndex = 0;
+    args.endIndex = cellsPerThread;
+    args.barrier = &barrier;
 
     for (int i=0; i<threads; i++) {
-        if (i==threads-1) arguments[5] = (state.height()-2)*(state.width()-2);
-        pthread_create(&life_threads[i], NULL, thread_simulate, (void*) arguments);
-        arguments[4] += cellsPerThread;
-        arguments[5] += cellsPerThread;
+        if (i==threads-1) args.endIndex = (state.height()-2)*(state.width()-2);
+        pthread_create(&life_threads[i], NULL, thread_simulate, (void*)&args);
+        args.startIndex += cellsPerThread;
+        args.endIndex += cellsPerThread;
     }
 
     for (int step = 0; step < steps; ++step) {
-        pthread_barrier_init(barrier, NULL, threads);
+        pthread_barrier_wait(&barrier);
         swap(state, next_state);
-        pthread_barrier_destroy(barrier);
     }
+
+    for (int j=0; j<threads; j++) {
+      pthread_join(life_threads[j], NULL);
+    }
+    pthread_barrier_destroy(&barrier);
 
 }
 
-void* thread_simulate(void* arguments) {
+void* thread_simulate(void* a) {
 
-    LifeBoard state = arguments[0];
-    LifeBoard next_state = arguments[1];
-    int steps = arguments[2];
-    int threads = arguments[3];
-    int startIndex = arguments[4];
-    int endIndex = arguments[5];
-    pthread_barrier_t* barrier = arguments[6];
-    int* wait_status;
+  struct arguments *arguments = (struct arguments*) a;
+
+    LifeBoard state = arguments->state;
+    LifeBoard next_state = arguments->next_state;
+    int steps = arguments->steps;
+    int startIndex = arguments->startIndex;
+    int endIndex = arguments->endIndex;
+    pthread_barrier_t* barrier = arguments->barrier;
 
     // each iteration = 1 generation
     for (int step = 0; step < steps; ++step) {
