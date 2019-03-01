@@ -1,9 +1,15 @@
 #ifndef POOL_H_
 #include <string>
 #include <pthread.h>
+#include <dequeue>
 
 class Task {
 public:
+    std::string name
+    int status; //0:waiting, 1:running, 2:done
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+
     Task();
     virtual ~Task();
 
@@ -12,6 +18,10 @@ public:
 
 class ThreadPool {
 public:
+    std::dequeue<Task*> taskList;
+    pthread_t thread;
+    pthread_mutex_t pool_mutex;
+
     ThreadPool(int num_threads);
 
     // Submit a task with a particular name.
