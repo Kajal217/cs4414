@@ -158,9 +158,8 @@ userinit(void)
 int
 growproc(int n) // increment curproc->sz by # of PTEs to allocate but dont actually allocate yet
 {
-  uint sz;
   struct proc *curproc = myproc();
-
+  // uint sz;
   // sz = curproc->sz;
   // if(n > 0){
   //   if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
