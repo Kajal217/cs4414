@@ -7,7 +7,6 @@
 #include "x86.h"
 #include "traps.h"
 #include "spinlock.h"
-#include "vm.c"
 
 // Interrupt descriptor table (shared by all CPUs).
 struct gatedesc idt[256];
@@ -65,10 +64,10 @@ trap(struct trapframe *tf)
         return;
       }
       memset(mem, 0, PGSIZE);
-      if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+      if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){ // !! cant use mappages here, shuold handler call another func somewhere else?
         cprintf("insufficient memory for allocation on demand (2)\n");
         // deallocuvm(pgdir, newsz, oldsz); // ^^^
-        kill(curproc->pid);
+        curproc->killed = 1;
         kfree(mem);
         exit();
         return;
