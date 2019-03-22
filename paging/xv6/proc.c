@@ -156,20 +156,22 @@ userinit(void)
 // Grow current process's memory by n bytes.
 // Return 0 on success, -1 on failure.
 int
-growproc(int n)
+growproc(int n) // increment curproc->sz by # of PTEs to allocate but dont actually allocate yet
 {
   uint sz;
   struct proc *curproc = myproc();
 
-  sz = curproc->sz;
-  if(n > 0){
-    if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
-      return -1;
-  } else if(n < 0){
-    if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
-      return -1;
-  }
-  curproc->sz = sz;
+  // sz = curproc->sz;
+  // if(n > 0){
+  //   if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
+  //     return -1;
+  // } else if(n < 0){
+  //   if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
+  //     return -1;
+  // }
+  // curproc->sz = sz;
+  curproc->sz += n;
+
   switchuvm(curproc);
   return 0;
 }
