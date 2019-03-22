@@ -248,6 +248,28 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   return newsz;
 }
 
+int
+allocdemand(pde_t* pgdir, uint addr)
+{
+  char* mem;
+  uint a = PGROUNDDOWN(addr);
+  mem = kalloc();
+  if(mem == 0){
+    cprintf("insufficient memory for allocation on demand\n");
+    // deallocuvm(pgdir, newsz, oldsz); // what params go here? should i be using deallocuvm?
+    return -1;
+  }
+  memset(mem, 0, PGSIZE);
+  if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+    cprintf("insufficient memory for allocation on demand (2)\n");
+    // deallocuvm(pgdir, newsz, oldsz); // ^^^
+    kfree(mem);
+    return -1;
+  }
+  // allocated successfully
+  return 0;
+}
+
 // Deallocate user pages to bring the process size from oldsz to
 // newsz.  oldsz and newsz need not be page-aligned, nor does newsz
 // need to be less than oldsz.  oldsz can be larger than the actual
@@ -325,8 +347,10 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
   for(i = 0; i < sz; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
+      continue;
     if(!(*pte & PTE_P))
       panic("copyuvm: page not present");
+      continue;
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
     if((mem = kalloc()) == 0)

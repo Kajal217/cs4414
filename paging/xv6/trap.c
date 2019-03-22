@@ -37,12 +37,12 @@ void
 trap(struct trapframe *tf)
 {
   //check for page fault --------------------
-  if (tf->trapno == T_PGFLT) {
+  if (tf->trapno == T_PGFLT){
     struct proc *curproc = myproc();
     uint addr = rcr2(); //virtual address program was attempting to access
 
     // check whether access out of bounds
-    if (addr >= curproc->sz) {
+    if (addr >= curproc->sz){
       cprintf("access out of bounds\n");
       curproc->killed = 1;
       exit(); //?
@@ -50,30 +50,13 @@ trap(struct trapframe *tf)
     }
     
     else { // ALLOCATE ON DEMAND
-      char* mem;
+      struct proc *curproc = myproc();
       pde_t* pgdir = curproc->pgdir;
-      uint a;
-
-      a = PGROUNDDOWN(addr);
-      mem = kalloc();
-      if(mem == 0){
-        cprintf("insufficient memory for allocation on demand\n");
-        // deallocuvm(pgdir, newsz, oldsz); // what params go here? should i be using deallocuvm?
+      
+      if (allocdemand(pgdir, addr) != 0){
         curproc->killed = 1;
         exit();
-        return;
       }
-      memset(mem, 0, PGSIZE);
-      if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){ // !! cant use mappages here, shuold handler call another func somewhere else?
-        cprintf("insufficient memory for allocation on demand (2)\n");
-        // deallocuvm(pgdir, newsz, oldsz); // ^^^
-        curproc->killed = 1;
-        kfree(mem);
-        exit();
-        return;
-      }
-      // allocated successfully
-      return;
     }
 
 
