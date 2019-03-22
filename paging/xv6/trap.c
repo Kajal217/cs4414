@@ -56,10 +56,10 @@ trap(struct trapframe *tf)
       if (allocdemand(pgdir, addr) != 0){
         curproc->killed = 1;
         exit();
+        return;
       }
     }
-
-
+    return;
   }
 
   if(tf->trapno == T_SYSCALL){
