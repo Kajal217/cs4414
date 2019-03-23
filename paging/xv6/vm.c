@@ -324,11 +324,11 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
     return 0;
   for(i = 0; i < sz; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0){
-      panic("copyuvm: pte should exist");
+      //panic("copyuvm: pte should exist");
       continue;
     }
     if(!(*pte & PTE_P)){
-      panic("copyuvm: page not present");
+      //panic("copyuvm: page not present");
       continue;
     }
     pa = PTE_ADDR(*pte);
