@@ -174,6 +174,7 @@ void            uartintr(void);
 void            uartputc(int);
 
 // vm.c
+int             mappages(pde_t*, void*, uint, uint, int);
 void            seginit(void);
 void            kvmalloc(void);
 pde_t*          setupkvm(void);

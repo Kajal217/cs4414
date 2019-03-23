@@ -52,12 +52,26 @@ trap(struct trapframe *tf)
     else { // ALLOCATE ON DEMAND
       struct proc *curproc = myproc();
       pde_t* pgdir = curproc->pgdir;
-      
-      if (allocdemand(pgdir, addr) != 0){
+      char* mem;
+      uint a = PGROUNDDOWN(addr);
+      mem = kalloc();
+      if(mem == 0){
+        cprintf("insufficient memory for allocation on demand\n");
+        // deallocuvm(pgdir, newsz, oldsz); // what params go here? should i be using deallocuvm?
         curproc->killed = 1;
         exit();
         return;
       }
+      memset(mem, 0, PGSIZE);
+      if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+        cprintf("insufficient memory for allocation on demand (2)\n");
+        // deallocuvm(pgdir, newsz, oldsz); // ^^^
+        curproc->killed = 1;
+        kfree(mem);
+        exit();
+        return;
+      }
+      // allocated successfully
     }
     return;
   }

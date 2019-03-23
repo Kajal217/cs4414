@@ -57,7 +57,7 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
 // Create PTEs for virtual addresses starting at va that refer to
 // physical addresses starting at pa. va and size might not
 // be page-aligned.
-static int
+int
 mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 {
   char *a, *last;
@@ -246,28 +246,6 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     }
   }
   return newsz;
-}
-
-int
-allocdemand(pde_t* pgdir, uint addr)
-{
-  char* mem;
-  uint a = PGROUNDDOWN(addr);
-  mem = kalloc();
-  if(mem == 0){
-    cprintf("insufficient memory for allocation on demand\n");
-    // deallocuvm(pgdir, newsz, oldsz); // what params go here? should i be using deallocuvm?
-    return -1;
-  }
-  memset(mem, 0, PGSIZE);
-  if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
-    cprintf("insufficient memory for allocation on demand (2)\n");
-    // deallocuvm(pgdir, newsz, oldsz); // ^^^
-    kfree(mem);
-    return -1;
-  }
-  // allocated successfully
-  return 0;
 }
 
 // Deallocate user pages to bring the process size from oldsz to
