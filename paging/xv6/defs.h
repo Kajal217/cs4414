@@ -175,8 +175,8 @@ void            uartputc(int);
 
 // vm.c
 void            pgfaulthandler();
-int             mappages(pde_t*, void*, uint, uint, int);
-pte_t*          walkpgdir(pde_t*, const void*, int);
+// int             mappages(pde_t*, void*, uint, uint, int);
+// pte_t*          walkpgdir(pde_t*, const void*, int);
 void            seginit(void);
 void            kvmalloc(void);
 pde_t*          setupkvm(void);
