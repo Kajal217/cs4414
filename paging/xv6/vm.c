@@ -323,8 +323,9 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 {
   pde_t *d;
   pte_t *pte;
-  uint pa, i, flags;
-  char *mem;
+  uint pa, i;
+  // uint flags;
+  // char *mem;
 
   if((d = setupkvm()) == 0) // d = pgdir for child
     return 0;
@@ -377,7 +378,7 @@ pgfaulthandler()
   }
 
   // COPY-ON-WRITE
-  pte_t* pte = *walkpgdir(pgdir, addr, 0);
+  pte_t* pte = walkpgdir(pgdir, (void*) addr, 0);
   if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
     uint pa = PTE_ADDR(*pte);
 
