@@ -174,7 +174,7 @@ void            uartintr(void);
 void            uartputc(int);
 
 // vm.c
-extern unsigned char cow_reference_count[PHYSTOP / PGSIZE];
+void            pgfaulthandler();
 int             mappages(pde_t*, void*, uint, uint, int);
 pte_t*          walkpgdir(pde_t*, const void*, int);
 void            seginit(void);

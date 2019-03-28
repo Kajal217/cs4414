@@ -361,6 +361,73 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 //   return 0;
 }
 
+void
+pgfaulthandler()
+{
+  struct proc *curproc = myproc();
+  uint addr = rcr2(); //virtual address program was attempting to access
+  pde_t* pgdir = curproc->pgdir;
+
+  // check whether access out of bounds
+  if (addr >= curproc->sz){
+    cprintf("access out of bounds\n");
+    curproc->killed = 1;
+    exit();
+    return;
+  }
+
+  // COPY-ON-WRITE
+  pte_t* pte = *walkpgdir(pgdir, addr, 0);
+  if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
+    uint pa = PTE_ADDR(*pte);
+
+  //  if no other process referencing page, make it writeable
+    if (cow_reference_count[pa / PGSIZE] < 2){
+      *pte &= PTE_W;
+      return;
+    }
+  //  else, copy-on-write:
+    char *mem;
+    if((mem = kalloc()) == 0)
+      goto bad;
+    memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
+    if(mappages(pgdir, (void*)addr, PGSIZE, V2P(mem), PTE_W) < 0) // map new page as writeable
+      goto bad;
+    lcr3(V2P(myproc()->pgdir)); // flush TLB
+  }
+  
+  else { // ALLOCATE ON DEMAND
+    char* mem;
+    uint a = PGROUNDDOWN(addr);
+    mem = kalloc();
+    if(mem == 0){
+      cprintf("insufficient memory for allocation on demand\n");
+      // deallocuvm(pgdir, newsz, oldsz);
+      curproc->killed = 1;
+      exit();
+      return;
+    }
+    memset(mem, 0, PGSIZE);
+    if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+      cprintf("insufficient memory for allocation on demand (2)\n");
+      // deallocuvm(pgdir, newsz, oldsz); // ^^^
+      curproc->killed = 1;
+      kfree(mem);
+      exit();
+      return;
+    }
+    // allocated successfully
+  }
+  return;
+
+bad:
+  cprintf("insufficient memory for copy-on-write\n");
+  freevm(pgdir);
+  curproc->killed = 1;
+  exit();
+  return;
+}
+
 //PAGEBREAK!
 // Map user virtual address to kernel address.
 char*
