@@ -7,6 +7,9 @@
 #include "proc.h"
 #include "elf.h"
 
+//  tracks the # of processes that reference each physical page
+unsigned char cow_reference_count[PHYSTOP / PGSIZE] = { 1 };
+
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
 
@@ -32,7 +35,7 @@ seginit(void)
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
 // create any required page table pages.
-static pte_t *
+pte_t *
 walkpgdir(pde_t *pgdir, const void *va, int alloc)
 {
   pde_t *pde;
@@ -270,9 +273,12 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       pa = PTE_ADDR(*pte);
       if(pa == 0)
         panic("kfree");
-      char *v = P2V(pa);
-      kfree(v);
+      if (cow_reference_count[pa / PGSIZE] < 2){ //don't kfree pages being used by another proc
+        char *v = P2V(pa);
+        kfree(v);
+      }
       *pte = 0;
+      cow_reference_count[pa / PGSIZE]--; // decrement ref count for page
     }
   }
   return newsz;
@@ -313,16 +319,17 @@ clearpteu(pde_t *pgdir, char *uva)
 // Given a parent process's page table, create a copy
 // of it for a child.
 pde_t*
-copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that were actually allocated (???)
+copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that were actually allocated
 {
   pde_t *d;
   pte_t *pte;
   uint pa, i, flags;
   char *mem;
 
-  if((d = setupkvm()) == 0)
+  if((d = setupkvm()) == 0) // d = pgdir for child
     return 0;
-  for(i = 0; i < sz; i += PGSIZE){
+  for(i = 0; i < sz; i += PGSIZE)
+  {
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0){
       //panic("copyuvm: pte should exist");
       continue;
@@ -331,19 +338,27 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
       //panic("copyuvm: page not present");
       continue;
     }
+
+    // only mark as read only, move copying code to pgfault handler
+    
     pa = PTE_ADDR(*pte);
-    flags = PTE_FLAGS(*pte);
-    if((mem = kalloc()) == 0)
-      goto bad;
-    memmove(mem, (char*)P2V(pa), PGSIZE);
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
-      goto bad;
+    *pte &= ~PTE_W;   // mark as read only
+    // flags = PTE_FLAGS(*pte);
+
+    lcr3(V2P(myproc()->pgdir)); // flush TLB
+    cow_reference_count[pa / PGSIZE]++; // increment ref count for page
+
+    // if((mem = kalloc()) == 0)
+    //   goto bad;
+    // memmove(mem, (char*)P2V(pa), PGSIZE);
+    // if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
+    //   goto bad;
   }
   return d;
 
-bad:
-  freevm(d);
-  return 0;
+// bad:
+//   freevm(d);
+//   return 0;
 }
 
 //PAGEBREAK!
