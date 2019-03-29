@@ -382,7 +382,7 @@ pgfaulthandler()
   // COPY-ON-WRITE
   pte_t* pte;
   if ((pte = walkpgdir(pgdir, (void*) a, 0)) == 0) panic("c-o-w walkpgdir failed");
-  else if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
+  else if ((*pte & PTE_P) && (*pte & ~PTE_W)){ // if pte present & readonly
     uint pa = PTE_ADDR(*pte);
 
     //  if no other process referencing page, make it writeable
@@ -395,7 +395,7 @@ pgfaulthandler()
     if((mem = kalloc()) == 0)
       goto bad;
     memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
-    if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W) < 0) // map new page as writeable
+    if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W|PTE_P) < 0) // map new page as writeable
       goto bad;
     else{
       cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for new page
@@ -418,7 +418,7 @@ pgfaulthandler()
     memset(mem, 0, PGSIZE);
     if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
       cprintf("insufficient memory for allocation on demand (2)\n");
-      // deallocuvm(pgdir, newsz, oldsz); // ^^^
+      // deallocuvm(pgdir, newsz, oldsz);
       curproc->killed = 1;
       kfree(mem);
       exit();
