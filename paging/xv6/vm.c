@@ -192,7 +192,7 @@ inituvm(pde_t *pgdir, char *init, uint sz)
   mem = kalloc();
   memset(mem, 0, PGSIZE);
   mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W|PTE_U);
-  cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
+  // cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
   memmove(mem, init, sz);
 }
 
@@ -248,7 +248,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(mem);
       return 0;
     }
-    else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
+    // else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
   }
   return newsz;
 }
@@ -271,7 +271,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     pte = walkpgdir(pgdir, (char*)a, 0);
     if(!pte)
       a = PGADDR(PDX(a) + 1, 0, 0) - PGSIZE;
-    else if((*pte & PTE_P) != 0){
+    else if((*pte & PTE_P) != 0){ //if present
       pa = PTE_ADDR(*pte);
       if(pa == 0)
         panic("kfree");
@@ -325,8 +325,8 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 {
   pde_t *d;
   pte_t *pte;
-  uint i;
-  // uint pa, flags;
+  uint i, pa;
+  // uint flags;
   // char *mem;
 
   if((d = setupkvm()) == 0) // d = pgdir for child
@@ -344,11 +344,14 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 
     // only mark as read only, move copying code to pgfault handler
     
-    // pa = PTE_ADDR(*pte);
+    pa = PTE_ADDR(*pte);
     *pte &= ~PTE_W;   // mark as read only
     // flags = PTE_FLAGS(*pte);
 
     lcr3(V2P(myproc()->pgdir)); // flush TLB
+    
+    if (cow_reference_count[pa / PGSIZE]==0) cow_reference_count[pa / PGSIZE] = 2;  //start tracking refcount here
+    else cow_reference_count[pa / PGSIZE]++; // increment ref count for page
 
     // if((mem = kalloc()) == 0)
     //   goto bad;
@@ -375,7 +378,7 @@ pgfaulthandler()
   if (addr >= curproc->sz){
     cprintf("access out of bounds\n");
     curproc->killed = 1;
-    exit();
+    // exit();
     return;
   }
 
@@ -391,15 +394,17 @@ pgfaulthandler()
       return;
     }
     //  else, copy-on-write:
-    char *mem;
-    if((mem = kalloc()) == 0)
-      goto bad;
-    memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
-    if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W|PTE_P) < 0) // map new page as writeable
-      goto bad;
     else{
-      cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for new page
-      cow_reference_count[pa / PGSIZE]--; // decrement for old page
+      char *mem;
+      if((mem = kalloc()) == 0)
+        goto bad;
+      memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
+      if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W|PTE_P) < 0) // map new page as writeable
+        goto bad;
+      else{
+        cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for new page
+        cow_reference_count[pa / PGSIZE]--; // decrement for old page
+      }
     }
 
     lcr3(V2P(myproc()->pgdir)); // flush TLB
@@ -412,7 +417,7 @@ pgfaulthandler()
       cprintf("insufficient memory for allocation on demand\n");
       // deallocuvm(pgdir, newsz, oldsz);
       curproc->killed = 1;
-      exit();
+      // exit();
       return;
     }
     memset(mem, 0, PGSIZE);
@@ -421,7 +426,7 @@ pgfaulthandler()
       // deallocuvm(pgdir, newsz, oldsz);
       curproc->killed = 1;
       kfree(mem);
-      exit();
+      // exit();
       return;
     }
     else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page

@@ -38,7 +38,7 @@ trap(struct trapframe *tf)
 {
   //  PAGE FAULT HANDLER
   if (tf->trapno == T_PGFLT){
-    if ((tf->cs & 3) == 0) cprintf("pgfault from kernel mode");
+    if ((tf->cs & 3) == 0) cprintf("pgfault from kernel mode\n");
     pgfaulthandler();
     if(myproc()->killed)
       exit();
