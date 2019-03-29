@@ -380,16 +380,17 @@ pgfaulthandler()
   }
 
   // COPY-ON-WRITE
-  pte_t* pte = walkpgdir(pgdir, (void*) addr, 0);
-  if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
+  pte_t* pte;
+  if (pte = walkpgdir(pgdir, (void*) addr, 0) == 0) panic("c-o-w walkpgdir failed");
+  else if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
     uint pa = PTE_ADDR(*pte);
 
-  //  if no other process referencing page, make it writeable
+    //  if no other process referencing page, make it writeable
     if (cow_reference_count[pa / PGSIZE] < 2){
       *pte |= PTE_W;
       return;
     }
-  //  else, copy-on-write:
+    //  else, copy-on-write:
     char *mem;
     if((mem = kalloc()) == 0)
       goto bad;
