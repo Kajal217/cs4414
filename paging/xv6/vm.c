@@ -71,7 +71,7 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   for(;;){
     if((pte = walkpgdir(pgdir, a, 1)) == 0)
       return -1;
-    if(*pte & PTE_P)
+    if(*pte & PTE_P) //pte is already present
       panic("remap");
     *pte = pa | perm | PTE_P;
     if(a == last)
@@ -385,7 +385,7 @@ pgfaulthandler()
   // COPY-ON-WRITE
   pte_t* pte;
   if ((pte = walkpgdir(pgdir, (void*) a, 1)) == 0) panic("c-o-w walkpgdir failed");
-  else if ((*pte & PTE_P) && (*pte & ~PTE_W)){ // if pte present & readonly
+  else if ((*pte & PTE_P) && (*pte & ~PTE_W) && (*pte & PTE_U)){ // if pte present, user accessible, & readonly
     uint pa = PTE_ADDR(*pte);
 
     //  if no other process referencing page, make it writeable
@@ -399,12 +399,13 @@ pgfaulthandler()
       if((mem = kalloc()) == 0)
         goto bad;
       memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
-      if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W|PTE_P) < 0) // map new page as writeable
-        goto bad;
-      else{
+      *pte = V2P(mem) | PTE_P | PTE_W | PTE_U;  // point pte to newly copied page
+      // if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W|PTE_P) < 0) // map new page as writeable
+      //   goto bad;
+      // else{
         cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for new page
         cow_reference_count[pa / PGSIZE]--; // decrement for old page
-      }
+      // }
     }
 
     lcr3(V2P(myproc()->pgdir)); // flush TLB
