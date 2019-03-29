@@ -192,7 +192,7 @@ inituvm(pde_t *pgdir, char *init, uint sz)
   mem = kalloc();
   memset(mem, 0, PGSIZE);
   mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W|PTE_U);
-  cow_reference_count[0 / PGSIZE]++; // increment ref count for page
+  cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
   memmove(mem, init, sz);
 }
 
@@ -248,7 +248,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(mem);
       return 0;
     }
-    else cow_reference_count[a / PGSIZE]++; // increment ref count for page
+    else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
   }
   return newsz;
 }
@@ -396,7 +396,11 @@ pgfaulthandler()
     memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
     if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W) < 0) // map new page as writeable
       goto bad;
-    else cow_reference_count[pa / PGSIZE]++; // increment ref count for page
+    else{
+      cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for new page
+      cow_reference_count[pa / PGSIZE]--; // decrement for old page
+    }
+
     lcr3(V2P(myproc()->pgdir)); // flush TLB
   }
   
@@ -419,7 +423,7 @@ pgfaulthandler()
       exit();
       return;
     }
-    else cow_reference_count[a / PGSIZE]++; // increment ref count for page
+    else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
     // allocated successfully
   }
   return;
