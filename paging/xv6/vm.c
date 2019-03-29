@@ -369,6 +369,7 @@ pgfaulthandler()
   struct proc *curproc = myproc();
   uint addr = rcr2(); //virtual address program was attempting to access
   pde_t* pgdir = curproc->pgdir;
+  uint a = PGROUNDDOWN(addr);
 
   // check whether access out of bounds
   if (addr >= curproc->sz){
@@ -393,14 +394,14 @@ pgfaulthandler()
     if((mem = kalloc()) == 0)
       goto bad;
     memmove(mem, (char*)P2V(pa), PGSIZE); // copy page
-    if(mappages(pgdir, (void*)addr, PGSIZE, V2P(mem), PTE_W) < 0) // map new page as writeable
+    if(mappages(pgdir, (void*)a, PGSIZE, V2P(mem), PTE_W) < 0) // map new page as writeable
       goto bad;
+    else cow_reference_count[pa / PGSIZE]++; // increment ref count for page
     lcr3(V2P(myproc()->pgdir)); // flush TLB
   }
   
   else { // ALLOCATE ON DEMAND
     char* mem;
-    uint a = PGROUNDDOWN(addr);
     mem = kalloc();
     if(mem == 0){
       cprintf("insufficient memory for allocation on demand\n");
@@ -418,6 +419,7 @@ pgfaulthandler()
       exit();
       return;
     }
+    else cow_reference_count[a / PGSIZE]++; // increment ref count for page
     // allocated successfully
   }
   return;
