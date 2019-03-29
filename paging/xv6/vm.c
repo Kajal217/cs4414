@@ -325,8 +325,8 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 {
   pde_t *d;
   pte_t *pte;
-  uint pa, i;
-  // uint flags;
+  uint i;
+  // uint pa, flags;
   // char *mem;
 
   if((d = setupkvm()) == 0) // d = pgdir for child
@@ -344,7 +344,7 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 
     // only mark as read only, move copying code to pgfault handler
     
-    pa = PTE_ADDR(*pte);
+    // pa = PTE_ADDR(*pte);
     *pte &= ~PTE_W;   // mark as read only
     // flags = PTE_FLAGS(*pte);
 
