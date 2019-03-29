@@ -381,7 +381,7 @@ pgfaulthandler()
 
   // COPY-ON-WRITE
   pte_t* pte;
-  if ((pte = walkpgdir(pgdir, (void*) addr, 0)) == 0) panic("c-o-w walkpgdir failed");
+  if ((pte = walkpgdir(pgdir, (void*) a, 0)) == 0) panic("c-o-w walkpgdir failed");
   else if (*pte & PTE_P & ~PTE_W){ // if pte present & readonly
     uint pa = PTE_ADDR(*pte);
 
