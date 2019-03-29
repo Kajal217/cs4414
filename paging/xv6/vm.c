@@ -8,7 +8,7 @@
 #include "elf.h"
 
 //  tracks the # of processes that reference each physical page
-unsigned char cow_reference_count[PHYSTOP / PGSIZE] = { 1 };
+unsigned char cow_reference_count[PHYSTOP / PGSIZE] = { 0 };
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
@@ -35,7 +35,7 @@ seginit(void)
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
 // create any required page table pages.
-pte_t *
+static pte_t *
 walkpgdir(pde_t *pgdir, const void *va, int alloc)
 {
   pde_t *pde;
@@ -60,7 +60,7 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
 // Create PTEs for virtual addresses starting at va that refer to
 // physical addresses starting at pa. va and size might not
 // be page-aligned.
-int
+static int
 mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 {
   char *a, *last;
@@ -192,6 +192,7 @@ inituvm(pde_t *pgdir, char *init, uint sz)
   mem = kalloc();
   memset(mem, 0, PGSIZE);
   mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W|PTE_U);
+  cow_reference_count[0 / PGSIZE]++; // increment ref count for page
   memmove(mem, init, sz);
 }
 
@@ -247,6 +248,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(mem);
       return 0;
     }
+    else cow_reference_count[a / PGSIZE]++; // increment ref count for page
   }
   return newsz;
 }
@@ -347,7 +349,6 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
     // flags = PTE_FLAGS(*pte);
 
     lcr3(V2P(myproc()->pgdir)); // flush TLB
-    cow_reference_count[pa / PGSIZE]++; // increment ref count for page
 
     // if((mem = kalloc()) == 0)
     //   goto bad;
@@ -384,7 +385,7 @@ pgfaulthandler()
 
   //  if no other process referencing page, make it writeable
     if (cow_reference_count[pa / PGSIZE] < 2){
-      *pte &= PTE_W;
+      *pte |= PTE_W;
       return;
     }
   //  else, copy-on-write:
