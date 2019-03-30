@@ -381,7 +381,6 @@ pgfaulthandler()
     // exit();
     return;
   }
-  if (addr >= curproc->sz) cprintf("~!!! WHY DIDNT I RETURN ???~\n");
 
   // COPY-ON-WRITE
   pte_t* pte;
@@ -431,7 +430,7 @@ pgfaulthandler()
       // exit();
       return;
     }
-    else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
+    // else cow_reference_count[V2P(mem) / PGSIZE]++; // increment ref count for page
     // allocated successfully
   }
   return;
