@@ -325,8 +325,7 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
 {
   pde_t *d;
   pte_t *pte;
-  uint i, pa;
-  // uint flags;
+  uint i, pa, flags;
   // char *mem;
 
   if((d = setupkvm()) == 0) // d = pgdir for child
@@ -346,9 +345,7 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
     
     pa = PTE_ADDR(*pte);
     *pte &= ~PTE_W;   // mark as read only
-    // flags = PTE_FLAGS(*pte);
-
-    lcr3(V2P(myproc()->pgdir)); // flush TLB
+    flags = PTE_FLAGS(*pte);
     
     if (cow_reference_count[pa / PGSIZE]==0) cow_reference_count[pa / PGSIZE] = 2;  //start tracking refcount here
     else cow_reference_count[pa / PGSIZE]++; // increment ref count for page
@@ -356,8 +353,11 @@ copyuvm(pde_t *pgdir, uint sz) // for checkpoint: should only copy pages that we
     // if((mem = kalloc()) == 0)
     //   goto bad;
     // memmove(mem, (char*)P2V(pa), PGSIZE);
-    // if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
-    //   goto bad;
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0){ //map child's pgdir to parent's page
+      freevm(d);
+      return 0;
+    }
+    lcr3(V2P(myproc()->pgdir)); // flush TLB
   }
   return d;
 
@@ -381,6 +381,7 @@ pgfaulthandler()
     // exit();
     return;
   }
+  if (addr >= curproc->sz) cprintf("~!!! WHY DIDNT I RETURN ???~\n");
 
   // COPY-ON-WRITE
   pte_t* pte;
