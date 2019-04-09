@@ -69,11 +69,11 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
 
-    DirEntry * curDir;
-    if (path == "/"){
-        curDir = rootDir;
-    }
-    else curDir = cwd;
+    // DirEntry * curDir;
+    // if (path == "/"){
+    //     curDir = rootDir;
+    // }
+    // else curDir = cwd;
 
     //for now...
     AnyDirEntry* rdir = (AnyDirEntry*)rootDir;
