@@ -36,14 +36,9 @@ char* getFirstElement(char *path) {
   uint i;
   for (i = start; i < strlen(path); i++) {
     if (path[i] == '/') {
-        char c[i+1];
-        char *firstElement;
-        firstElement* = c;
-
-        strncpy(firstElement, path, i);
-        firstElement[i] = '\0';
-
-        return firstElement + start;
+        std::string element = path;
+        element = element.substr(start, i-start);
+        return element.c_str();
     }
   }
   return path + start;
