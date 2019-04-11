@@ -379,8 +379,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         delete(firstElement);                       // dealloc old str, alloc new
         firstElement = getFirstElement(tempPath);
     }
-    
+
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
-    delete(firstElement); // dealloc copied str
+    if (firstElement != NULL) delete(firstElement); // dealloc copied str
     return result;
 }
