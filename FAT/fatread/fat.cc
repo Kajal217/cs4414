@@ -36,9 +36,12 @@ char* getFirstElement(char *path) {
   uint i;
   for (i = start; i < strlen(path); i++) {
     if (path[i] == '/') {
-        std::string element = path;
-        element = element.substr(start, i-start);
-        return (char*)element.c_str(); // return everything between the first 2 slashes in path
+      char *firstElement = new char[i+1];
+		 
+      strncpy(firstElement, path, i);
+      firstElement[i] = '\0';
+		 
+      return firstElement + start;
     }
   }
   return path + start;
