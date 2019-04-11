@@ -36,13 +36,13 @@ char* getFirstElement(char *path) {
   uint i;
   for (i = start; i < strlen(path); i++) {
     if (path[i] == '/') {
-    //   char *firstElement = new char[i+1];
+      char *firstElement = new char[i+1];
 		 
-    //   strncpy(firstElement, path, i);
-    //   firstElement[i] = '\0';
-        path[i] = '\0';
+      strncpy(firstElement, path, i);
+      firstElement[i] = '\0';
+        // path[i] = '\0';
 		 
-      return path + start;
+      return firstElement + start;
     }
   }
   return path + start;
