@@ -36,19 +36,19 @@ char* getFirstElement(char *path) {
   uint i;
   for (i = start; i < strlen(path); i++) {
     if (path[i] == '/') {
-      char *firstElement = new char[i+1];
+      char* firstElement = new char[i+1];
 		 
-      strncpy(firstElement, path, i);
+      strncpy(firstElement, path+start, i-start);
       firstElement[i] = '\0';
         // path[i] = '\0';
 		 
-      return firstElement + start;
+      return firstElement;  //
     }
   }
-  char *pathCopy = new char[i+1];   // since we have to make a copy in the above case, we do here too, to avoid deleting the original path
-  strncpy(pathCopy, path, i);
+  char* pathCopy = new char[i+1];
+  strncpy(pathCopy, path+start, i-start);
   pathCopy[i] = '\0';
-  return pathCopy + start;
+  return pathCopy;
 }
 
 char* getRemaining(char *path) {
@@ -376,8 +376,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             i++;
         }
         tempPath = getRemaining(tempPath);
-        // printf("~=~=~ firstElement points to: %s ~=~=~\n", firstElement);
-        if (firstElement != NULL) delete[] firstElement;                       // dealloc old str, alloc new
+        printf("~=~=~ firstElement points to: %s ~=~=~\n", firstElement);
+        delete[] firstElement;                       // dealloc old str, alloc new
         firstElement = getFirstElement(tempPath);
     }
 
