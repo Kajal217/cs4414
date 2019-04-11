@@ -191,7 +191,7 @@ int fat_open(const std::string &path) {
     tempDir = cwd;
 //   char* tmpPath = new char[strlen(path.c_str())+100];
 //   tmpPath = strcpy(tmpPath, path.c_str());
-  char* tmpPath = path.c_str();
+  char* tmpPath = (char*)path.c_str();
   //printf("current path %s \n", tempPath);
   unsigned int i = 0;
 	
@@ -351,8 +351,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     tempDir = cwd;
 //   char* tempPath = new char[strlen(path.c_str())+100];
 //   tempPath = strcpy(tempPath, path.c_str());
-    char* tmpPath = path.c_str();
-    
+    char* tempPath = (char*) path.c_str();
+
   //printf("current path %s \n", tempPath);
   int i = 0;
   while(getFirstElement(tempPath) != NULL){
