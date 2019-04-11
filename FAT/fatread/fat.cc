@@ -38,7 +38,7 @@ char* getFirstElement(char *path) {
     if (path[i] == '/') {
         std::string element = path;
         element = element.substr(start, i-start);
-        return element.c_str();
+        return (char*)element.c_str();
     }
   }
   return path + start;
