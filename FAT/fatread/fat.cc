@@ -40,7 +40,7 @@ char* getFirstElement(char *path) {
 		 
     //   strncpy(firstElement, path, i);
     //   firstElement[i] = '\0';
-        path[i] = '\0'
+        path[i] = '\0';
 		 
       return path + start;
     }
