@@ -102,7 +102,7 @@ DirEntry* readClusters(uint32_t combine) {
     numClusters++;
   } while (tmp < 0x0FFFFFF8);
 
-  char*  clusterBlock = (char*)malloc(numClusters * clusterSize);
+  char* clusterBlock = (char*)malloc(numClusters * clusterSize);
   uint32_t clusterItr = 1;
 
   // Iterate through the clusters. Seek to the last one. 
@@ -199,47 +199,47 @@ int fat_open(const std::string &path) {
 	
   // While there are still directories in the path.
   while(getFirstElement(tmpPath) != NULL) {
-		
+      
     found = -1;
-		
+
     // While there are still directories in the cluster.
     while (tempDir[i].DIR_Name[0] != '\0') {
 
       if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(getFirstElement(tmpPath), (char *)tempDir[i].DIR_Name)) { 
-	int j;
-	for (j = 0; j < 128; j++) {
-	  if (dirTable[j] == NULL) {
+        int j;
+        for (j = 0; j < 128; j++) {
+            if (dirTable[j] == NULL) {
 
-	    dirTable[j] = &tempDir[i];
-	    return j;
-	  }
-	}
+                dirTable[j] = &tempDir[i];
+                return j;
+            }
+        }
       }
 
       if (tempDir[i].DIR_Name[0] == 0xE5) {
-	i++;
+	    i++;
       }
       else {
 
-	if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
+        if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
 
-	  found = 1;
+            found = 1;
 
-	  tmpPath = getRemaining(tmpPath);
+            tmpPath = getRemaining(tmpPath);
 
-	  break;
-	}
+            break;
+        }
 
-	i++;
+        i++;
       }
     }
 
-    if (found == -1)
-      return -1;
+    if (found == -1) return -1;
 
     // Get pointer to where the next cluster is.
     uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
 
+    if (tempDir != rootDir && tempDir != cwd) free(tempDir); // plug the leak?
     tempDir = readClusters(combine);
   }
 	
@@ -358,21 +358,22 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   while(getFirstElement(tempPath) != NULL){
     while(tempDir[i].DIR_Name[0] != '\0'){
       if(compareDirNames(getFirstElement(tempPath), (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/")) {
-	//printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
-	AnyDirEntry curr;
-	curr.dir = tempDir[i];
-	result.push_back(curr);
-	//printf("Reached");
-	//tempPath = getRemaining(tempPath);
+        //printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
+        AnyDirEntry curr;
+        curr.dir = tempDir[i];
+        result.push_back(curr);
+        //printf("Reached");
+        //tempPath = getRemaining(tempPath);
       }
       else{
-	uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
-	tempDir = readClusters(combine);
+        uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+        if (tempDir != rootDir && tempDir != cwd) free(tempDir); // plug the leak?
+        tempDir = readClusters(combine);
       }
       i++;
     }
     tempPath = getRemaining(tempPath);
   }
-  
+  if (tempDir != rootDir && tempDir != cwd && tempDir != 0) free(tempDir); // plug the leak?
   return result;
 }
