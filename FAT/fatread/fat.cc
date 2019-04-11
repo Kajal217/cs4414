@@ -376,8 +376,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             i++;
         }
         tempPath = getRemaining(tempPath);
-        printf("~=~=~ firstElement points to: %s ~=~=~\n", firstElement);
-        delete[] firstElement;                       // dealloc old str, alloc new
+        // printf("~=~=~ firstElement points to: %s ~=~=~\n", firstElement);
+        if (firstElement != NULL) delete[] firstElement;                       // dealloc old str, alloc new
         firstElement = getFirstElement(tempPath);
     }
 
