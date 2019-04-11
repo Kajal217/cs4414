@@ -38,7 +38,7 @@ char* getFirstElement(char *path) {
     if (path[i] == '/') {
         std::string element = path;
         element = element.substr(start, i-start);
-        return (char*)element.c_str();
+        return (char*)element.c_str(); // return everything between the first 2 slashes in path
     }
   }
   return path + start;
@@ -189,8 +189,9 @@ int fat_open(const std::string &path) {
     tempDir = dirRoot;
   else
     tempDir = cwd;
-  char* tmpPath = new char[strlen(path.c_str())+100];
-  tmpPath = strcpy(tmpPath, path.c_str());
+//   char* tmpPath = new char[strlen(path.c_str())+100];
+//   tmpPath = strcpy(tmpPath, path.c_str());
+  char* tmpPath = path.c_str();
   //printf("current path %s \n", tempPath);
   unsigned int i = 0;
 	
@@ -326,8 +327,10 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
     firstSecOfCluster = ((clusterNum - 2) * fat.BPB_SecPerClus) + firstDataSector;
   }
 
-  if (fileIndex < dir->DIR_FileSize)
-    return -1;
+  if (fileIndex < dir->DIR_FileSize){
+      // delete fatBuffer and file?
+      return -1;
+  }
 	
   memcpy(buffer, (void*)&file[offset], count);
 	
@@ -346,8 +349,10 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     tempDir = dirRoot;
   else
     tempDir = cwd;
-  char* tempPath = new char[strlen(path.c_str())+100];
-  tempPath = strcpy(tempPath, path.c_str());
+//   char* tempPath = new char[strlen(path.c_str())+100];
+//   tempPath = strcpy(tempPath, path.c_str());
+    char* tmpPath = path.c_str();
+    
   //printf("current path %s \n", tempPath);
   int i = 0;
   while(getFirstElement(tempPath) != NULL){
