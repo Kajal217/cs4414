@@ -239,7 +239,7 @@ int fat_open(const std::string &path) {
     // Get pointer to where the next cluster is.
     uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
 
-    if (tempDir != rootDir && tempDir != cwd) free(tempDir); // plug the leak?
+    if (tempDir != dirRoot && tempDir != cwd) free(tempDir); // plug the leak?
     tempDir = readClusters(combine);
   }
 	
@@ -367,13 +367,13 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
       }
       else{
         uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
-        if (tempDir != rootDir && tempDir != cwd) free(tempDir); // plug the leak?
+        if (tempDir != dirRoot && tempDir != cwd) free(tempDir); // plug the leak?
         tempDir = readClusters(combine);
       }
       i++;
     }
     tempPath = getRemaining(tempPath);
   }
-  if (tempDir != rootDir && tempDir != cwd && tempDir != 0) free(tempDir); // plug the leak?
+  if (tempDir != dirRoot && tempDir != cwd && tempDir != 0) free(tempDir); // plug the leak?
   return result;
 }
