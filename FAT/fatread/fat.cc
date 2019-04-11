@@ -36,7 +36,7 @@ char* getFirstElement(char *path) {
   uint i;
   for (i = start; i < strlen(path); i++) {
     if (path[i] == '/') {
-      char *firstElement = new char[i+1];
+      char *firstElement[i+1];
 		 
       strncpy(firstElement, path, i);
       firstElement[i] = '\0';
@@ -192,7 +192,7 @@ int fat_open(const std::string &path) {
     tempDir = dirRoot;
   else
     tempDir = cwd;
-  char* tmpPath = new char[strlen(path.c_str())+100];
+  char* tmpPath[strlen(path.c_str())+100];
   tmpPath = strcpy(tmpPath, path.c_str());
   //printf("current path %s \n", tempPath);
   unsigned int i = 0;
@@ -282,9 +282,9 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
   int fatSecNum;
   int fatOffset; 
 	
-  char *fatBuffer = new char[fat.BPB_BytsPerSec];
+  char *fatBuffer[fat.BPB_BytsPerSec];
 	
-  char *file = new char[dir->DIR_FileSize];
+  char *file[dir->DIR_FileSize];
 	
   uint fileIndex = 0;
 	
@@ -349,7 +349,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     tempDir = dirRoot;
   else
     tempDir = cwd;
-  char* tempPath = new char[strlen(path.c_str())+100];
+  char* tempPath[strlen(path.c_str())+100];
   tempPath = strcpy(tempPath, path.c_str());
   //printf("current path %s \n", tempPath);
   int i = 0;
