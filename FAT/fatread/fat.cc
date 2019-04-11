@@ -201,8 +201,7 @@ int fat_open(const std::string &path) {
         // While there are still directories in the cluster.
         while (tempDir[i].DIR_Name[0] != '\0') {
             if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(getFirstElement(tmpPath), (char *)tempDir[i].DIR_Name)) { 
-                int j;
-                for (j = 0; j < 128; j++) {
+                for (int j = 0; j < 128; j++) {
                     if (dirTable[j] == NULL) {
                         dirTable[j] = &tempDir[i];
                         return j;
@@ -227,6 +226,7 @@ int fat_open(const std::string &path) {
 
         // Get pointer to where the next cluster is.
         uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+        if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
         tempDir = readClusters(combine);
     }
 
@@ -239,6 +239,7 @@ bool fat_close(int fd) {
     return false;
   }
   else if(fd < 128 && dirTable[fd]){
+    free(dirTable[fd]); // deallocate dir
     dirTable[fd] = NULL;
     return true;
   }
@@ -251,7 +252,6 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
   if (initialized == 0 || fd < 0){
     return -1;
   }
-  //DirEntry* dir = dirTable[fd];
 
   if (dirTable[fd]==NULL){
     return -1;
@@ -354,6 +354,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             }
             else{
                 uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+                if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
                 tempDir = readClusters(combine);
             }
             i++;
