@@ -162,8 +162,6 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  
-  
   dirRoot = readClusters(fat.BPB_RootClus);
   
   // Set the current working directory to root.
@@ -201,38 +199,31 @@ int fat_open(const std::string &path) {
 	
   // While there are still directories in the path.
   while(getFirstElement(tmpPath) != NULL) {
-		
     found = -1;
 		
     // While there are still directories in the cluster.
     while (tempDir[i].DIR_Name[0] != '\0') {
 
       if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(getFirstElement(tmpPath), (char *)tempDir[i].DIR_Name)) { 
-	int j;
-	for (j = 0; j < 128; j++) {
-	  if (dirTable[j] == NULL) {
-
-	    dirTable[j] = &tempDir[i];
-	    return j;
-	  }
-	}
+	      int j;
+	      for (j = 0; j < 128; j++) {
+	        if (dirTable[j] == NULL) {
+	          dirTable[j] = &tempDir[i];
+	          return j;
+	        }
+	      }
       }
 
       if (tempDir[i].DIR_Name[0] == 0xE5) {
-	i++;
+	      i++;
       }
       else {
-
-	if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
-
-	  found = 1;
-
-	  tmpPath = getRemaining(tmpPath);
-
-	  break;
-	}
-
-	i++;
+	      if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
+	        found = 1;
+	        tmpPath = getRemaining(tmpPath);
+	        break;
+	      }
+	      i++;
       }
     }
 
@@ -244,7 +235,6 @@ int fat_open(const std::string &path) {
 
     tempDir = readClusters(combine);
   }
-	
   return -1;
 }
 
@@ -261,6 +251,7 @@ bool fat_close(int fd) {
     return false;
   }
 }
+
 
 int fat_pread(int fd, void *buffer, int count, int offset) {
   if (initialized == 0 || fd < 0){

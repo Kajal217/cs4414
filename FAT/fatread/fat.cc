@@ -159,8 +159,6 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  
-  
   dirRoot = readClusters(fat.BPB_RootClus);
   
   // Set the current working directory to root.
@@ -175,75 +173,64 @@ bool fat_cd(const std::string &path) {
 }
 
 int fat_open(const std::string &path) {
+    if (initialized == 0){
+        return -1;
+    }
+    if(path.c_str() == NULL || path.c_str()[0] == 0x00){
+        return -1;
+    }
+    int absPath = path.c_str()[0] == '/' ? 1 : 0;
+    //printf("state of abs is %i \n", absPath);
+    DirEntry* tempDir;
+    if(absPath)
+        tempDir = dirRoot;
+    else
+        tempDir = cwd;
+    //   char* tmpPath = new char[strlen(path.c_str())+100];
+    //   tmpPath = strcpy(tmpPath, path.c_str());
+    char* tmpPath = (char*)path.c_str();
+    //printf("current path %s \n", tempPath);
+    unsigned int i = 0;
 
-  if (initialized == 0){
-    return -1;
-  }
-  if(path.c_str() == NULL || path.c_str()[0] == 0x00){
-    return -1;
-  }
-  int absPath = path.c_str()[0] == '/' ? 1 : 0;
-  //printf("state of abs is %i \n", absPath);
-  DirEntry* tempDir;
-  if(absPath)
-    tempDir = dirRoot;
-  else
-    tempDir = cwd;
-//   char* tmpPath = new char[strlen(path.c_str())+100];
-//   tmpPath = strcpy(tmpPath, path.c_str());
-  char* tmpPath = (char*)path.c_str();
-  //printf("current path %s \n", tempPath);
-  unsigned int i = 0;
-	
-  int found = -1;
-	
-  // While there are still directories in the path.
-  while(getFirstElement(tmpPath) != NULL) {
-      
-    found = -1;
+    int found = -1;
 
-    // While there are still directories in the cluster.
-    while (tempDir[i].DIR_Name[0] != '\0') {
-
-      if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(getFirstElement(tmpPath), (char *)tempDir[i].DIR_Name)) { 
-        int j;
-        for (j = 0; j < 128; j++) {
-            if (dirTable[j] == NULL) {
-
-                dirTable[j] = &tempDir[i];
-                return j;
+    // While there are still directories in the path.
+    while(getFirstElement(tmpPath) != NULL) {
+        found = -1;
+        
+        // While there are still directories in the cluster.
+        while (tempDir[i].DIR_Name[0] != '\0') {
+            if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(getFirstElement(tmpPath), (char *)tempDir[i].DIR_Name)) { 
+                int j;
+                for (j = 0; j < 128; j++) {
+                    if (dirTable[j] == NULL) {
+                        dirTable[j] = &tempDir[i];
+                        return j;
+                    }
+                }
+            }
+            if (tempDir[i].DIR_Name[0] == 0xE5) {
+                i++;
+            }
+            else {
+                if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
+                    found = 1;
+                    tmpPath = getRemaining(tmpPath);
+                    break;
+                }
+                i++;
             }
         }
-      }
 
-      if (tempDir[i].DIR_Name[0] == 0xE5) {
-	    i++;
-      }
-      else {
+        if (found == -1)
+            return -1;
 
-        if (compareDirNames(getFirstElement(tmpPath), (char *) tempDir[i].DIR_Name)) {
-
-            found = 1;
-
-            tmpPath = getRemaining(tmpPath);
-
-            break;
-        }
-
-        i++;
-      }
+        // Get pointer to where the next cluster is.
+        uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+        tempDir = readClusters(combine);
     }
 
-    if (found == -1) return -1;
-
-    // Get pointer to where the next cluster is.
-    uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
-
-    if (tempDir != dirRoot && tempDir != cwd) free(tempDir); // plug the leak?
-    tempDir = readClusters(combine);
-  }
-	
-  return -1;
+    return -1;
 }
 
 
@@ -338,42 +325,41 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 }
 
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
-  std::vector<AnyDirEntry> result;
-  if(initialized == 0){
-    return result;
-  }
-  int absPath = path.c_str()[0] == '/' ? 1 : 0;
-  //printf("state of abs is %i \n", absPath);
-  DirEntry* tempDir;
-  if(absPath)
-    tempDir = dirRoot;
-  else
-    tempDir = cwd;
+    std::vector<AnyDirEntry> result;
+    if(initialized == 0){
+        return result;
+    }
+    int absPath = path.c_str()[0] == '/' ? 1 : 0;
+    //printf("state of abs is %i \n", absPath);
+    DirEntry* tempDir;
+    if(absPath)
+        tempDir = dirRoot;
+    else
+        tempDir = cwd;
 //   char* tempPath = new char[strlen(path.c_str())+100];
 //   tempPath = strcpy(tempPath, path.c_str());
     char* tempPath = (char*) path.c_str();
 
   //printf("current path %s \n", tempPath);
-  int i = 0;
-  while(getFirstElement(tempPath) != NULL){
-    while(tempDir[i].DIR_Name[0] != '\0'){
-      if(compareDirNames(getFirstElement(tempPath), (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/")) {
-        //printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
-        AnyDirEntry curr;
-        curr.dir = tempDir[i];
-        result.push_back(curr);
-        //printf("Reached");
-        //tempPath = getRemaining(tempPath);
-      }
-      else{
-        uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
-        if (tempDir != dirRoot && tempDir != cwd) free(tempDir); // plug the leak?
-        tempDir = readClusters(combine);
-      }
-      i++;
+    int i = 0;
+    while(getFirstElement(tempPath) != NULL){
+        while(tempDir[i].DIR_Name[0] != '\0'){
+            if(compareDirNames(getFirstElement(tempPath), (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/")) {
+                //printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
+                AnyDirEntry curr;
+                curr.dir = tempDir[i];
+                result.push_back(curr);
+                //printf("Reached");
+                //tempPath = getRemaining(tempPath);
+            }
+            else{
+                uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+                tempDir = readClusters(combine);
+            }
+            i++;
+        }
+        tempPath = getRemaining(tempPath);
     }
-    tempPath = getRemaining(tempPath);
-  }
-  if (tempDir != dirRoot && tempDir != cwd && tempDir != 0) free(tempDir); // plug the leak?
+  
   return result;
 }
