@@ -225,15 +225,17 @@ int fat_open(const std::string &path) {
             }
         }
 
-        if (found == -1)
+        if (found == -1) {
+            if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
             return -1;
+        }
 
         // Get pointer to where the next cluster is.
         uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
         if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
         tempDir = readClusters(combine);
     }
-
+    if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     return -1;
 }
 
@@ -365,6 +367,6 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         }
         tempPath = getRemaining(tempPath);
     }
-  
+  if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
   return result;
 }
