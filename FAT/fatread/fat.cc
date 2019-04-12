@@ -177,9 +177,9 @@ bool fat_mount(const std::string &path) {
 
 bool fat_cd(const std::string &path) {
   DirEntry * curDir;
-  char* cpath = path.c_str();
+  char* cpath = (char*) path.c_str();
   // if absolute path, set curDir to root
-  if (path[0] == '/') {
+  if (cpath[0] == '/') {
     curDir = dirRoot;
   }
   else{
@@ -188,7 +188,7 @@ bool fat_cd(const std::string &path) {
   char* firstElement = getFirstElement(cpath);
 
   // if empty or trivial path, just cd to curDir
-  if(strcmp(path, "") == 0 || strcmp(firstElement, "") == 0){
+  if(strcmp(cpath, "") == 0 || strcmp(firstElement, "") == 0){
     cwd = curDir;
     return true;
   }
