@@ -134,9 +134,9 @@ bool fat_mount(const std::string &path) {
      open the specified FAT disk image and use it for all subsequent FAT_* calls. In this function only path is a path on the underlying OS’s 
      filesystem instead of a path in the FAT volume. This should return true if the disk image is successfully opened, and false on any error.   
   **/
-  const char* env = path.c_str();
+  const char* cpath = path.c_str();
   
-  fd = open(env, O_RDWR, 0);
+  fd = open(cpath, O_RDWR, 0);
   
   if(read(fd, (char*)&fat, sizeof(fat)) == -1){
     return false;
@@ -176,6 +176,57 @@ bool fat_mount(const std::string &path) {
 }
 
 bool fat_cd(const std::string &path) {
+  DirEntry * curDir;
+  char* cpath = path.c_str();
+  // if absolute path, set curDir to root
+  if (path[0] == '/') {
+    curDir = dirRoot;
+  }
+  else{
+    curDir = cwd;
+  }
+  char* firstElement = getFirstElement(cpath);
+
+  // if empty or trivial path, just cd to curDir
+  if(strcmp(path, "") == 0 || strcmp(firstElement, "") == 0){
+    cwd = curDir;
+    return true;
+  }
+
+  // find the directory
+  int i = 0;
+  int found = -1;
+  while(strcmp(firstElement, "") != 0){
+    found = -1;
+    i = 0;
+    while(curDir[i].DIR_Name[0] != '\0'){
+        if(compareDirNames(firstElement, (char *) curDir[i].DIR_Name)) {
+          // change to the found directory
+          cwd = &curDir[i];
+          found = 1;
+          break;
+        }
+        i++;
+    }
+
+    if (found == -1) {
+      if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
+      delete[] firstElement;   // dealloc the copied str
+      return false;
+    }
+
+    // Get pointer to where the next cluster is.
+    uint32_t combine = ((unsigned int) curDir[i].DIR_FstClusHI << 16) + ((unsigned int) curDir[i].DIR_FstClusLO);
+    if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
+    curDir = readClusters(combine);
+
+    cpath = getRemaining(cpath);
+    delete[] firstElement;                       // dealloc old str, alloc new
+    firstElement = getFirstElement(cpath);
+  }
+
+  if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
+  delete[] firstElement;   // dealloc the copied str
   return false;
 }
 
@@ -376,7 +427,6 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             i++;
         }
         tempPath = getRemaining(tempPath);
-        printf("~=~=~ firstElement points to: %s ~=~=~\n", firstElement);
         delete[] firstElement;                       // dealloc old str, alloc new
         firstElement = getFirstElement(tempPath);
     }
