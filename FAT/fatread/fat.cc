@@ -185,11 +185,13 @@ bool fat_cd(const std::string &path) {
   else{
     tempDir = cwd;
   }
+  if (tempDir == NULL) return false;
   char* firstElement = getFirstElement(tempPath);
 
   // if empty or trivial path, just cd to tempDir
   if(strcmp(tempPath, "") == 0 || strcmp(firstElement, "") == 0){
     cwd = tempDir;
+    delete[] firstElement; // dealloc the copied str
     return true;
   }
 
