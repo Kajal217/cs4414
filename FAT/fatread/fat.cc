@@ -176,6 +176,7 @@ bool fat_mount(const std::string &path) {
 }
 
 bool fat_cd(const std::string &path) {
+  if (initialized == 0) return false;
   DirEntry * tempDir;
   char* tempPath = (char*) path.c_str();
   // if absolute path, set tempDir to root
@@ -185,7 +186,7 @@ bool fat_cd(const std::string &path) {
   else{
     tempDir = cwd;
   }
-  if (tempDir == NULL) return false;
+  // if (tempDir == NULL) return false;
   char* firstElement = getFirstElement(tempPath);
 
   // if empty or trivial path, just cd to tempDir
@@ -242,16 +243,15 @@ bool fat_cd(const std::string &path) {
     }
 
     // Get pointer to where the next cluster is.
-    if (firstElement != NULL){
-      uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
-      if (tempDir != dirRoot && tempDir != cwd)
-        free(tempDir); // deallocate dir
-      tempDir = readClusters(combine);
-    }
+    
+    uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
+    if (tempDir != dirRoot && tempDir != cwd)
+      free(tempDir); // deallocate dir
+    tempDir = readClusters(combine);
   }
 
   // change to found directory
-  cwd = &tempDir[i];
+  cwd = tempDir;
   delete[] firstElement; // dealloc the copied str
   return true;
 }
