@@ -3,6 +3,8 @@
         "xiosbase": "c",
         "fstream": "c",
         "iosfwd": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp"
     }
 }

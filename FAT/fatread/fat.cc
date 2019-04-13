@@ -194,12 +194,12 @@ bool fat_cd(const std::string &path) {
   }
 
   // find the directory
-  int i = 0;
+  unsigned int i = 0;
   int found = -1;
   while(strcmp(firstElement, "") != 0){
     found = -1;
-    i = 0;
-    while(curDir[i].DIR_Name[0] != '\0'){
+    // i = 0;
+    while(curDir[i].DIR_Name[0] != '\0'){ // <<< SEGBOI !!!
         if(compareDirNames(firstElement, (char *) curDir[i].DIR_Name)) {
           // change to the found directory
           cwd = &curDir[i];
