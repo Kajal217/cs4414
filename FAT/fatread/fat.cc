@@ -196,7 +196,6 @@ bool fat_cd(const std::string &path) {
   // find the directory
   int found = -1;
   int i = 0;
-  char *firstElement = getFirstElement(tempPath);
 
   while (firstElement != NULL)
   {
