@@ -251,6 +251,7 @@ bool fat_cd(const std::string &path) {
   }
 
   // change to found directory
+  if (cwd != dirRoot) free(cwd);
   cwd = tempDir;
   delete[] firstElement; // dealloc the copied str
   return true;
