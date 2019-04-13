@@ -249,7 +249,7 @@ bool fat_cd(const std::string &path) {
   }
 
   // change to found directory
-  cwd = tempDir[i];
+  cwd = &tempDir[i];
   delete[] firstElement; // dealloc the copied str
   return true;
 }
