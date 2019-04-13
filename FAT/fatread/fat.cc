@@ -176,61 +176,80 @@ bool fat_mount(const std::string &path) {
 }
 
 bool fat_cd(const std::string &path) {
-  DirEntry * curDir;
+  DirEntry * tempDir;
   char* tempPath = (char*) path.c_str();
-  // if absolute path, set curDir to root
+  // if absolute path, set tempDir to root
   if (tempPath[0] == '/') {
-    curDir = dirRoot;
+    tempDir = dirRoot;
   }
   else{
-    curDir = cwd;
+    tempDir = cwd;
   }
   char* firstElement = getFirstElement(tempPath);
 
-  // if empty or trivial path, just cd to curDir
+  // if empty or trivial path, just cd to tempDir
   if(strcmp(tempPath, "") == 0 || strcmp(firstElement, "") == 0){
-    cwd = curDir;
+    cwd = tempDir;
     return true;
   }
 
   // find the directory
   int found = -1;
-  int i = 0;
+  unsigned int i = 0;
 
   while (firstElement != NULL)
   {
     found = -1;
 
-    while (curDir[i].DIR_Name[0] != '\0')
+    // While there are still directories in the cluster.
+    while (tempDir[i].DIR_Name[0] != '\0')
     {
-      if (compareDirNames(firstElement, (char *)curDir[i].DIR_Name) || strcmp(tempPath, "/"))
+      // if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(firstElement, (char *)tempDir[i].DIR_Name))
+      // {
+      //   for (int j = 0; j < 128; j++)
+      //   {
+      //     if (dirTable[j] == NULL)
+      //     {
+      //       dirTable[j] = &tempDir[i];
+      //       delete[] firstElement; // dealloc the copied str
+      //       return j;
+      //     }
+      //   }
+      // }
+      if (tempDir[i].DIR_Name[0] == 0xE5)
       {
-        cwd = &curDir[i];
-        found = 1;
+        i++;
       }
-      else
+      if (compareDirNames(firstElement, (char *)tempDir[i].DIR_Name) && tempDir[i].DIR_Attr == 0x10) // only directories
       {
-        uint32_t combine = ((unsigned int)curDir[i].DIR_FstClusHI << 16) + ((unsigned int)curDir[i].DIR_FstClusLO);
-        if (curDir != dirRoot && curDir != cwd)
-          free(curDir); // deallocate dir
-        curDir = readClusters(combine);
+        found = 1;
+        tempPath = getRemaining(tempPath);
+        delete[] firstElement;                   // dealloc the copied str
+        firstElement = getFirstElement(tempPath); // alloc a new str with the 1st element of the remaining path
+        break;
       }
       i++;
     }
+
     if (found == -1)
     {
-      if (curDir != dirRoot && curDir != cwd)
-        free(curDir);       // deallocate dir
+      if (tempDir != dirRoot && tempDir != cwd)
+        free(tempDir);       // deallocate dir
       delete[] firstElement; // dealloc the copied str
       return false;
     }
-    tempPath = getRemaining(tempPath);
-    delete[] firstElement; // dealloc old str, alloc new
-    firstElement = getFirstElement(tempPath);
+
+    // Get pointer to where the next cluster is.
+    if (firstElement != NULL){
+      uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
+      if (tempDir != dirRoot && tempDir != cwd)
+        free(tempDir); // deallocate dir
+      tempDir = readClusters(combine);
+    }
   }
 
-  if (curDir != dirRoot && curDir != cwd)
-    free(curDir);        // deallocate dir
+  // change to found directory
+  cwd = tempDir[i];
   delete[] firstElement; // dealloc the copied str
   return true;
 }
