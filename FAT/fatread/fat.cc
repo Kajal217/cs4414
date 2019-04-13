@@ -177,57 +177,63 @@ bool fat_mount(const std::string &path) {
 
 bool fat_cd(const std::string &path) {
   DirEntry * curDir;
-  char* cpath = (char*) path.c_str();
+  char* tempPath = (char*) path.c_str();
   // if absolute path, set curDir to root
-  if (cpath[0] == '/') {
+  if (tempPath[0] == '/') {
     curDir = dirRoot;
   }
   else{
     curDir = cwd;
   }
-  char* firstElement = getFirstElement(cpath);
+  char* firstElement = getFirstElement(tempPath);
 
   // if empty or trivial path, just cd to curDir
-  if(strcmp(cpath, "") == 0 || strcmp(firstElement, "") == 0){
+  if(strcmp(tempPath, "") == 0 || strcmp(firstElement, "") == 0){
     cwd = curDir;
     return true;
   }
 
   // find the directory
-  unsigned int i = 0;
   int found = -1;
-  while(strcmp(firstElement, "") != 0){
-    found = -1;
-    // i = 0;
-    while(curDir[i].DIR_Name[0] != '\0'){ // <<< SEGBOI !!!
-        if(compareDirNames(firstElement, (char *) curDir[i].DIR_Name)) {
-          // change to the found directory
-          cwd = &curDir[i];
-          found = 1;
-          break;
-        }
-        i++;
-    }
+  int i = 0;
+  char *firstElement = getFirstElement(tempPath);
 
-    if (found == -1) {
-      if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
-      delete[] firstElement;   // dealloc the copied str
+  while (firstElement != NULL)
+  {
+    found = -1;
+
+    while (curDir[i].DIR_Name[0] != '\0')
+    {
+      if (compareDirNames(firstElement, (char *)curDir[i].DIR_Name) || strcmp(tempPath, "/"))
+      {
+        cwd = &curDir[i];
+        found = 1;
+      }
+      else
+      {
+        uint32_t combine = ((unsigned int)curDir[i].DIR_FstClusHI << 16) + ((unsigned int)curDir[i].DIR_FstClusLO);
+        if (curDir != dirRoot && curDir != cwd)
+          free(curDir); // deallocate dir
+        curDir = readClusters(combine);
+      }
+      i++;
+    }
+    if (found == -1)
+    {
+      if (curDir != dirRoot && curDir != cwd)
+        free(curDir);       // deallocate dir
+      delete[] firstElement; // dealloc the copied str
       return false;
     }
-
-    // Get pointer to where the next cluster is.
-    uint32_t combine = ((unsigned int) curDir[i].DIR_FstClusHI << 16) + ((unsigned int) curDir[i].DIR_FstClusLO);
-    if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
-    curDir = readClusters(combine);
-
-    cpath = getRemaining(cpath);
-    delete[] firstElement;                       // dealloc old str, alloc new
-    firstElement = getFirstElement(cpath);
+    tempPath = getRemaining(tempPath);
+    delete[] firstElement; // dealloc old str, alloc new
+    firstElement = getFirstElement(tempPath);
   }
 
-  if (curDir != dirRoot && curDir != cwd) free(curDir);    // deallocate dir
-  delete[] firstElement;   // dealloc the copied str
-  return false;
+  if (curDir != dirRoot && curDir != cwd)
+    free(curDir);        // deallocate dir
+  delete[] firstElement; // dealloc the copied str
+  return true;
 }
 
 int fat_open(const std::string &path) {
