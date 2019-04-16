@@ -186,10 +186,10 @@ bool fat_cd(const std::string &path) {
   else{
     tempDir = cwd;
   }
-  // if (tempDir == NULL) return false;
   char* firstElement = getFirstElement(tempPath);
 
   // if empty or trivial path, just cd to tempDir
+  printf("firstElement = %s", firstElement);
   if(strcmp(tempPath, "") == 0 || strcmp(firstElement, "") == 0){
     cwd = tempDir;
     delete[] firstElement; // dealloc the copied str
@@ -207,18 +207,6 @@ bool fat_cd(const std::string &path) {
     // While there are still directories in the cluster.
     while (tempDir[i].DIR_Name[0] != '\0')
     {
-      // if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(firstElement, (char *)tempDir[i].DIR_Name))
-      // {
-      //   for (int j = 0; j < 128; j++)
-      //   {
-      //     if (dirTable[j] == NULL)
-      //     {
-      //       dirTable[j] = &tempDir[i];
-      //       delete[] firstElement; // dealloc the copied str
-      //       return j;
-      //     }
-      //   }
-      // }
       if (tempDir[i].DIR_Name[0] == 0xE5)
       {
         i++;
