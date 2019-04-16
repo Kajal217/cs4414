@@ -421,7 +421,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     char* firstElement = getFirstElement(tempPath);
     while(firstElement != NULL || strcmp(tempPath, "/") == 0){
         while(tempDir[i].DIR_Name[0] != '\0'){
-            if(compareDirNames(firstElement, (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/" == 0)) { //strcmp==0?
+            if(compareDirNames(firstElement, (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/") == 0) { //strcmp==0?
                 //printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
                 AnyDirEntry curr;
                 curr.dir = tempDir[i];
