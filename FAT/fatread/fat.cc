@@ -176,7 +176,7 @@ bool fat_cd(const std::string &path) {
 
   char *tempPath = new char[strlen(path.c_str()) + 100]; //+100??
   tempPath = strcpy(tempPath, path.c_str());
-  char *originalPtr = tempPath; // free this later
+  char *originalPtr = tempPath; // delete this later
   // char* tempPath = (char*) path.c_str();
 
   // if absolute path, set tempDir to root
@@ -239,7 +239,7 @@ bool fat_cd(const std::string &path) {
   }
 
   // change to found directory
-  free(originalPtr);
+  delete[] originalPtr;
   if (cwd != dirRoot) free(cwd);
   cwd = tempDir;
   delete[] firstElement; // dealloc the copied str
@@ -263,7 +263,7 @@ int fat_open(const std::string &path) {
 
     char* tmpPath = new char[strlen(path.c_str())+100]; // +100??
     tmpPath = strcpy(tmpPath, path.c_str());
-    char* originalPtr = tmpPath; // free this later
+    char* originalPtr = tmpPath; // delete this later
     // char* tmpPath = (char*)path.c_str();
     //printf("current path %s \n", tempPath);
     unsigned int i = 0;
@@ -312,7 +312,7 @@ int fat_open(const std::string &path) {
         if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
         tempDir = readClusters(combine);
     }
-    free(originalPtr);
+    delete[] originalPtr;
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     delete[] firstElement;   // dealloc the copied str
     return -1;
@@ -424,7 +424,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         
     char* tempPath = new char[strlen(path.c_str())+100]; //+100??
     tempPath = strcpy(tempPath, path.c_str());
-    char* originalPtr = tempPath; // free this later
+    char* originalPtr = tempPath; // delete this later
     // char* tempPath = (char*) path.c_str();
 
   //printf("current path %s \n", tempPath);
@@ -459,7 +459,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         if (tempPath==NULL) break;
     }
 
-    free(originalPtr);
+    delete[] originalPtr;
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     delete[] firstElement;   // dealloc the copied str
     return result;
