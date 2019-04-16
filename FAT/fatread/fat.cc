@@ -28,8 +28,9 @@ DirEntry *cwd;
 DirEntry* dirTable[128];
 
 char* getFirstElement(char *path) {
-  if (path == NULL)
+  if (path == NULL || strcmp(path, "") == 0) {
     return NULL;
+  }
 	
   int start = path[0] == '/' ? 1 : 0;
 	
@@ -184,7 +185,7 @@ bool fat_cd(const std::string &path) {
 
   // if empty or trivial path, just cd to tempDir
   printf("firstElement = %s \n", firstElement);
-  if(strcmp(tempPath, "") == 0 || strcmp(firstElement, "") == 0){
+  if(strcmp(tempPath, "") == 0 || firstElement == NULL){
     cwd = tempDir;
     delete[] firstElement; // dealloc the copied str
     return true;
@@ -418,7 +419,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   //printf("current path %s \n", tempPath);
     int i = 0;
     char* firstElement = getFirstElement(tempPath);
-    while(firstElement != NULL){
+    while(firstElement != NULL || tempPath=="/"){
         while(tempDir[i].DIR_Name[0] != '\0'){
             if(compareDirNames(firstElement, (char *) tempDir[i].DIR_Name) || strcmp(tempPath, "/")) {
                 //printf("Dir name is %s \n",(char *) tempDir[i].DIR_Name);
