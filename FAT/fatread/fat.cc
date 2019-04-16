@@ -193,6 +193,7 @@ bool fat_cd(const std::string &path) {
   if(strcmp(tempPath, "") == 0 || firstElement == NULL){
     cwd = tempDir;
     delete[] firstElement; // dealloc the copied str
+    delete[] originalPtr;
     return true;
   }
 
@@ -227,6 +228,7 @@ bool fat_cd(const std::string &path) {
       if (tempDir != dirRoot && tempDir != cwd)
         free(tempDir);       // deallocate dir
       delete[] firstElement; // dealloc the copied str
+      delete[] originalPtr;
       return false;
     }
 
@@ -282,6 +284,7 @@ int fat_open(const std::string &path) {
                     if (dirTable[j] == NULL) {
                         dirTable[j] = &tempDir[i];
                         delete[] firstElement;   // dealloc the copied str
+                        delete[] originalPtr;
                         return j;
                     }
                 }
@@ -304,6 +307,7 @@ int fat_open(const std::string &path) {
         if (found == -1) {
             if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
             delete[] firstElement;   // dealloc the copied str
+            delete[] originalPtr;
             return -1;
         }
 
