@@ -211,7 +211,7 @@ bool fat_cd(const std::string &path) {
       {
         i++;
       }
-      if (compareDirNames(firstElement, (char *)tempDir[i].DIR_Name) && tempDir[i].DIR_Attr & 0x10) // only directories
+      else if (compareDirNames(firstElement, (char *)tempDir[i].DIR_Name) && tempDir[i].DIR_Attr & 0x10) // only directories
       {
         found = 1;
         tempPath = getRemaining(tempPath);
