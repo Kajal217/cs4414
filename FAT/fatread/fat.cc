@@ -173,7 +173,12 @@ bool fat_mount(const std::string &path) {
 bool fat_cd(const std::string &path) {
   if (initialized == 0) return false;
   DirEntry * tempDir;
-  char* tempPath = (char*) path.c_str();
+
+  char *tempPath = new char[strlen(path.c_str()) + 100]; //+100??
+  tempPath = strcpy(tempPath, path.c_str());
+  char *originalPtr = tempPath; // free this later
+  // char* tempPath = (char*) path.c_str();
+
   // if absolute path, set tempDir to root
   if (tempPath[0] == '/') {
     tempDir = dirRoot;
@@ -234,6 +239,7 @@ bool fat_cd(const std::string &path) {
   }
 
   // change to found directory
+  free(originalPtr);
   if (cwd != dirRoot) free(cwd);
   cwd = tempDir;
   delete[] firstElement; // dealloc the copied str
@@ -254,9 +260,11 @@ int fat_open(const std::string &path) {
         tempDir = dirRoot;
     else
         tempDir = cwd;
-    //   char* tmpPath = new char[strlen(path.c_str())+100];
-    //   tmpPath = strcpy(tmpPath, path.c_str());
-    char* tmpPath = (char*)path.c_str();
+
+    char* tmpPath = new char[strlen(path.c_str())+100]; // +100??
+    tmpPath = strcpy(tmpPath, path.c_str());
+    char* originalPtr = tmpPath; // free this later
+    // char* tmpPath = (char*)path.c_str();
     //printf("current path %s \n", tempPath);
     unsigned int i = 0;
 
@@ -304,6 +312,7 @@ int fat_open(const std::string &path) {
         if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
         tempDir = readClusters(combine);
     }
+    free(originalPtr);
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     delete[] firstElement;   // dealloc the copied str
     return -1;
@@ -412,9 +421,11 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         tempDir = dirRoot;
     else
         tempDir = cwd;
-//   char* tempPath = new char[strlen(path.c_str())+100];
-//   tempPath = strcpy(tempPath, path.c_str());
-    char* tempPath = (char*) path.c_str();
+        
+    char* tempPath = new char[strlen(path.c_str())+100]; //+100??
+    tempPath = strcpy(tempPath, path.c_str());
+    char* originalPtr = tempPath; // free this later
+    // char* tempPath = (char*) path.c_str();
 
   //printf("current path %s \n", tempPath);
     int i = 0;
@@ -446,6 +457,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         firstElement = getFirstElement(tempPath);
     }
 
+    free(originalPtr);
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     delete[] firstElement;   // dealloc the copied str
     return result;
