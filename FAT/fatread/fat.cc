@@ -455,6 +455,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         tempPath = getRemaining(tempPath);
         delete[] firstElement;                       // dealloc old str, alloc new
         firstElement = getFirstElement(tempPath);
+
+        if (tempPath==NULL) break;
     }
 
     free(originalPtr);
