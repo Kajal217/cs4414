@@ -39,7 +39,7 @@ char* getFirstElement(char *path) {
       break;
     }
   }
-  char* pathCopy = new char[i+1-start];
+  char* pathCopy = new char[i-start];
   strncpy(pathCopy, path+start, i-start);
   // pathCopy[i] = '\0';
   return pathCopy;
