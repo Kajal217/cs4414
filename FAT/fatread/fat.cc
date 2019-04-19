@@ -155,11 +155,11 @@ DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   uint32_t numDirs=0;
   uint32_t numEntries[1];
   // numEntries[1] = 0;
-  myEntries = getAllEntries(dir, numEntries);
+  myEntries = getAllEntries(dir, numEntries); // root case??
   currEnt = myEntries;
   int i = 0;
   //count dirs
-  while(currEnt->DIR_Name[0] != 0){
+  while(currEnt->DIR_Name[0] != '\0'){
     if ((currEnt->DIR_Attr & DirEntryAttributes::DIRECTORY || currEnt->DIR_Attr & DirEntryAttributes::VOLUME_ID) &&
 	((currEnt->DIR_Attr|DirEntryAttributes::LONG_NAME_MASK) != DirEntryAttributes::LONG_NAME))
       numDirs++;
