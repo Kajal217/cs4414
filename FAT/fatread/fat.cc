@@ -565,7 +565,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
     printf("*numEnts = '%i' \n", *numEnts);
-    for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // use numEnts for condition?
+    for(i=0; i<*numEnts; i++){  // use numEnts or DIR_Name[0] for condition?
       printf("Dir name is %s \n",(char *) myDirs[i].DIR_Name);
       AnyDirEntry curr;
       curr.dir = myDirs[i];
@@ -599,7 +599,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
   myDirs = getAllEntries(tempDir, numEnts);
   free(tempDir);
-  for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // ^^^
+  for(i=0; i<*numEnts; i++){  // ^^^
     AnyDirEntry curr;
     curr.dir = myDirs[i];
     result.push_back(curr);
