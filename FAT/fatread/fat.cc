@@ -20,7 +20,7 @@ int* fatTable;
 
 Fat32BPB fat;
 
-uint32_t rootDirOffset;
+// uint32_t rootDirOffset;
 
 // Reference to the root directory and the current working directory.
 DirEntry *dirRoot;
@@ -131,21 +131,21 @@ DirEntry* readClusters(uint32_t combine, uint32_t* sizePtr) {
 DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry* myEntries;
   // read root entries directly
-  if(dir[0].DIR_FstClusLO == 0){
-    myEntries = (DirEntry*) malloc((fat.BPB_rootEntCnt) * sizeof(DirEntry));
-    lseek(fd, rootDirOffset, 0);
-    int temp = read(fd, myEntries, (fat.BPB_rootEntCnt) * sizeof(DirEntry));
-    if(temp == -1) std::cerr << "Read interrupted\n";
-    *sizePtr = fat.BPB_rootEntCnt;
-  }
+  // if(dir[0].DIR_FstClusLO == 0){
+  //   myEntries = (DirEntry*) malloc((fat.BPB_rootEntCnt) * sizeof(DirEntry));
+  //   lseek(fd, rootDirOffset, 0);
+  //   int temp = read(fd, myEntries, (fat.BPB_rootEntCnt) * sizeof(DirEntry));
+  //   if(temp == -1) std::cerr << "Read interrupted\n";
+  //   *sizePtr = fat.BPB_rootEntCnt;
+  // }
   // otherwise, calculate all cluster locations and offsets to read in all clusters
-  else{
+  // else{
     uint32_t combine = ((unsigned int) dir->DIR_FstClusHI << 16) + ((unsigned int) dir->DIR_FstClusLO);
     uint32_t clusChainSize[1];
     *clusChainSize = 0;
 
     myEntries = readClusters(combine, clusChainSize);
-  }
+  // }
   return myEntries;
 }
 
@@ -235,7 +235,7 @@ bool fat_mount(const std::string &path) {
   const char* cpath = path.c_str();
   
   fd = open(cpath, O_RDWR, 0);
-  
+  lseek(fd, 0, 0);
   if(read(fd, (char*)&fat, sizeof(fat)) == -1){
     return false;
   }
@@ -248,7 +248,7 @@ bool fat_mount(const std::string &path) {
   }
   
   // use BPB_FATSz16 or 32?
-  rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
+  // rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
 
   int rootDirSectors = ((fat.BPB_rootEntCnt * 32) + (fat.BPB_BytsPerSec - 1)) / fat.BPB_BytsPerSec;
   
@@ -267,14 +267,14 @@ bool fat_mount(const std::string &path) {
     std::cerr << "Read interrupted 2\n";
   }
   
-  // uint32_t sizePtr[1];
-  // *sizePtr = 0;
-  // dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
+  uint32_t sizePtr[1];
+  *sizePtr = 0;
+  dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
 
-  dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
-  lseek(fd, rootDirOffset, 0);
-  int temp = read(fd, dirRoot, sizeof(DirEntry));
-  if(temp == -1) std::cerr << "Read interrupted\n";
+  // dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
+  // lseek(fd, rootDirOffset, 0);
+  // int temp = read(fd, dirRoot, sizeof(DirEntry));
+  // if(temp == -1) std::cerr << "Read interrupted\n";
 
   
   // Set the current working directory to root.
