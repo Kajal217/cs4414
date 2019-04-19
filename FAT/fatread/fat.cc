@@ -30,7 +30,7 @@ DirEntry *cwd;
 DirEntry* dirTable[128];
 
 char* getFirstElement(char *path) {
-  if (path == NULL || strcmp(path, "") == 0) {
+  if (path == NULL || strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
     return NULL;
   }
 	
@@ -562,7 +562,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   printf("pathCopy = '%s' \n", pathCopy);
   printf("firstElement = '%s' \n", firstElement);
   //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
-  if(strcmp(pathCopy, "") == 0 || firstElement==NULL){
+  if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
     printf("~~~ i am groot ~~~\n");
     for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // use numEnts for condition?
