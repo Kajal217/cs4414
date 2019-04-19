@@ -562,7 +562,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
   if(strcmp(path.c_str(), "") == 0 || strcmp(firstElement, "") == 0){
     myDirs = getAllEntries(tempDir, numEnts);
-    for(i=0; i<*numEnts; i++){
+    for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // use numEnts for condition?
       AnyDirEntry curr;
       curr.dir = myDirs[i];
       result.push_back(curr);
@@ -595,7 +595,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
   myDirs = getAllEntries(tempDir, numEnts);
   free(tempDir);
-  for(i=0; i<*numEnts; i++){
+  for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // ^^^
     AnyDirEntry curr;
     curr.dir = myDirs[i];
     result.push_back(curr);
