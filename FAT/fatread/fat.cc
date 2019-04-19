@@ -156,7 +156,7 @@ DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   uint32_t numEntries[1];
   // numEntries[1] = 0;
   myEntries = getAllEntries(dir, numEntries);
-  currEnt = myEntries;
+  currEnt = &(myEntries[0]);
   int i = 0;
   //count dirs
   while(currEnt->DIR_Name[0] != 0){
