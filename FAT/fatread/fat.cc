@@ -132,9 +132,9 @@ DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry* myEntries;
   // read root entries directly
   if(dir[0].DIR_FstClusLO == 0){
-    myEntries = (DirEntry*) malloc ((fat.BPB_rootEntCnt) * sizeof(DirEntry));
+    myEntries = (DirEntry*) malloc((fat.BPB_rootEntCnt) * sizeof(DirEntry));
     lseek(fd, rootDirOffset, 0);
-    int temp = read(fd, myEntries, fat.BPB_rootEntCnt*sizeof(DirEntry));
+    int temp = read(fd, myEntries, (fat.BPB_rootEntCnt) * sizeof(DirEntry));
     if(temp == -1) std::cerr << "Read interrupted\n";
     *sizePtr = fat.BPB_rootEntCnt;
   }
@@ -156,7 +156,7 @@ DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   uint32_t numEntries[1];
   // numEntries[1] = 0;
   myEntries = getAllEntries(dir, numEntries);
-  currEnt = &(myEntries[0]);
+  currEnt = myEntries;
   int i = 0;
   //count dirs
   while(currEnt->DIR_Name[0] != 0){
@@ -248,8 +248,8 @@ bool fat_mount(const std::string &path) {
     fatSize = fat.BPB_FATSz32;
   }
   
-  
-  rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz16)*fat.BPB_BytsPerSec;
+  // use BPB_FATSz16 or 32?
+  rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
 
   int rootDirSectors = ((fat.BPB_rootEntCnt * 32) + (fat.BPB_BytsPerSec - 1)) / fat.BPB_BytsPerSec;
   
