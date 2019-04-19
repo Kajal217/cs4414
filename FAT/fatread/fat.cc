@@ -134,7 +134,8 @@ DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   if(dir[0].DIR_FstClusLO == 0){
     myEntries = (DirEntry*) malloc ((fat.BPB_rootEntCnt) * sizeof(DirEntry));
     lseek(fd, rootDirOffset, 0);
-    read(fd, myEntries, fat.BPB_rootEntCnt*sizeof(DirEntry));
+    int temp = read(fd, myEntries, fat.BPB_rootEntCnt*sizeof(DirEntry));
+    if(temp == -1) std::cerr << "Read interrupted\n";
     *sizePtr = fat.BPB_rootEntCnt;
   }
   // otherwise, calculate all cluster locations and offsets to read in all clusters
@@ -153,7 +154,7 @@ DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry * myEntries,* myDirs,* currEnt;
   uint32_t numDirs=0;
   uint32_t numEntries[1];
-  numEntries[1] = 0;
+  // numEntries[1] = 0;
   myEntries = getAllEntries(dir, numEntries);
   currEnt = myEntries;
   int i = 0;
@@ -267,7 +268,7 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  uint32_t* sizePtr;
+  uint32_t* sizePtr = NULL;
   dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
   
   // Set the current working directory to root.
@@ -307,7 +308,6 @@ bool fat_cd(const std::string &path) {
   // find the directory
   int found = -1;
   unsigned int i = 0;
-  uint32_t* sizePtr;
 
   while (firstElement != NULL)
   {
@@ -345,6 +345,7 @@ bool fat_cd(const std::string &path) {
     uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
     if (tempDir != dirRoot && tempDir != cwd)
       free(tempDir); // deallocate dir
+    uint32_t* sizePtr = NULL;
     tempDir = readClusters(combine, sizePtr);
   }
 
@@ -380,7 +381,6 @@ int fat_open(const std::string &path) {
     int found = -1;
 
     char* firstElement = getFirstElement(tmpPath);
-    uint32_t* sizePtr;
 
     // While there are still directories in the path.
     while(firstElement != NULL) {
@@ -423,6 +423,7 @@ int fat_open(const std::string &path) {
         // Get pointer to where the next cluster is.
         uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
         if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
+        uint32_t* sizePtr = NULL;
         tempDir = readClusters(combine, sizePtr);
     }
     delete[] originalPtr;
