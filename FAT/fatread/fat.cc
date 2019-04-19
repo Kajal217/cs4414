@@ -145,6 +145,9 @@ DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
     *clusChainSize = 0;
 
     myEntries = readClusters(combine, clusChainSize);
+
+    uint32_t entPerClus = fat.BPB_BytsPerSec * fat.BPB_SecPerClus / sizeof(DirEntry); // uint16?
+    *sizePtr = entPerClus*(*clusChainSize);
   // }
   return myEntries;
 }
