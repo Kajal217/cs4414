@@ -174,7 +174,7 @@ DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   currEnt = myEntries;
   i=0;
   //find and copy dirs into new array
-  while(currEnt->DIR_Name[0] != 0){
+  while(currEnt->DIR_Name[0] != '\0'){
     if ((currEnt->DIR_Attr & DirEntryAttributes::DIRECTORY || currEnt->DIR_Attr & DirEntryAttributes::VOLUME_ID) &&
 	((currEnt->DIR_Attr|DirEntryAttributes::LONG_NAME_MASK) != DirEntryAttributes::LONG_NAME)){
       memcpy(&(myDirs[dirIndex]),currEnt,sizeof(DirEntry));
