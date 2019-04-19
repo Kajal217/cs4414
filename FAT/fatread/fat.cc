@@ -560,6 +560,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   uint32_t i = 0;
 
   printf("pathCopy = '%s' \n", pathCopy);
+  printf("firstElement = '%s' \n", firstElement);
   //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
   if(strcmp(pathCopy, "") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
