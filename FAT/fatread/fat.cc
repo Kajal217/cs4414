@@ -268,9 +268,13 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  uint32_t sizePtr[1];
-  *sizePtr = 0;
-  dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
+  // uint32_t sizePtr[1];
+  // *sizePtr = 0;
+  // dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
+
+  dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
+  lseek(fd, rootDirOffset, 0);
+  read(fd, dirRoot, sizeof(DirEntry));
   
   // Set the current working directory to root.
   cwd = dirRoot;
