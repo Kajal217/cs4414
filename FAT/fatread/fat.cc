@@ -563,6 +563,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   if(strcmp(path.c_str(), "") == 0 || strcmp(firstElement, "") == 0){
     myDirs = getAllEntries(tempDir, numEnts);
     for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // use numEnts for condition?
+      printf("Dir name is %s \n",(char *) myDirs[i].DIR_Name);
       AnyDirEntry curr;
       curr.dir = myDirs[i];
       result.push_back(curr);
