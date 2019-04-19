@@ -559,8 +559,9 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   DirEntry * myEntry = NULL;
   uint32_t i = 0;
 
+  printf("pathCopy = '%s' \n", pathCopy);
   //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
-  if(strcmp(path.c_str(), "") == 0 || firstElement==NULL){
+  if(strcmp(pathCopy, "") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
     printf("~~~ i am groot ~~~\n");
     for(i=0; myDirs[i].DIR_Name[0] != 0; i++){  // use numEnts for condition?
