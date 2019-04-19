@@ -264,9 +264,9 @@ bool fat_mount(const std::string &path) {
   lseek(fd, fat.BPB_RsvdSecCnt * fat.BPB_BytsPerSec, 0);
   fatTable = (int*)malloc(fat.BPB_BytsPerSec * fatSize);
   int temp2 = read(fd, fatTable, fat.BPB_BytsPerSec*fatSize);
-    if(temp2 == -1){
-      std::cerr << "Read interrupted 2\n";
-    }
+  if(temp2 == -1){
+    std::cerr << "Read interrupted 2\n";
+  }
   
   // uint32_t sizePtr[1];
   // *sizePtr = 0;
@@ -274,7 +274,9 @@ bool fat_mount(const std::string &path) {
 
   dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
   lseek(fd, rootDirOffset, 0);
-  read(fd, dirRoot, sizeof(DirEntry));
+  int temp = read(fd, dirRoot, sizeof(DirEntry));
+  if(temp == -1) std::cerr << "Read interrupted\n";
+
   
   // Set the current working directory to root.
   cwd = dirRoot;
