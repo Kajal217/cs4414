@@ -268,7 +268,7 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  uint32_t* sizePtr = NULL;
+  uint32_t* sizePtr = 0;
   dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
   
   // Set the current working directory to root.
@@ -345,7 +345,7 @@ bool fat_cd(const std::string &path) {
     uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
     if (tempDir != dirRoot && tempDir != cwd)
       free(tempDir); // deallocate dir
-    uint32_t* sizePtr = NULL;
+    uint32_t* sizePtr = 0;
     tempDir = readClusters(combine, sizePtr);
   }
 
@@ -423,7 +423,7 @@ int fat_open(const std::string &path) {
         // Get pointer to where the next cluster is.
         uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
         if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
-        uint32_t* sizePtr = NULL;
+        uint32_t* sizePtr = 0;
         tempDir = readClusters(combine, sizePtr);
     }
     delete[] originalPtr;
