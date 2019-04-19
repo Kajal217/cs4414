@@ -268,7 +268,8 @@ bool fat_mount(const std::string &path) {
       std::cerr << "Read interrupted 2\n";
     }
   
-  uint32_t* sizePtr = 0;
+  uint32_t sizePtr[1];
+  *sizePtr = 0;
   dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
   
   // Set the current working directory to root.
@@ -345,7 +346,8 @@ bool fat_cd(const std::string &path) {
     uint32_t combine = ((unsigned int)tempDir[i].DIR_FstClusHI << 16) + ((unsigned int)tempDir[i].DIR_FstClusLO);
     if (tempDir != dirRoot && tempDir != cwd)
       free(tempDir); // deallocate dir
-    uint32_t* sizePtr = 0;
+    uint32_t sizePtr[1];
+    *sizePtr = 0;
     tempDir = readClusters(combine, sizePtr);
   }
 
@@ -384,47 +386,48 @@ int fat_open(const std::string &path) {
 
     // While there are still directories in the path.
     while(firstElement != NULL) {
-        found = -1;
-        
-        // While there are still directories in the cluster.
-        while (tempDir[i].DIR_Name[0] != '\0') {
-            if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(firstElement, (char *)tempDir[i].DIR_Name)) { 
-                for (int j = 0; j < 128; j++) {
-                    if (dirTable[j] == NULL) {
-                        dirTable[j] = &tempDir[i];
-                        delete[] firstElement;   // dealloc the copied str
-                        delete[] originalPtr;
-                        return j;
-                    }
-                }
-            }
-            if (tempDir[i].DIR_Name[0] == 0xE5) {
-                i++;
-            }
-            else {
-                if (compareDirNames(firstElement, (char *) tempDir[i].DIR_Name)) {
-                    found = 1;
-                    tmpPath = getRemaining(tmpPath);
-                    delete[] firstElement;                   // dealloc the copied str
-                    firstElement = getFirstElement(tmpPath);    // alloc a new str with the 1st element of the remaining path 
-                    break;
-                }
-                i++;
-            }
-        }
+      found = -1;
+      
+      // While there are still directories in the cluster.
+      while (tempDir[i].DIR_Name[0] != '\0') {
+          if (tempDir[i].DIR_Attr != 0x0F && tempDir[i].DIR_Attr != 0x10 && tempDir[i].DIR_Attr != 0x08 && compareDirNames(firstElement, (char *)tempDir[i].DIR_Name)) { 
+              for (int j = 0; j < 128; j++) {
+                  if (dirTable[j] == NULL) {
+                      dirTable[j] = &tempDir[i];
+                      delete[] firstElement;   // dealloc the copied str
+                      delete[] originalPtr;
+                      return j;
+                  }
+              }
+          }
+          if (tempDir[i].DIR_Name[0] == 0xE5) {
+              i++;
+          }
+          else {
+              if (compareDirNames(firstElement, (char *) tempDir[i].DIR_Name)) {
+                  found = 1;
+                  tmpPath = getRemaining(tmpPath);
+                  delete[] firstElement;                   // dealloc the copied str
+                  firstElement = getFirstElement(tmpPath);    // alloc a new str with the 1st element of the remaining path 
+                  break;
+              }
+              i++;
+          }
+      }
 
-        if (found == -1) {
-            if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
-            delete[] firstElement;   // dealloc the copied str
-            delete[] originalPtr;
-            return -1;
-        }
+      if (found == -1) {
+          if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
+          delete[] firstElement;   // dealloc the copied str
+          delete[] originalPtr;
+          return -1;
+      }
 
-        // Get pointer to where the next cluster is.
-        uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
-        if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
-        uint32_t* sizePtr = 0;
-        tempDir = readClusters(combine, sizePtr);
+      // Get pointer to where the next cluster is.
+      uint32_t combine = ((unsigned int) tempDir[i].DIR_FstClusHI << 16) + ((unsigned int) tempDir[i].DIR_FstClusLO);
+      if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
+      uint32_t sizePtr[1];
+      *sizePtr = 0;
+      tempDir = readClusters(combine, sizePtr);
     }
     delete[] originalPtr;
     if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
