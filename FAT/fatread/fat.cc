@@ -140,14 +140,14 @@ DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   // }
   // otherwise, calculate all cluster locations and offsets to read in all clusters
   // else{
-    uint32_t combine = ((unsigned int) dir->DIR_FstClusHI << 16) + ((unsigned int) dir->DIR_FstClusLO);
-    uint32_t clusChainSize[1];
-    *clusChainSize = 0;
+  uint32_t combine = ((unsigned int) dir->DIR_FstClusHI << 16) + ((unsigned int) dir->DIR_FstClusLO);
+  uint32_t clusChainSize[1];
+  *clusChainSize = 0;
 
-    myEntries = readClusters(combine, clusChainSize);
+  myEntries = readClusters(combine, clusChainSize);
 
-    uint32_t entPerClus = fat.BPB_BytsPerSec * fat.BPB_SecPerClus / sizeof(DirEntry); // uint16?
-    *sizePtr = entPerClus*(*clusChainSize);
+  uint32_t entPerClus = fat.BPB_BytsPerSec * fat.BPB_SecPerClus / sizeof(DirEntry); // uint16?
+  *sizePtr = entPerClus*(*clusChainSize);
   // }
   return myEntries;
 }
@@ -559,14 +559,14 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   DirEntry * myEntry = NULL;
   uint32_t i = 0;
 
-  printf("pathCopy = '%s' \n", pathCopy);
-  printf("firstElement = '%s' \n", firstElement);
+  printf("pathCopy = '%s'\n", pathCopy);
+  printf("firstElement = '%s'\n", firstElement);
   //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
-    printf("*numEnts = '%i' \n", *numEnts);
+    printf("*numEnts = '%i'\n", *numEnts);
     for(i=0; i<*numEnts; i++){  // use numEnts or DIR_Name[0] for condition?
-      printf("Dir name is %s \n",(char *) myDirs[i].DIR_Name);
+      printf("Dir name is '%s'\n",(char *) myDirs[i].DIR_Name);
       AnyDirEntry curr;
       curr.dir = myDirs[i];
       result.push_back(curr);
