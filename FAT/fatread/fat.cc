@@ -382,8 +382,8 @@ bool fat_cd(const std::string &path) {
   DirEntry * myDirs;
   DirEntry * myEntry;
 
-  printf("pathCopy = '%s'\n", pathCopy);
-  printf("firstElement = '%s'\n", firstElement);
+  // printf("pathCopy = '%s'\n", pathCopy);
+  // printf("firstElement = '%s'\n", firstElement);
   //if the string is empty or '.' (CWD) or only / or /// etc (root)
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     CWDClus = startClus;
@@ -425,6 +425,67 @@ bool fat_cd(const std::string &path) {
 }
 
 int fat_open(const std::string &path) {
+  if(initialized == 0){
+      return -1;
+  }
+  int absPath = path.c_str()[0] == '/' ? 1 : 0;
+  //printf("state of abs is %i \n", absPath);
+  int start = 1;
+  DirEntry* tempDir;
+  uint32_t startClus;
+  if(absPath)
+    startClus = rootClus;
+  else
+    startClus = CWDClus;
+  
+  char* pathCopy = strdup(path.c_str()); // free this later
+  char* tempPath = pathCopy;
+  char* firstElement = getFirstElement(tempPath);
+  uint32_t numEnts[1];
+  DirEntry * myDirs;
+  DirEntry * myEntry;
+  uint8_t isFile = 0;
+
+  do{
+    delete[] firstElement;  // deallocate each copy before replacing
+    firstElement = getFirstElement(tempPath);
+    if (start==1) {
+      myDirs = getClusDirs(startClus, numEnts);
+      start = 0;
+    }
+    else {
+      myDirs = getDirs(tempDir, numEnts);
+      free(myEntry);
+    }
+    if (getRemaining(tempPath)==NULL) { //look for file now
+      isFile = 1;
+    }
+    myEntry = findEntry(myDirs, *numEnts, firstElement, isFile);
+    if(myEntry == NULL){
+      delete[] firstElement;
+      free(myDirs);
+      free(pathCopy);
+      return -1;
+    }
+    tempDir = myEntry;
+    tempPath = getRemaining(tempPath);
+    free(myDirs);
+  } while (tempPath != NULL);
+
+  delete[] firstElement;  // deallocate copied strings
+  free(pathCopy);
+
+  if (tempDir->DIR_Attr != 0x0F && tempDir->DIR_Attr != 0x10 && tempDir->DIR_Attr != 0x08) {
+    for (int j = 0; j < 128; j++) {
+      if (dirTable[j] == NULL) {
+        dirTable[j] = &tempDir;
+        return j;
+      }
+    }
+  }
+  
+  free(tempDir);
+  return -1;
     // if (initialized == 0){
     //     return -1;
     // }
@@ -498,7 +559,6 @@ int fat_open(const std::string &path) {
     // if (tempDir != dirRoot && tempDir != cwd) free(tempDir);    // deallocate dir
     // delete[] firstElement;   // dealloc the copied str
     // return -1;
-    return -1;
 }
 
 
@@ -623,8 +683,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   DirEntry * myEntry;
   uint32_t i = 0;
 
-  printf("pathCopy = '%s'\n", pathCopy);
-  printf("firstElement = '%s'\n", firstElement);
+  // printf("pathCopy = '%s'\n", pathCopy);
+  // printf("firstElement = '%s'\n", firstElement);
   //if the string is empty or '.' (CWD) or only / or /// etc (root) read the respective clusters
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = readClusters(startClus, numEnts);
