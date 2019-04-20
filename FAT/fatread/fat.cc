@@ -243,7 +243,7 @@ DirEntry* getClusDirs(uint32_t clusNum, uint32_t* sizePtr) {
   return myDirs;
 }
 
-
+// via stack overflow
 int unterm_strcmpi(char * first, char * second){
   char firstTerm[12], secondTerm[12];
   memcpy(firstTerm, first, 11);
@@ -259,8 +259,7 @@ int unterm_strcmpi(char * first, char * second){
 }
 
 
-//dirEntries is an array of dirEnts, of length numEnt, to be searched
-//name is the file name as tokenized
+// search array of dir entries for one matching name
 //returns a COPY of the entry
 DirEntry * findEntry(DirEntry * dirEntries,uint32_t numEnt, char * name, uint8_t isFile){
   DirEntry* myEntry = (DirEntry*) malloc(sizeof(DirEntry));
@@ -280,13 +279,6 @@ DirEntry * findEntry(DirEntry * dirEntries,uint32_t numEnt, char * name, uint8_t
       }
     }
   }
-  //if root !!! DEAL WITH CASE
-  // else if (numEnt && dirEntries[0].DIR_FstClusLO == 0){
-  //   if(name[0] == '.') {
-  //     memcpy(myEntry, dirRoot, sizeof(DirEntry));
-  //     return myEntry;
-  //   }
-  // }
 
   uint32_t i;
   char * formatName = formatFilename(name, isFile);
@@ -314,24 +306,12 @@ bool fat_mount(const std::string &path) {
     return false;
   }
   
-  // if (fat.BPB_totSec16 != 0) {
-  //   fatSize = fat.BPB_FATSz16;
-  // }
-  // else {
-  //   fatSize = fat.BPB_FATSz32;
-  // }
   
   fatSize = fat.BPB_FATSz32;  // # of sectors per FAT
   clusterSize = fat.BPB_BytsPerSec * fat.BPB_SecPerClus;
 
-  // rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
-  // int rootDirSectors = ((fat.BPB_rootEntCnt * 32) + (fat.BPB_BytsPerSec - 1)) / fat.BPB_BytsPerSec;
   int rootDirSectors = 0; // for FAT32
   
-  // Start of the data region.
-  //  # of DataSectors = BPB_TotSec32 – (BPB_ResvdSecCnt + (BPB_NumFATs * FATSz) + RootDirSectors);
-  // CountofClusters (starting at clus 2)(rounds down) = DataSec / BPB_SecPerClus;
-  // max valid clus # is CountofClusters + 1
   firstDataSector = fat.BPB_RsvdSecCnt + (fat.BPB_NumFATs * fatSize) + rootDirSectors;
 
   dataOffset = firstDataSector * fat.BPB_BytsPerSec;
@@ -347,13 +327,9 @@ bool fat_mount(const std::string &path) {
   uint32_t sizePtr[1];
   *sizePtr = 0;
 
-  // dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
-  // lseek(fd, rootDirOffset, 0);
-  // int temp = read(fd, dirRoot, sizeof(DirEntry));
-  // if(temp == -1) std::cerr << "Read interrupted\n";
 
   
-  // Set the current working directory to root.
+  // Set the current working directory to root
   rootClus = fat.BPB_RootClus;
   CWDClus = rootClus;
   
@@ -382,9 +358,6 @@ bool fat_cd(const std::string &path) {
   DirEntry * myDirs;
   DirEntry * myEntry;
 
-  // printf("pathCopy = '%s'\n", pathCopy);
-  // printf("firstElement = '%s'\n", firstElement);
-  //if the string is empty or '.' (CWD) or only / or /// etc (root)
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     CWDClus = startClus;
     free(pathCopy);
@@ -599,10 +572,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
       startClus = rootClus;
   else
       startClus = CWDClus;
-      
-  // char* tempPath = new char[strlen(path.c_str())+100];
-  // tempPath = strcpy(tempPath, path.c_str());
-  // char* originalPtr = tempPath;
+
   char* pathCopy = strdup(path.c_str()); // free this later
   char* tempPath = pathCopy;
   char* firstElement = getFirstElement(tempPath);
