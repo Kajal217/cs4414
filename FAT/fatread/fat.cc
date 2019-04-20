@@ -13,15 +13,12 @@ int initialized = 0;
 uint32_t clusterSize, dataOffset, firstDataSector, fatSize;
 int fd = -1;
 
-int* fatTable;
+uint32_t* fatTable;
 
 Fat32BPB fat;
 
-// uint32_t rootDirOffset;
-
-// Reference to the root directory and the current working directory.
-DirEntry *dirRoot;
-DirEntry *cwd;
+// Cluster number of the current working directory
+uint32_t rootClus, CWDClus;
 
 // Stores pointers for each cluster.
 DirEntry* dirTable[128];
@@ -127,7 +124,7 @@ DirEntry* readClusters(uint32_t combine, uint32_t* sizePtr) {
 }
 
 
-// given a directory, return all of its entries
+// given a directory, read in and return all of its entries
 DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry* myEntries;
   
@@ -137,13 +134,49 @@ DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   return myEntries;
 }
 
-// given a dir, return all of its entries that are directories
+// given a dir entry, return all of its entries that are directories
 DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry * myEntries,* myDirs,* currEnt;
   uint32_t numDirs=0;
   uint32_t numEntries[1];
   // numEntries[1] = 0;
   myEntries = getAllEntries(dir, numEntries);
+  currEnt = myEntries;
+  uint32_t i = 0;
+  //count dirs
+  while(currEnt->DIR_Name[0] != 0){  // null term or just 0?? check i < *numEntries??
+    if (currEnt->DIR_Attr & DirEntryAttributes::DIRECTORY || currEnt->DIR_Attr & DirEntryAttributes::VOLUME_ID) 
+      numDirs++;
+    i++;
+    currEnt = &(myEntries[i]);
+  }
+
+  //allocate memory according to count
+  myDirs = (DirEntry*) malloc((numDirs)*sizeof(DirEntry));
+  *sizePtr = numDirs;
+  uint32_t dirIndex = 0;
+  currEnt = myEntries;
+  i=0;
+  //find and copy dirs into new array
+  while(currEnt->DIR_Name[0] != 0){  // ^^
+    if (currEnt->DIR_Attr & DirEntryAttributes::DIRECTORY || currEnt->DIR_Attr & DirEntryAttributes::VOLUME_ID){
+      memcpy(&(myDirs[dirIndex]),currEnt,sizeof(DirEntry));
+      dirIndex++;
+    }
+    i++;
+    currEnt = &(myEntries[i]);
+  }  
+  free (myEntries); // deallocate data copied by getAllEntries()
+  return myDirs;
+}
+
+// given a CLUSTER NUMBER, return all of its entries that are directories
+DirEntry* getClusDirs(uint32_t clusNum, uint32_t* sizePtr) {
+  DirEntry * myEntries,* myDirs,* currEnt;
+  uint32_t numDirs=0;
+  uint32_t numEntries[1];
+  // numEntries[1] = 0;
+  myEntries = readClusters(clusNum, numEntries);
   currEnt = myEntries;
   uint32_t i = 0;
   //count dirs
@@ -252,7 +285,7 @@ bool fat_mount(const std::string &path) {
   
   // Seek the file descriptor past the reserved section and read in the fat table.
   lseek(fd, fat.BPB_RsvdSecCnt * fat.BPB_BytsPerSec, 0);
-  fatTable = (int*)malloc(fat.BPB_BytsPerSec * fatSize);
+  fatTable = (uint32_t*)malloc(fat.BPB_BytsPerSec * fatSize);
   int temp2 = read(fd, fatTable, fat.BPB_BytsPerSec*fatSize);
   if(temp2 == -1){
     std::cerr << "Read interrupted 2\n";
@@ -260,7 +293,6 @@ bool fat_mount(const std::string &path) {
   
   uint32_t sizePtr[1];
   *sizePtr = 0;
-  dirRoot = readClusters(fat.BPB_RootClus, sizePtr);
 
   // dirRoot = (DirEntry*) malloc(sizeof(DirEntry));
   // lseek(fd, rootDirOffset, 0);
@@ -269,7 +301,8 @@ bool fat_mount(const std::string &path) {
 
   
   // Set the current working directory to root.
-  cwd = dirRoot;
+  rootClus = fat.BPB_RootClus;
+  CWDClus = rootClus;
   
   initialized = 1;
   return true;
@@ -534,11 +567,13 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   }
   int absPath = path.c_str()[0] == '/' ? 1 : 0;
   //printf("state of abs is %i \n", absPath);
+  int start = 1;
   DirEntry* tempDir;
+  uint32_t startClus;
   if(absPath)
-      tempDir = dirRoot;
+      startClus = rootClus;
   else
-      tempDir = cwd;
+      startClus = CWDClus;
       
   // char* tempPath = new char[strlen(path.c_str())+100];
   // tempPath = strcpy(tempPath, path.c_str());
@@ -548,14 +583,14 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   char* firstElement = getFirstElement(tempPath);
   uint32_t numEnts[1];
   DirEntry * myDirs;
-  DirEntry * myEntry = NULL;
+  DirEntry * myEntry;
   uint32_t i = 0;
 
   printf("pathCopy = '%s'\n", pathCopy);
   printf("firstElement = '%s'\n", firstElement);
-  //if the string is empty or '.' (CWD) or only / or /// etc (root) return tempDir as set above
+  //if the string is empty or '.' (CWD) or only / or /// etc (root) read the respective clusters
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
-    myDirs = getAllEntries(tempDir, numEnts);
+    myDirs = readClusters(startClus, numEnts);
     printf("*numEnts = '%i'\n", *numEnts);
     for(i=0; i<*numEnts; i++){  // use numEnts or DIR_Name[0] for condition?
       printf("Dir name is '%s'\n",(char *) myDirs[i].DIR_Name);
@@ -572,8 +607,14 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   do{
     delete[] firstElement;  // deallocate each copy before replacing
     firstElement = getFirstElement(tempPath);
-    myDirs = getDirs(tempDir, numEnts);
-    free(myEntry);
+    if (start==1) {
+      myDirs = getClusDirs(startClus, numEnts);
+      start = 0;
+    }
+    else {
+      myDirs = getDirs(tempDir, numEnts);
+      free(myEntry);
+    }
     myEntry = findEntry(myDirs, *numEnts, firstElement);
     if(myEntry == NULL){
       delete[] firstElement;
