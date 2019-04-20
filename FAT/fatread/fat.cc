@@ -408,6 +408,7 @@ bool fat_cd(const std::string &path) {
       delete[] firstElement;
       free(myDirs);
       free(pathCopy);
+      free(tempDir);
       return false;
     }
     tempDir = myEntry;
@@ -465,6 +466,7 @@ int fat_open(const std::string &path) {
       delete[] firstElement;
       free(myDirs);
       free(pathCopy);
+      free(tempDir);
       return -1;
     }
     tempDir = myEntry;
@@ -478,7 +480,7 @@ int fat_open(const std::string &path) {
   if (tempDir->DIR_Attr != 0x0F && tempDir->DIR_Attr != 0x10 && tempDir->DIR_Attr != 0x08) {
     for (int j = 0; j < 128; j++) {
       if (dirTable[j] == NULL) {
-        dirTable[j] = &tempDir;
+        dirTable[j] = tempDir;
         return j;
       }
     }
@@ -717,6 +719,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
       delete[] firstElement;
       free(myDirs);
       free(pathCopy);
+      free(tempDir);
       return result;
     }
     tempDir = myEntry;
