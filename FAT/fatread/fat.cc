@@ -363,7 +363,7 @@ bool fat_mount(const std::string &path) {
 
 bool fat_cd(const std::string &path) {
   if(initialized == 0){
-      return result;
+      return false;
   }
   int absPath = path.c_str()[0] == '/' ? 1 : 0;
   //printf("state of abs is %i \n", absPath);
@@ -381,7 +381,6 @@ bool fat_cd(const std::string &path) {
   uint32_t numEnts[1];
   DirEntry * myDirs;
   DirEntry * myEntry;
-  uint32_t i = 0;
 
   printf("pathCopy = '%s'\n", pathCopy);
   printf("firstElement = '%s'\n", firstElement);
