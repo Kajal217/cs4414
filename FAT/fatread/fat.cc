@@ -60,6 +60,43 @@ char* getRemaining(char *path) {
   return NULL;
 }
 
+
+char * formatFilename(char * filename, uint8_t isFile){
+  char *formattedName = (char *) malloc(11); 
+  char * period;
+  uint8_t periodIndex;
+  int i;
+  //format differently for file and dir names
+  if(isFile){
+    period = strchr(filename,'.');
+    //if there isn't a period in a filename
+    if(period == NULL){
+      for(i = 0; i < strlen(filename); i++)
+	formattedName[i] = filename[i];
+      for(i = i; i < 11; i++)
+	formattedName[i] = ' ';
+    }
+    //if there is a period in the name
+    else{
+      periodIndex = period - filename;
+      for(i = 0; i < periodIndex; i++)
+	formattedName[i] = filename[i];
+      for(i = i; i < 8; i++)
+	formattedName[i] = ' ';
+      for(i = 0; i < (strlen(filename) - (periodIndex + 1)); i++)
+	formattedName[8+i] = filename[periodIndex+1+i];
+    }
+  }
+  else{
+    for(i = 0; i < strlen(filename); i++)
+      formattedName[i] = filename[i];
+    for(i = i; i < 11; i++)
+      formattedName[i] = ' ';
+  }
+  return formattedName;
+}
+
+
 int compareDirNames(char* dir1, char* dir2) {
   // dir1 = name of the directory we are searching for
 	
@@ -207,10 +244,25 @@ DirEntry* getClusDirs(uint32_t clusNum, uint32_t* sizePtr) {
 }
 
 
+int unterm_strcmpi(char * first, char * second){
+  char firstTerm[12], secondTerm[12];
+  memcpy(firstTerm, first, 11);
+  memcpy(secondTerm, second, 11);
+  firstTerm[11] = '\0';
+  secondTerm[11] = '\0';
+  int i;
+  for(i = 0; i < 11; i++){
+    firstTerm[i] = tolower(firstTerm[i]);
+    secondTerm[i] = tolower(secondTerm[i]);
+  }
+  return strcmp(firstTerm, secondTerm);
+}
+
+
 //dirEntries is an array of dirEnts, of length numEnt, to be searched
 //name is the file name as tokenized
 //returns a COPY of the entry
-DirEntry * findEntry(DirEntry * dirEntries,uint32_t numEnt, char * name){
+DirEntry * findEntry(DirEntry * dirEntries,uint32_t numEnt, char * name, uint8_t isFile){
   DirEntry* myEntry = (DirEntry*) malloc(sizeof(DirEntry));
   //if not root
   if(numEnt && dirEntries[0].DIR_Name[0] == '.'){
@@ -235,10 +287,11 @@ DirEntry * findEntry(DirEntry * dirEntries,uint32_t numEnt, char * name){
   //     return myEntry;
   //   }
   // }
-  
+
   uint32_t i;
+  char * formatName = formatFilename(name, isFile);
   for(i = 0; i < numEnt; i++){
-    if(compareDirNames(name, (char*)dirEntries[i].DIR_Name)){
+    if(unterm_strcmpi((char *)dirEntries[i].DIR_Name, formatName)==0){
       memcpy(myEntry, &(dirEntries[i]), sizeof(DirEntry));
       return myEntry;
     }
@@ -617,7 +670,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
       myDirs = getDirs(tempDir, numEnts);
       free(myEntry);
     }
-    myEntry = findEntry(myDirs, *numEnts, firstElement);
+    myEntry = findEntry(myDirs, *numEnts, firstElement, 0);
     if(myEntry == NULL){
       delete[] firstElement;
       free(myDirs);
