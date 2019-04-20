@@ -65,7 +65,7 @@ char * formatFilename(char * filename, uint8_t isFile){
   char *formattedName = (char *) malloc(11); 
   char * period;
   uint8_t periodIndex;
-  int i;
+  uint32_t i;
   //format differently for file and dir names
   if(isFile){
     period = strchr(filename,'.');
