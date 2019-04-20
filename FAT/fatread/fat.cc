@@ -368,7 +368,7 @@ bool fat_cd(const std::string &path) {
   int absPath = path.c_str()[0] == '/' ? 1 : 0;
   //printf("state of abs is %i \n", absPath);
   int start = 1;
-  DirEntry* tempDir==NULL;
+  DirEntry* tempDir=NULL;
   uint32_t startClus;
   if(absPath)
     startClus = rootClus;
@@ -432,7 +432,7 @@ int fat_open(const std::string &path) {
   int absPath = path.c_str()[0] == '/' ? 1 : 0;
   //printf("state of abs is %i \n", absPath);
   int start = 1;
-  DirEntry* tempDir==NULL;
+  DirEntry* tempDir=NULL;
   uint32_t startClus;
   if(absPath)
     startClus = rootClus;
@@ -594,7 +594,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   int absPath = path.c_str()[0] == '/' ? 1 : 0;
   //printf("state of abs is %i \n", absPath);
   int start = 1;
-  DirEntry* tempDir==NULL;
+  DirEntry* tempDir=NULL;
   uint32_t startClus;
   if(absPath)
       startClus = rootClus;
