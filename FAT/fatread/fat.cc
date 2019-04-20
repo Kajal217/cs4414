@@ -646,9 +646,9 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
   //if the string is empty or '.' (CWD) or only / or /// etc (root) read the respective clusters
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = readClusters(startClus, numEnts);
-    printf("*numEnts = '%i'\n", *numEnts);
+    // printf("*numEnts = '%i'\n", *numEnts);
     for(i=0; i<*numEnts; i++){  // use numEnts or DIR_Name[0] for condition?
-      printf("Dir name is '%s'\n",(char *) myDirs[i].DIR_Name);
+      // printf("Dir name is '%s'\n",(char *) myDirs[i].DIR_Name);
       AnyDirEntry curr;
       curr.dir = myDirs[i];
       result.push_back(curr);
@@ -680,7 +680,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     tempDir = myEntry;
     tempPath = getRemaining(tempPath);
     free(myDirs);
-  } while (strcmp(tempPath, "")!= 0);
+  } while (tempPath != NULL);
 
   delete[] firstElement;  // deallocate copied strings
   free(pathCopy);
