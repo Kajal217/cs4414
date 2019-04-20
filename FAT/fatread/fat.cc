@@ -109,7 +109,7 @@ DirEntry* readClusters(uint32_t combine, uint32_t* sizePtr) {
 
   // Read in each cluster
   while (clusNum < 0x0FFFFFF8){
-    clusterOffset = (clusNum - 2) * clusterSize + dataOffset
+    clusterOffset = (clusNum - 2) * clusterSize + dataOffset;
     clusterIndex = i * entPerClus;
 
     lseek(fd, clusterOffset, 0);
