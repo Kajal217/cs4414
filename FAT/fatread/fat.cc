@@ -486,7 +486,6 @@ int fat_open(const std::string &path) {
     }
   }
   
-  if (tempDir!=NULL) free(tempDir);
   return -1;
 }
 
