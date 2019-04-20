@@ -10,11 +10,8 @@
 #include <iostream>
 
 int initialized = 0;
-int clusterSize;
-int fatSize;
-int tempCombine;
+uint32_t clusterSize, dataOffset, firstDataSector, fatSize;
 int fd = -1;
-int firstDataSector;
 
 int* fatTable;
 
@@ -96,71 +93,59 @@ int compareDirNames(char* dir1, char* dir2) {
 DirEntry* readClusters(uint32_t combine, uint32_t* sizePtr) {
   
   uint32_t numClusters = 0;
-  uint32_t tmp = combine;
-  uint32_t clusterSize = fat.BPB_SecPerClus * fat.BPB_BytsPerSec;
+  uint32_t clusNum = combine;
 
-  // Determine overall number of clusters
-  do {
-    tmp = fatTable[tmp] & 0x0FFFFFFF;
+  // Determine number of clusters in chain
+  while (clusNum < 0x0FFFFFF8){
+    clusNum = fatTable[clusNum] & 0x0FFFFFFF;
     numClusters++;
-  } while (tmp < 0x0FFFFFF8);
+  }
 
-  char* clusterBlock = (char*)malloc(numClusters * clusterSize);
-  uint32_t clusterItr = 1;
+  DirEntry* clusterBlock = (DirEntry*)malloc(numClusters * clusterSize + sizeof(DirEntry));
+  uint32_t entPerClus = clusterSize / sizeof(DirEntry);
+  uint32_t clusterOffset, clusterIndex;
+  clusNum = combine;
+  uint32_t i = 0;
 
-  // Iterate through the clusters. Seek to the last one. 
-  do {
-    uint32_t FirstSectorofCluster = ((combine - 2) * fat.BPB_SecPerClus) + firstDataSector;
-    int dataOffset = FirstSectorofCluster * fat.BPB_BytsPerSec;
-    lseek(fd, dataOffset, 0);
-    int temp = read(fd, &clusterBlock[(clusterItr - 1) * clusterSize], clusterSize);
+  // Read in each cluster
+  while (clusNum < 0x0FFFFFF8){
+    clusterOffset = (clusNum - 2) * clusterSize + dataOffset
+    clusterIndex = i * entPerClus;
+
+    lseek(fd, clusterOffset, 0);
+    int temp = read(fd, &(clusterBlock[clusterIndex]), clusterSize);
     if(temp == -1){
       std::cerr << "Read interrupted\n";
     }
-    combine = fatTable[combine] & 0x0FFFFFFF;
-    clusterItr++;
-    
-  } while (combine < 0x0FFFFFF8);
 
-  *sizePtr = numClusters;
-  return (DirEntry*)clusterBlock;
+    clusNum = fatTable[clusNum] & 0x0FFFFFFF;
+    i++;
+  }
+
+  *sizePtr = numClusters * entPerClus;  // # of entries we return
+  return clusterBlock;
 }
 
 
 // given a directory, return all of its entries
 DirEntry* getAllEntries(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry* myEntries;
-  // read root entries directly
-  // if(dir[0].DIR_FstClusLO == 0){
-  //   myEntries = (DirEntry*) malloc((fat.BPB_rootEntCnt) * sizeof(DirEntry));
-  //   lseek(fd, rootDirOffset, 0);
-  //   int temp = read(fd, myEntries, (fat.BPB_rootEntCnt) * sizeof(DirEntry));
-  //   if(temp == -1) std::cerr << "Read interrupted\n";
-  //   *sizePtr = fat.BPB_rootEntCnt;
-  // }
-  // otherwise, calculate all cluster locations and offsets to read in all clusters
-  // else{
+  
   uint32_t combine = ((unsigned int) dir->DIR_FstClusHI << 16) + ((unsigned int) dir->DIR_FstClusLO);
-  uint32_t clusChainSize[1];
-  *clusChainSize = 0;
+  myEntries = readClusters(combine, sizePtr);
 
-  myEntries = readClusters(combine, clusChainSize);
-
-  uint32_t entPerClus = fat.BPB_BytsPerSec * fat.BPB_SecPerClus / sizeof(DirEntry); // uint16?
-  *sizePtr = entPerClus*(*clusChainSize);
-  // }
   return myEntries;
 }
 
-// given a directory, return all of its entries that are directories
+// given a dir, return all of its entries that are directories
 DirEntry* getDirs(DirEntry* dir, uint32_t* sizePtr) {
   DirEntry * myEntries,* myDirs,* currEnt;
   uint32_t numDirs=0;
   uint32_t numEntries[1];
   // numEntries[1] = 0;
-  myEntries = getAllEntries(dir, numEntries); // root case??
+  myEntries = getAllEntries(dir, numEntries);
   currEnt = myEntries;
-  uint32_t i = 0; // was int
+  uint32_t i = 0;
   //count dirs
   while(currEnt->DIR_Name[0] != 0){  // null term or just 0?? check i < *numEntries??
     if (currEnt->DIR_Attr & DirEntryAttributes::DIRECTORY || currEnt->DIR_Attr & DirEntryAttributes::VOLUME_ID) 
@@ -243,24 +228,27 @@ bool fat_mount(const std::string &path) {
     return false;
   }
   
-  if (fat.BPB_totSec16 != 0) {
-    fatSize = fat.BPB_FATSz16;
-  }
-  else {
-    fatSize = fat.BPB_FATSz32;
-  }
+  // if (fat.BPB_totSec16 != 0) {
+  //   fatSize = fat.BPB_FATSz16;
+  // }
+  // else {
+  //   fatSize = fat.BPB_FATSz32;
+  // }
   
-  // use BPB_FATSz16 or 32?
-  // rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
+  fatSize = fat.BPB_FATSz32;  // # of sectors per FAT
+  clusterSize = fat.BPB_BytsPerSec * fat.BPB_SecPerClus;
 
-  int rootDirSectors = ((fat.BPB_rootEntCnt * 32) + (fat.BPB_BytsPerSec - 1)) / fat.BPB_BytsPerSec;
+  // rootDirOffset = (fat.BPB_BytsPerSec * fat.BPB_RsvdSecCnt) + (fat.BPB_NumFATs * fat.BPB_FATSz32)*fat.BPB_BytsPerSec;
+  // int rootDirSectors = ((fat.BPB_rootEntCnt * 32) + (fat.BPB_BytsPerSec - 1)) / fat.BPB_BytsPerSec;
+  int rootDirSectors = 0; // for FAT32
   
   // Start of the data region.
+  //  # of DataSectors = BPB_TotSec32 – (BPB_ResvdSecCnt + (BPB_NumFATs * FATSz) + RootDirSectors);
+  // CountofClusters (starting at clus 2)(rounds down) = DataSec / BPB_SecPerClus;
+  // max valid clus # is CountofClusters + 1
   firstDataSector = fat.BPB_RsvdSecCnt + (fat.BPB_NumFATs * fatSize) + rootDirSectors;
- 
-  int dataOffset = firstDataSector - rootDirSectors;
-  clusterSize = fat.BPB_BytsPerSec * fat.BPB_SecPerClus;
-  dataOffset = dataOffset * fat.BPB_BytsPerSec;
+
+  dataOffset = firstDataSector * fat.BPB_BytsPerSec;
   
   // Seek the file descriptor past the reserved section and read in the fat table.
   lseek(fd, fat.BPB_RsvdSecCnt * fat.BPB_BytsPerSec, 0);
@@ -510,6 +498,10 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
     // Determine next sector
     fatSecNum = ((clusterNum * 4) / fat.BPB_BytsPerSec) + fat.BPB_RsvdSecCnt;
     fatOffset = (clusterNum * 4) % fat.BPB_BytsPerSec;
+    // FATOffset = N * 4; (for FAT32)?
+    // ThisFATSecNum = BPB_ResvdSecCnt + (FATOffset / BPB_BytsPerSec);
+    // ThisFATEntOffset = FATOffset % BPB_BytsPerSec;
+
 
     lseek(fd, fatSecNum * fat.BPB_BytsPerSec, 0);
     int temp4 = read(fd, fatBuffer, fat.BPB_BytsPerSec);
@@ -561,7 +553,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
   printf("pathCopy = '%s'\n", pathCopy);
   printf("firstElement = '%s'\n", firstElement);
-  //if the string is empty (CWD) or only / or /// etc (root) return tempDir as set above
+  //if the string is empty or '.' (CWD) or only / or /// etc (root) return tempDir as set above
   if(strcmp(pathCopy, ".") == 0 || firstElement==NULL){
     myDirs = getAllEntries(tempDir, numEnts);
     printf("*numEnts = '%i'\n", *numEnts);
