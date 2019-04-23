@@ -12,55 +12,42 @@
 #include <stdint.h>
 
 //  COMMANDS
-#define USER_C 0
-#define QUIT_C 1
-#define PORT_C 2
-#define TYPE_C 3
-#define MODE_C 4
-#define STRU_C 5
-#define STOR_C 6
-#define RETR_C 7
-#define NOOP_C 8
-#define LIST_C 9
-#define MKD_C 10
-#define OTHER_C 50 //non-implemented
-#define BAD_C 100  //doesn't exist
+#define CMD_USER 0
+#define CMD_QUIT 1
+#define CMD_PORT 2
+#define CMD_TYPE 3
+#define CMD_MODE 4
+#define CMD_STRU 5
+#define CMD_STOR 6
+#define CMD_RETR 7
+#define CMD_NOOP 8
+#define CMD_LIST 9
+#define CMD_MKD 10
+#define CMD_MISSING 50 //not implemented
+#define CMD_INVALID 100  //doesn't exist
 
-int cmdToInt(char *cmd)
+int cmdInt(char *cmd)
 {
-    if (strcmp(cmd, "QUIT") == 0)
-        return QUIT_C;
-    if (strcmp(cmd, "USER") == 0)
-        return USER_C;
-    if (strcmp(cmd, "PORT") == 0)
-        return PORT_C;
-    if (strcmp(cmd, "TYPE") == 0)
-        return TYPE_C;
-    if (strcmp(cmd, "MODE") == 0)
-        return MODE_C;
-    if (strcmp(cmd, "STRU") == 0)
-        return STRU_C;
-    if (strcmp(cmd, "STOR") == 0)
-        return STOR_C;
-    if (strcmp(cmd, "RETR") == 0)
-        return RETR_C;
-    if (strcmp(cmd, "NOOP") == 0)
-        return NOOP_C;
-    if (strcmp(cmd, "LIST") == 0)
-        return LIST_C;
-    if (strcmp(cmd, "MKD") == 0)
-        return MKD_C;
+    if (strcmp(cmd, "QUIT") == 0) return CMD_QUIT;
+    if (strcmp(cmd, "USER") == 0) return CMD_USER;
+    if (strcmp(cmd, "PORT") == 0) return CMD_PORT;
+    if (strcmp(cmd, "TYPE") == 0) return CMD_TYPE;
+    if (strcmp(cmd, "MODE") == 0) return CMD_MODE;
+    if (strcmp(cmd, "STRU") == 0) return CMD_STRU;
+    if (strcmp(cmd, "STOR") == 0) return CMD_STOR;
+    if (strcmp(cmd, "RETR") == 0) return CMD_RETR;
+    if (strcmp(cmd, "NOOP") == 0) return CMD_NOOP;
+    if (strcmp(cmd, "LIST") == 0) return CMD_LIST;
+    if (strcmp(cmd, "MKD") == 0) return CMD_MKD;
     if (strcmp(cmd, "PASS") == 0 || strcmp(cmd, "ACCT") == 0 || strcmp(cmd, "CWD") == 0 || strcmp(cmd, "CDUP") == 0 || strcmp(cmd, "SMNT") == 0 || strcmp(cmd, "REIN") == 0 || strcmp(cmd, "PASV") == 0 || strcmp(cmd, "STOU") == 0 || strcmp(cmd, "APPE") == 0 || strcmp(cmd, "ALLO") == 0 || strcmp(cmd, "REST") == 0 || strcmp(cmd, "RNFR") == 0 || strcmp(cmd, "RNTO") == 0 || strcmp(cmd, "ABOR") == 0 || strcmp(cmd, "DELE") == 0 || strcmp(cmd, "RMD") == 0 || strcmp(cmd, "PWD") == 0 || strcmp(cmd, "NLST") == 0 || strcmp(cmd, "SITE") == 0 || strcmp(cmd, "SYST") == 0 || strcmp(cmd, "STAT") == 0 || strcmp(cmd, "HELP") == 0)
     {
-        return OTHER_C;
+        return CMD_MISSING;
     }
-
-    return BAD_C;
+    return CMD_INVALID;
 }
 
 int main(int argc, char **argv)
 {
-
     struct sockaddr_in sa;
     int socket_FD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     int thisPort;
@@ -74,10 +61,8 @@ int main(int argc, char **argv)
 
     sa.sin_family = AF_INET;
     thisPort = strtol(argv[1], NULL, 10);
-    //sa.sin_port = htons(1100);
     sa.sin_port = htons(thisPort);
     sa.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    //sa.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (bind(socket_FD, (struct sockaddr *)&sa, sizeof sa) == -1)
     {
@@ -92,42 +77,42 @@ int main(int argc, char **argv)
         close(socket_FD);
         exit(EXIT_FAILURE);
     }
-    //socket data stuff
-    struct sockaddr_in sa_data;
-    int data_FD, bin;
 
-    //read/write
-    int fd, fd2;
-    int w_temp, r_temp;
-    struct stat fst;
-
-    //cmd variables
-    char cmd_buffer[100];
+    //  Command vars
     int cmdNum;
+    char cmd_buffer[100];
     char *cmd, *next;
-    const char *respStr;
+    const char *resp;
     const char *CWD = "/home/user/Desktop/cs4414/FTP/ftp-template/ftp-server/"; // CWD in my VM
 
-    //flags that keep track of respective states
-    bool authFLG, quitFLG, dataFLG, typeFLG;
+    //  Socket
+    int data_FD, bin;
+    struct sockaddr_in sa_data;
 
-    //LIST, STOR, RETR
-    int check, status, numBytesRead;
-    bool flagRead;
-    char exec_buf[1024], read_buf[1024];
-
-    //IPaddr stuff
-    int i, dataPort;
-    const char *dummy;
+    //  IPaddr
+    int i, data_prt;
+    const char *ptr;
     char IP_str[INET_ADDRSTRLEN];
+
+    //  Read/Write
+    int fd, fd2, tmpW, tmpR;
+    struct stat fst;
+
+    //  LIST, STOR, RETR
+    bool flgRead;
+    int check, status, bytesRead;
+    char exec_buffer[1024], read_buffer[1024];
+
+    //  state flags
+    bool FLG_auth, FLG_quit, FLG_data, FLG_type;
 
     for (;;)
     {
         int connect_FD = accept(socket_FD, NULL, NULL);
-        authFLG = false;
-        quitFLG = false;
-        dataFLG = false;
-        typeFLG = false;
+        FLG_auth = false;
+        FLG_quit = false;
+        FLG_data = false;
+        FLG_type = false;
 
         if (0 > connect_FD)
         {
@@ -137,55 +122,57 @@ int main(int argc, char **argv)
         }
         perror("incoming connection");
 
-        respStr = "220 Service ready for new user.\r\n";
-        memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-        w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+        resp = "220 Service ready for new user.\r\n";
+        memcpy(cmd_buffer, resp, strlen(resp) + 1);
+        tmpW = write(connect_FD, cmd_buffer, strlen(resp));
 
         for (;;)
         {
             memset(cmd_buffer, '\0', 100);
 
-            r_temp = read(connect_FD, cmd_buffer, 99);
+            tmpR = read(connect_FD, cmd_buffer, 99);
             perror(cmd_buffer);
 
             cmd = strtok(strdup(cmd_buffer), " \r\n");
-            cmdNum = cmdToInt(cmd);
+            cmdNum = cmdInt(cmd);
 
             switch (cmdNum)
             {
-            case QUIT_C:
-                respStr = "221 Service closing control connection.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
-                quitFLG = true;
+            case CMD_QUIT:
+                resp = "221 Service closing control connection.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
+                FLG_quit = true;
                 break;
-            case USER_C:
-                respStr = "230 User logged in, proceed.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
-                authFLG = true;
+
+            case CMD_USER:
+                resp = "230 User logged in, proceed.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
+                FLG_auth = true;
                 break;
-            case PORT_C:
-                if (!authFLG)
+
+            case CMD_PORT:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
-                if (!dataFLG)
+                if (!FLG_data)
                 {
                     IP_str[0] = '\0';
                     for (i = 0; i < 4; i++)
                     {
-                        dummy = strtok(NULL, ",");
-                        strcat(IP_str, dummy);
+                        ptr = strtok(NULL, ",");
+                        strcat(IP_str, ptr);
                         if (i < 3)
                             strcat(IP_str, ".");
                     }
-                    dataPort = strtol(strtok(NULL, ","), NULL, 10);
-                    dataPort <<= 8;
-                    dataPort += strtol(strtok(NULL, "\r\n"), NULL, 10);
+                    data_prt = strtol(strtok(NULL, ","), NULL, 10);
+                    data_prt <<= 8;
+                    data_prt += strtol(strtok(NULL, "\r\n"), NULL, 10);
                     data_FD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
                     if (data_FD == -1)
                     {
@@ -196,7 +183,7 @@ int main(int argc, char **argv)
                     memset(&sa_data, 0, sizeof sa_data);
 
                     sa_data.sin_family = AF_INET;
-                    sa_data.sin_port = htons(dataPort);
+                    sa_data.sin_port = htons(data_prt);
                     bin = inet_pton(AF_INET, IP_str, &sa_data.sin_addr);
 
                     if (connect(data_FD, (struct sockaddr *)&sa_data, sizeof sa_data) == -1)
@@ -209,286 +196,265 @@ int main(int argc, char **argv)
                     }
                     printf("socket connected");
                 }
-                dataFLG = true;
-                respStr = "200 Command Successful.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                FLG_data = true;
+                resp = "200 Command Successful.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case TYPE_C:
-                if (!authFLG)
+
+            case CMD_TYPE:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
                 if (strcmp(next, "I") == 0)
                 {
-                    typeFLG = true;
-                    respStr = "200 Command Successful.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
-                }
-                else if ((strcmp(next, "A") == 0) | (strcmp(next, "E") == 0) | (strcmp(next, "L") == 0))
-                {
-                    respStr = "504 Command not implemented for that parameter.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    FLG_type = true;
+                    resp = "200 Command Successful.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 else
                 {
-                    respStr = "501 Syntax error in parameters or arguments.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "501 Syntax error in parameters or arguments.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 break;
-            case MODE_C:
-                if (!authFLG)
+
+            case CMD_MODE:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
                 if (strcmp(next, "S") == 0)
                 {
-                    respStr = "200 Command Successful.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
-                }
-                else if ((strcmp(next, "B") == 0) | (strcmp(next, "C") == 0))
-                {
-                    respStr = "504 Command not implemented for that parameter.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "200 Command Successful.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 else
                 {
-                    respStr = "501 Syntax error in parameters or arguments.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "501 Syntax error in parameters or arguments.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 break;
 
-            case STRU_C:
-                if (!authFLG)
+            case CMD_STRU:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
                 if (strcmp(next, "F") == 0)
                 {
-                    respStr = "200 STRU Command Successful.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
-                }
-                else if ((strcmp(next, "R") == 0) | (strcmp(next, "P") == 0))
-                {
-                    respStr = "504 Command not implemented for that parameter.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "200 STRU Command Successful.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 else
                 {
-                    respStr = "501 Syntax error in parameters or arguments.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "501 Syntax error in parameters or arguments.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 }
                 break;
-            case STOR_C:
-                if (!authFLG)
+
+            case CMD_STOR:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
-                if (!typeFLG)
+                if (!FLG_type)
                 {
-                    respStr = "451 Requested action aborted: local error in processing.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "451 Requested action aborted: local error in processing.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
+
                 next = strtok(NULL, "\r\n");
+                resp = "125 Data connection already open; transfer starting.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
 
-                respStr = "125 Data connection already open; transfer starting.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                if (next != NULL) strcat(read_buffer, next);
 
-                //memset(read_buf, 0, 1024);
-                if (next != NULL)
-                {
-                    strcat(read_buf, next);
-                }
-                fd = open(read_buf, O_RDWR | O_CREAT | O_TRUNC, 0600);
-                flagRead = false;
-                numBytesRead = 0;
+                fd = open(read_buffer, O_RDWR | O_CREAT | O_TRUNC, 0600);
+                flgRead = false;
+                bytesRead = 0;
+
                 for (;;)
                 {
-                    if ((numBytesRead = recv(data_FD, next, 1024, 0)) < 0)
+                    if ((bytesRead = recv(data_FD, next, 1024, 0)) < 0)
                     {
                         perror("error in reading\n");
                         break;
                     }
-                    else if (numBytesRead < 1024)
+                    else if (bytesRead < 1024)
                     {
-                        flagRead = true;
+                        flgRead = true;
                     }
-                    //fprintf(stderr, "reading %d bytes\n", numBytesRead);
-                    w_temp = write(fd, next, numBytesRead);
+                    tmpW = write(fd, next, bytesRead);
 
-                    if (flagRead)
+                    if (flgRead)
                         break;
                 }
                 close(data_FD);
                 close(fd);
-                dataFLG = false;
+                FLG_data = false;
 
-                respStr = "226 Closing data connection. Requested file transfer successful.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "226 Closing data connection. Requested file transfer successful.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case RETR_C:
-                if (!authFLG)
+
+            case CMD_RETR:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
-                if (!typeFLG)
+                if (!FLG_type)
                 {
-                    respStr = "451 Requested action aborted: local error in processing.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "451 Requested action aborted: local error in processing.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
 
-                respStr = "125 Data connection already open; transfer starting.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "125 Data connection already open; transfer starting.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
 
-                memset(read_buf, 0, 1024);
+                memset(read_buffer, 0, 1024);
                 if (next != NULL)
                 {
-                    strcat(read_buf, CWD);
-                    strcat(read_buf, next);
+                    strcat(read_buffer, CWD);
+                    strcat(read_buffer, next);
                 }
-                fd = open(read_buf, O_RDONLY);
+                fd = open(read_buffer, O_RDONLY);
                 fstat(fd, &fst);
                 check = sendfile(data_FD, fd, NULL, fst.st_size);
                 close(data_FD);
                 close(fd);
-                dataFLG = false;
+                FLG_data = false;
 
-                respStr = "226 Closing data connection. Requested file transfer successful.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "226 Closing data connection. Requested file transfer successful.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case LIST_C:
-                if (!authFLG)
+
+            case CMD_LIST:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
-                respStr = "125 Data connection already open; transfer starting.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "125 Data connection already open; transfer starting.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
 
                 fd2 = dup(STDOUT_FILENO);
                 dup2(data_FD, STDOUT_FILENO);
 
-                memset(exec_buf, 0, 1024);
+                memset(exec_buffer, 0, 1024);
 
-                strcat(exec_buf, "ls -l ");
+                strcat(exec_buffer, "ls -l ");
                 if (next != NULL)
                 {
-                    strcat(exec_buf, CWD);
-                    strcat(exec_buf, next);
+                    strcat(exec_buffer, CWD);
+                    strcat(exec_buffer, next);
                 }
 
-                status = system(exec_buf);
+                status = system(exec_buffer);
 
                 close(data_FD);
-                dataFLG = false;
+                FLG_data = false;
                 close(STDOUT_FILENO);
                 dup2(fd2, STDOUT_FILENO);
 
-                respStr = "226 Closing data connection. Requested file transfer successful.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "226 Closing data connection. Requested file transfer successful.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case NOOP_C:
-                respStr = "200 NOOP Command Successful.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+
+            case CMD_NOOP:
+                resp = "200 NOOP Command Successful.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case MKD_C:
-                if (!authFLG)
+
+            case CMD_MKD:
+                if (!FLG_auth)
                 {
-                    respStr = "530 Not logged in.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "530 Not logged in.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 next = strtok(NULL, "\r\n");
-                memset(exec_buf, 0, 1024);
-                strcat(exec_buf, "mkdir ");
+                memset(exec_buffer, 0, 1024);
+                strcat(exec_buffer, "mkdir ");
                 if (strstr(next, "..") != NULL)
                 {
-                    respStr = "501 Syntax error in parameters or arguments.\r\n";
-                    memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                    w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                    resp = "501 Syntax error in parameters or arguments.\r\n";
+                    memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                    tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                     break;
                 }
                 else if (next != NULL)
                 {
-                    strcat(exec_buf, CWD);
-                    strcat(exec_buf, next);
+                    strcat(exec_buffer, CWD);
+                    strcat(exec_buffer, next);
                 }
-                status = system(exec_buf);
-                //mkdir(next, S_IRWXU);
+                status = system(exec_buffer);
                 if (status != 0)
                 {
-                    /*char* tempStr = "501 ";
-	  strcat(tempStr, CWD);
-	  strcat(tempStr, next);
-	  strcat(tempStr," Exists.\r\n");*/
-                    respStr = "501 Directory Exists\r\n";
+                    resp = "501 Directory Exists\r\n";
                 }
                 else
                 {
-                    /*char* tempStr = "257 ";
-	  strcat(tempStr, CWD);
-	  strcat(tempStr, next);
-	  strcat(tempStr," Created Successfully.\r\n");*/
-                    respStr = "257 Directory Created Successfully\r\n";
+                    resp = "257 Directory Created Successfully\r\n";
                 }
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
-            case OTHER_C:
-                respStr = "502 Command not implemented.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+
+            case CMD_MISSING:
+                resp = "502 Command not implemented.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
+
             default:
-                respStr = "500 Syntax error, command unrecognized.\r\n";
-                memcpy(cmd_buffer, respStr, strlen(respStr) + 1);
-                w_temp = write(connect_FD, cmd_buffer, strlen(respStr));
+                resp = "500 Syntax error, command unrecognized.\r\n";
+                memcpy(cmd_buffer, resp, strlen(resp) + 1);
+                tmpW = write(connect_FD, cmd_buffer, strlen(resp));
                 break;
             }
-            if (quitFLG)
+            if (FLG_quit)
             {
                 break;
             }
@@ -496,7 +462,7 @@ int main(int argc, char **argv)
 
         perror("closing connection\n");
 
-        if (dataFLG)
+        if (FLG_data)
         {
             shutdown(data_FD, SHUT_RDWR);
             close(data_FD);
@@ -511,20 +477,9 @@ int main(int argc, char **argv)
         }
         close(connect_FD);
     }
-    //end for(;;)
-
-    /* if (argc < 2) {
-       std::cerr << "Usage: " << argv[0] << " PORT-NUMBER" << std::endl;
-       return 1;
-       }
-       const char *portname = argv[1];
-
-       std::cout << "Code to bind to 127.0.0.1 port " << portname
-       << " and listen for connections unimplemented." << std::endl;
-       return 0; */
 
     close(socket_FD);
-    if (w_temp < 0 && r_temp < 0 && status < 0 && bin < 0 && check < 0)
+    if (tmpW < 0 && tmpR < 0 && status < 0 && bin < 0 && check < 0)
     {
         perror("Status error\n");
     }
