@@ -4,21 +4,16 @@
 #include <string>
 #include <vector>
 #include <unistd.h>
+#include <errno.h>
 
 typedef struct
 {
     const char* path;
     const char* args[80];
+    pid_t pid;
 } command_t;
 
 void parse_and_run_command(const std::string &command) {
-    /* TODO: Implement this. */
-    /* Note that this is not the correct way to test for the exit command.
-       For example the command "   exit  " should also exit your shell.
-     */
-    if (command == "exit") {
-        exit(0);
-    }
     
     // parse input into tokens
     std::istringstream s(command);
@@ -37,22 +32,28 @@ void parse_and_run_command(const std::string &command) {
         cmd.args[i] = token.c_str();
     }
 
-    std::vector<pid_t> pids;
     // for each command in the line
+    if (cmd.path == (const char*)"exit") {  // built-in exit command
+        exit(0);
+    }
     pid_t pid = fork();
     if (pid == 0) { // child process
         // do redirection stuff
-        execv(cmd.path, (char**)&cmd.args[0]);
-        // exec failed message
-        exit(0);
+        if (execv(cmd.path, (char**)&cmd.args[0]) < 0) {
+            if (errno == ENOENT) std::cerr << "No such file or directory\n";
+        }
+        std::cerr << "Failed to execute command: " + cmd.path + "\n";
+        exit(errno);
     } else {
-        pids.push_back(pid);
+        cmd.pid = pid;
     }
     // end commands loop
 
+    int status;
     // for each command in the line
-    // waitpid(stored pid, &status);
-    // check return code in status;
+    status = 0;
+    waitpid(cmd.pid, &status, 0);
+    printf("%s exit status: %d\n", cmd.name, WEXITSTATUS(status));
     // end commands loop
 
     std::cerr << "Not implemented.\n";
