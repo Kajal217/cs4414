@@ -10,9 +10,9 @@
 
 typedef struct
 {
-    const char* path;
+    const char* path = 0;
     const char* args[80];
-    pid_t pid;
+    pid_t pid = 0;
 } command_t;
 
 void parse_and_run_command(const std::string &command) {
@@ -32,7 +32,7 @@ void parse_and_run_command(const std::string &command) {
     int i = 0;
     for (std::string token : tokens) {
         if (i == 0) cmd.path = token.c_str();
-        else cmd.args[i] = token.c_str();
+        else strcpy(cmd.args[i], token.c_str());
         i++;
     }
 
