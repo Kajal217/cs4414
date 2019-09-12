@@ -29,11 +29,9 @@ void parse_and_run_command(const std::string &command) {
     // std::vector<command_t> commands;
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    int i = 0;
-    for (std::string token : tokens) {
-        if (i == 0) strcpy(cmd.path, token.c_str());
-        else strcpy((char*)cmd.args[i], token.c_str());
-        i++;
+    for (int i = 0; i < tokens.size(); i++) {
+        if (i == 0) cmd.path = tokens[i].c_str();
+        else cmd.args[i] = tokens[i].c_str();
     }
 
     std::string exitStr = "exit";
