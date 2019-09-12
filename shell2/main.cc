@@ -33,6 +33,7 @@ void parse_and_run_command(const std::string &command) {
         if (i == 0) cmd.path = tokens[i].c_str();
         else cmd.args[i-1] = tokens[i].c_str();
     }
+    cmd.args[i-1] = 0;
 
     std::string exitStr = "exit";
     // for each command in the line
@@ -47,8 +48,11 @@ void parse_and_run_command(const std::string &command) {
         }
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
         exit(errno);
-    } else {
+    } else if (pid > 0){ // parent process
         cmd.pid = pid;
+    } else { // fork failure
+        std::cerr << "fork failure\n";
+        exit(1);
     }
     // end commands loop
 
