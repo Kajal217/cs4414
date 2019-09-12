@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <unistd.h>
+#include <sys/wait.h>
 #include <errno.h>
 
 typedef struct
@@ -28,7 +29,7 @@ void parse_and_run_command(const std::string &command) {
     command_t cmd;
     int i = 0;
     for (std::string token : tokens) {
-        if (i == 0) cmd.path = token;
+        if (i == 0) cmd.path = token.c_str();
         cmd.args[i] = token.c_str();
     }
 
@@ -42,7 +43,7 @@ void parse_and_run_command(const std::string &command) {
         if (execv(cmd.path, (char**)&cmd.args[0]) < 0) {
             if (errno == ENOENT) std::cerr << "No such file or directory\n";
         }
-        std::cerr << "Failed to execute command: " + cmd.path + "\n";
+        fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
         exit(errno);
     } else {
         cmd.pid = pid;
@@ -53,7 +54,7 @@ void parse_and_run_command(const std::string &command) {
     // for each command in the line
     status = 0;
     waitpid(cmd.pid, &status, 0);
-    printf("%s exit status: %d\n", cmd.name, WEXITSTATUS(status));
+    printf("%s exit status: %d\n", cmd.path, WEXITSTATUS(status));
     // end commands loop
 
     std::cerr << "Not implemented.\n";
