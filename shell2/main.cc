@@ -36,8 +36,9 @@ void parse_and_run_command(const std::string &command) {
         i++;
     }
 
+    std::string exitStr = "exit";
     // for each command in the line
-    if (strcmp(cmd.path, (const char*)"exit") == 0) {  // built-in exit command
+    if (strcmp(cmd.path, exitStr.c_str()) == 0) {  // built-in exit command
         exit(0);
     }
     pid_t pid = fork();
