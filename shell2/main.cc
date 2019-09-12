@@ -31,7 +31,7 @@ void parse_and_run_command(const std::string &command) {
     memset(cmd.args, 0, sizeof(cmd.args));
     for (uint i = 0; i < tokens.size(); i++) {
         if (i == 0) cmd.path = tokens[i].c_str();
-        else cmd.args[i] = tokens[i].c_str();
+        else cmd.args[i-1] = tokens[i].c_str();
     }
 
     std::string exitStr = "exit";
