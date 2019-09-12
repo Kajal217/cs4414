@@ -29,11 +29,13 @@ void parse_and_run_command(const std::string &command) {
     // std::vector<command_t> commands;
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    for (uint i = 0; i < tokens.size(); i++) {
+    uint i = 0;
+    while (i < tokens.size()) {
         if (i == 0) cmd.path = tokens[i].c_str();
-        else cmd.args[i-1] = tokens[i].c_str();
+        cmd.args[i] = tokens[i].c_str();
+        i++;
     }
-    cmd.args[i-1] = 0;
+    cmd.args[i] = 0;
 
     std::string exitStr = "exit";
     // for each command in the line
@@ -43,9 +45,8 @@ void parse_and_run_command(const std::string &command) {
     pid_t pid = fork();
     if (pid == 0) { // child process
         // do redirection stuff
-        if (execv(cmd.path, (char**)(&(cmd.args[0]))) < 0) {
-            if (errno == ENOENT) std::cerr << "No such file or directory\n";
-        }
+        execv(cmd.path, (char**)cmd.args);
+        if (errno == ENOENT) std::cerr << "No such file or directory\n";
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
         exit(errno);
     } else if (pid > 0){ // parent process
