@@ -42,7 +42,7 @@ void parse_and_run_command(const std::string &command) {
     pid_t pid = fork();
     if (pid == 0) { // child process
         // do redirection stuff
-        if (execv(cmd.path, (char**)&(cmd.args[0])) < 0) {
+        if (execv(cmd.path, (char**)(&(cmd.args[0]))) < 0) {
             if (errno == ENOENT) std::cerr << "No such file or directory\n";
         }
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
@@ -58,10 +58,6 @@ void parse_and_run_command(const std::string &command) {
     waitpid(cmd.pid, &status, 0);
     printf("%s exit status: %d\n", cmd.path, WEXITSTATUS(status));
     // end commands loop
-
-    std::cerr << "Not implemented.\n";
-
-
 }
 
 int main(void) {
