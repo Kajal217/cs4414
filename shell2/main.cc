@@ -10,7 +10,7 @@
 
 typedef struct
 {
-    char* path = 0;
+    const char* path = 0;
     const char* args[80];
     pid_t pid = 0;
 } command_t;
@@ -29,7 +29,7 @@ void parse_and_run_command(const std::string &command) {
     // std::vector<command_t> commands;
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    for (int i = 0; i < tokens.size(); i++) {
+    for (uint i = 0; i < tokens.size(); i++) {
         if (i == 0) cmd.path = tokens[i].c_str();
         else cmd.args[i] = tokens[i].c_str();
     }
