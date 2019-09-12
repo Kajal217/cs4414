@@ -30,11 +30,12 @@ void parse_and_run_command(const std::string &command) {
     int i = 0;
     for (std::string token : tokens) {
         if (i == 0) cmd.path = token.c_str();
-        cmd.args[i] = token.c_str();
+        else cmd.args[i] = token.c_str();
+        i++;
     }
 
     // for each command in the line
-    if (cmd.path == (const char*)"exit") {  // built-in exit command
+    if (strcmp(cmd.path, (const char*)"exit") == 0) {  // built-in exit command
         exit(0);
     }
     pid_t pid = fork();
