@@ -28,6 +28,7 @@ void parse_and_run_command(const std::string &command) {
     // create command objects from the tokens (checkpoint: only need 1)
     // std::vector<command_t> commands;
     command_t cmd;
+    memset(cmd.args, 0, sizeof(cmd.args));
     int i = 0;
     for (std::string token : tokens) {
         if (i == 0) cmd.path = token.c_str();
@@ -42,7 +43,7 @@ void parse_and_run_command(const std::string &command) {
     pid_t pid = fork();
     if (pid == 0) { // child process
         // do redirection stuff
-        if (execv(cmd.path, (char**)&cmd.args[0]) < 0) {
+        if (execv(cmd.path, (char**)&(cmd.args[0])) < 0) {
             if (errno == ENOENT) std::cerr << "No such file or directory\n";
         }
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
