@@ -114,28 +114,28 @@ void parse_and_run_command(const std::string &cmd) {
 	  if (tokens[i+tokenIndex] == "&")
 	    {
 	      if (i==tokens.size()-1){
-		c.background = true;
-		//set all cmds in pipeline to background
-		for (int y=0; y<pipeCount-1; y++){
-		  pipeline[y].background = true;
-		}
+          c.background = true;
+          //set all cmds in pipeline to background
+          for (int y=0; y<pipeCount-1; y++){
+            pipeline[y].background = true;
+          }
 	      }
 	      else {
-		std::cerr << "invalid command.";
-		std::cout << "> ";
-		exit(1);
+          std::cerr << "invalid command.";
+          std::cout << "> ";
+          exit(1);
 	      }
 	    }
 	  if (isOperator((char*)tokens[i+tokenIndex].c_str()) == 1)
 	    {
 	      c.numOps++;
 	      if (tokens[i+tokenIndex] == "<") {
-		c.inIndex = i;
-		c.numIn++;
+		      c.inIndex = i;
+		      c.numIn++;
 	      }
 	      else if (tokens[i+tokenIndex] == ">") {
-		c.outIndex = i;
-		c.numOut++;
+		      c.outIndex = i;
+		      c.numOut++;
 	      }
 	    }
 	  if (tokens[i+tokenIndex]=="|") {
