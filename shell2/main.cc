@@ -66,6 +66,7 @@ void parse_and_run_command(const std::string &command) {
     }
     pid_t pid = fork();
     if (pid == 0) { // child process
+        printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
         // output redirection
         if (cmd.output != 0) {
             int outFD = open(cmd.output, O_WRONLY | O_TRUNC | O_CREAT, 0666);
@@ -76,8 +77,6 @@ void parse_and_run_command(const std::string &command) {
             dup2(outFD, 1);
             close(outFD);
         }
-
-        printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
 
         execv(cmd.path, (char**)cmd.args);
         if (errno == ENOENT) std::cerr << "No such file or directory\n";
