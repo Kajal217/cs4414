@@ -1,3 +1,4 @@
+
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -12,12 +13,14 @@ typedef struct
 {
     const char* path = 0;
     const char* args[80];
+    const char* output = 0;
+    // const char* input = 0;
     pid_t pid = 0;
 } command_t;
 
 void parse_and_run_command(const std::string &command) {
     
-    // parse input into tokens
+    // PARSE INPUT TOKENS
     std::istringstream s(command);
     std::vector<std::string> tokens;
     std::string tkn;
@@ -25,26 +28,52 @@ void parse_and_run_command(const std::string &command) {
         tokens.push_back(tkn);
     }
 
-    // create command objects from the tokens (checkpoint: only need 1)
-    // std::vector<command_t> commands;
+    // CREATE COMMAND OBJECTS (checkpoint: only need 1)
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    uint i = 0;
-    while (i < tokens.size()) {
-        if (i == 0) cmd.path = tokens[i].c_str();
-        cmd.args[i] = tokens[i].c_str();
-        i++;
-    }
-    cmd.args[i] = 0;
+    bool out = false;
+    int argCount = 0;
+    for (uint i = 0; i < tokens.size(); i++) {
+        // output redirection
+        if (out) {
+            // if tokens[i] is an operator, command malformed
+            // if (cmd.output != 0) second redirection - malformed
+            cmd.output = tokens[i].c_str();
+            out = false;
+            continue;
+        }
+        if (tokens[i] == ">") {
+            out = true;
+            continue;
+        }
 
-    std::string exitStr = "exit";
+        if (cmd.path == 0) cmd.path = tokens[i].c_str();
+        cmd.args[argCount] = tokens[i].c_str();
+        argCount++;
+    }
+    cmd.args[argCount] = 0;
+
+    // if (cmd.path == 0) malformed
+
+    // RUN COMMANDS
+    const char* exitStr = "exit";
     // for each command in the line
-    if (strcmp(cmd.path, exitStr.c_str()) == 0) {  // built-in exit command
+    if (strcmp(cmd.path, exitStr) == 0) {  // built-in exit command
         exit(0);
     }
     pid_t pid = fork();
     if (pid == 0) { // child process
-        // do redirection stuff
+        // output redirection
+        if (cmd.output != 0) {
+            int outFD = open(cmd.output, O_WRONLY | O_TRUNC | O_CREAT, 0666);
+            if (outFD == -1) {
+                fprintf(stderr, "Open failed for: %s\n", cmd.output);
+                exit(1);
+            }
+            dup2(outFD, 1);
+            close(outFD);
+        }
+
         execv(cmd.path, (char**)cmd.args);
         if (errno == ENOENT) std::cerr << "No such file or directory\n";
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
