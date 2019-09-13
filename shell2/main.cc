@@ -77,6 +77,8 @@ void parse_and_run_command(const std::string &command) {
             close(outFD);
         }
 
+        printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
+
         execv(cmd.path, (char**)cmd.args);
         if (errno == ENOENT) std::cerr << "No such file or directory\n";
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
