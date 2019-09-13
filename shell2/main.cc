@@ -21,11 +21,6 @@ typedef struct
     pid_t pid = 0;
 } command_t;
 
-void err_invalid() {
-    std::cerr << "Invalid command\n";
-    exit(1);
-}
-
 void parse_and_run_command(const std::string &command) {
     
     // PARSE INPUT TOKENS
@@ -48,7 +43,8 @@ void parse_and_run_command(const std::string &command) {
                     ">" followed by an operator 
                     or multiple output redirections     */
             if (tokens[i] == ">" || tokens[i] == "<" || tokens[i] == "|" || cmd.output != 0) {
-                err_invalid();
+                std::cerr << "Invalid command\n";
+                return;
             }
             cmd.output = tokens[i].c_str();
             out = false;
@@ -66,7 +62,10 @@ void parse_and_run_command(const std::string &command) {
     cmd.args[argCount] = 0;
 
     // malformed if no path, or if redirecting to nothing
-    if (cmd.path == 0 || out) err_invalid();
+    if (cmd.path == 0 || out) {
+        std::cerr << "Invalid command\n";
+        return;
+    }
 
     // RUN COMMANDS
     const char* exitStr = "exit";
@@ -97,7 +96,7 @@ void parse_and_run_command(const std::string &command) {
     } else { // fork failure
         std::cerr << "Fork failure\n";
         std::cout << "> ";
-        exit(1);
+        return
     }
     // end commands loop
 
