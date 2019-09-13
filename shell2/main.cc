@@ -29,7 +29,7 @@ void parse_and_run_command(const std::string &command) {
     std::string tkn;
     while (s >> tkn) {
         if (tkn == "<" || tkn == "|") {
-            std::cerr << "Support for input redirection and pipelines not implemented.";
+            std::cerr << "Support for input redirection and pipelines not implemented.\n";
             return;
         }
         tokens.push_back(tkn);
