@@ -1,4 +1,4 @@
-
+// Austin Baney | ab5ep | CS 4414 F19
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -8,6 +8,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 typedef struct
 {
