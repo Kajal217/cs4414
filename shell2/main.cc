@@ -28,6 +28,10 @@ void parse_and_run_command(const std::string &command) {
     std::vector<std::string> tokens;
     std::string tkn;
     while (s >> tkn) {
+        if (tkn == "<" || tkn == "|") {
+            std::cerr << "Support for input redirection and pipelines not implemented.";
+            return;
+        }
         tokens.push_back(tkn);
     }
 
@@ -95,7 +99,6 @@ void parse_and_run_command(const std::string &command) {
         cmd.pid = pid;
     } else { // fork failure
         std::cerr << "Fork failure\n";
-        std::cout << "> ";
         return;
     }
     // end commands loop
