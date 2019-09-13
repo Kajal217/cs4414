@@ -96,7 +96,7 @@ void parse_and_run_command(const std::string &command) {
     } else { // fork failure
         std::cerr << "Fork failure\n";
         std::cout << "> ";
-        return
+        return;
     }
     // end commands loop
 
