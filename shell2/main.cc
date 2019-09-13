@@ -21,6 +21,11 @@ typedef struct
     pid_t pid = 0;
 } command_t;
 
+void err_invalid() {
+    std::cerr << "Invalid command\n";
+    exit(1);
+}
+
 void parse_and_run_command(const std::string &command) {
     
     // PARSE INPUT TOKENS
@@ -39,8 +44,12 @@ void parse_and_run_command(const std::string &command) {
     for (uint i = 0; i < tokens.size(); i++) {
         // output redirection
         if (out) {
-            // if tokens[i] is an operator, command malformed
-            // if (cmd.output != 0) second redirection - malformed
+            /*  command is malformed if it contains:
+                    ">" followed by an operator 
+                    or multiple output redirections     */
+            if (tokens[i] == ">" || tokens[i] == "<" || tokens[i] == "|" || cmd.output != 0) {
+                err_invalid();
+            }
             cmd.output = tokens[i].c_str();
             out = false;
             continue;
@@ -56,7 +65,8 @@ void parse_and_run_command(const std::string &command) {
     }
     cmd.args[argCount] = 0;
 
-    // if (cmd.path == 0) malformed
+    // malformed if no path, or if redirecting to nothing
+    if (cmd.path == 0 || out) err_invalid();
 
     // RUN COMMANDS
     const char* exitStr = "exit";
@@ -66,7 +76,7 @@ void parse_and_run_command(const std::string &command) {
     }
     pid_t pid = fork();
     if (pid == 0) { // child process
-        printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
+        // printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
         // output redirection
         if (cmd.output != 0) {
             int outFD = open(cmd.output, O_WRONLY | O_TRUNC | O_CREAT, 0666);
@@ -85,7 +95,8 @@ void parse_and_run_command(const std::string &command) {
     } else if (pid > 0){ // parent process
         cmd.pid = pid;
     } else { // fork failure
-        std::cerr << "fork failure\n";
+        std::cerr << "Fork failure\n";
+        std::cout << "> ";
         exit(1);
     }
     // end commands loop
