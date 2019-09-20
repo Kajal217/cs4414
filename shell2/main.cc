@@ -97,7 +97,7 @@ void parse_and_run_command(const std::string &command) {
     }
     pid_t pid = fork();
     if (pid == 0) { // child process
-        // printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nOUTPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.output);
+        printf("PATH: %s\nARGS[0]: %s\nARGS[1]: %s\nINPUT: %s\n", cmd.path, cmd.args[0], cmd.args[1], cmd.input);
         // output redirection
         if (cmd.output != 0) {
             int outFD = open(cmd.output, O_WRONLY | O_TRUNC | O_CREAT, 0666);
