@@ -19,7 +19,6 @@ typedef struct
     const char* output = 0;
     const char* input = 0;
     pid_t pid = -1;
-    int pipeFD[2] = {-1, -1};
 } command_t;
 
 void parse_and_run_command(const std::string &command) {
@@ -35,6 +34,9 @@ void parse_and_run_command(const std::string &command) {
         }
         tokens.push_back(tkn);
     }
+
+    // pipe array
+    int pipeFDs[80][2];
 
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
@@ -107,7 +109,6 @@ void parse_and_run_command(const std::string &command) {
         }
         pipeline.push_back(cmd);
     }
-    
 
     // RUN COMMANDS
     const char* exitStr = "exit";
@@ -118,7 +119,7 @@ void parse_and_run_command(const std::string &command) {
         }
 
         if (cmdCount > 1) {
-            if (pipe(pipeline[i].pipeFD) < 0) {
+            if (pipe(pipeFDs[i]) < 0) {
                 std::cerr << "Pipe failure\n";
                 return;
             }
@@ -130,10 +131,10 @@ void parse_and_run_command(const std::string &command) {
 
             // connect pipe FDs
             if (cmdCount > 1) {
-                if (i != 0) dup2(pipeline[i].pipeFD[0], STDIN_FILENO);
-                if (i != pipeline.size() - 1) dup2(pipeline[i].pipeFD[1], STDOUT_FILENO);
-                close(pipeline[i].pipeFD[0]);
-                close(pipeline[i].pipeFD[1]);
+                if (i != 0) dup2(pipeFDs[i][0], STDIN_FILENO);
+                if (i != pipeline.size() - 1) dup2(pipeFDs[i][1], STDOUT_FILENO);
+                close(pipeFDs[i][0]);
+                close(pipeFDs[i][1]);
             }
 
             // output redirection
@@ -174,15 +175,15 @@ void parse_and_run_command(const std::string &command) {
     
     int status;
     // for each command in the line
-    for (command_t cmd : pipeline) {
+    for (uint j = 0; j < pipeline.size(); j++) {
         // close pipes
-        close(cmd.pipeFD[0]);
-        close(cmd.pipeFD[1]);
+        close(pipeFDs[j][0]);
+        close(pipeFDs[j][1]);
 
         // wait for command to finish and check status
         status = 0;
-        waitpid(cmd.pid, &status, 0);
-        printf("%s exit status: %d\n", cmd.path, WEXITSTATUS(status));
+        waitpid(pipeline[j].pid, &status, 0);
+        printf("%s exit status: %d\n", pipeline[j].path, WEXITSTATUS(status));
     }
 }
 
