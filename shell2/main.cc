@@ -40,7 +40,7 @@ void parse_and_run_command(const std::string &command) {
 
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
-    uint tknIndex = 0;
+    int tknIndex = 0;
     for (int j = 0; j < cmdCount; j++) {
         command_t cmd;
         memset(cmd.args, 0, sizeof(cmd.args));
@@ -113,7 +113,7 @@ void parse_and_run_command(const std::string &command) {
     // RUN COMMANDS
     const char* exitStr = "exit";
     // for each command in the line
-    for (uint i = 0; i < cmdCount; i++) {
+    for (int i = 0; i < cmdCount; i++) {
         if (strcmp(pipeline[i].path, exitStr) == 0) {  // built-in exit command
             exit(0);
         }
@@ -174,14 +174,14 @@ void parse_and_run_command(const std::string &command) {
     }
     
     // close pipe FDs
-    for (uint j = 0; j < cmdCount; j++) {
+    for (int j = 0; j < cmdCount; j++) {
         close(pipeFDs[j][0]);
         close(pipeFDs[j][1]);
     }
 
     int status;
     // wait for each command to finish and check its status
-    for (uint j = 0; j < cmdCount; j++) {
+    for (int j = 0; j < cmdCount; j++) {
         status = 0;
         waitpid(pipeline[j].pid, &status, 0);
         printf("%s exit status: %d\n", pipeline[j].path, WEXITSTATUS(status));
