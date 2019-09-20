@@ -111,7 +111,7 @@ void parse_and_run_command(const std::string &command) {
 
         // input redirection
         if (cmd.input != 0) {
-            int inFD = open(cmd.input, O_RDONLY);
+            int inFD = open(cmd.input, O_RDONLY, 0666);
             if (inFD == -1) {
                 fprintf(stderr, "Open failed for: %s\n", cmd.input);
                 exit(1);
