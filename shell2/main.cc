@@ -48,7 +48,10 @@ void parse_and_run_command(const std::string &command) {
         // create command object
         while (tknIndex < tokens.size()) {
             // if "|", create a new command
-            if (tokens[tknIndex] == "|") break;
+            if (tokens[tknIndex] == "|") {
+                tknIndex++;
+                break;
+            }
 
             // output redirection
             if (out) {
