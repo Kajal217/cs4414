@@ -218,10 +218,10 @@ void parse_and_run_command(const std::string &cmd) {
     if (pid==0) {
 
       if (pipeCount != 1) {
-	if (j!=pipeCount-1) dup2(pipes[j][1], STDOUT_FILENO);
-	if (j!=0) dup2(pipes[j][0], STDIN_FILENO);
-	close(pipes[j][0]);
-	close(pipes[j][1]);
+        if (j!=pipeCount-1) dup2(pipes[j][1], STDOUT_FILENO);
+        if (j!=0) dup2(pipes[j][0], STDIN_FILENO);
+        close(pipes[j][0]);
+        close(pipes[j][1]);
       }
       //redirection
       if (pipeline[j].numOps > 0){
