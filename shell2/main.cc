@@ -173,14 +173,15 @@ void parse_and_run_command(const std::string &command) {
         }
     }
     
-    int status;
-    // for each command in the line
+    // close pipe FDs
     for (uint j = 0; j < pipeline.size(); j++) {
-        // close pipes
         close(pipeFDs[j][0]);
         close(pipeFDs[j][1]);
+    }
 
-        // wait for command to finish and check status
+    int status;
+    // wait for each command to finish and check its status
+    for (uint j = 0; j < pipeline.size(); j++) {
         status = 0;
         waitpid(pipeline[j].pid, &status, 0);
         printf("%s exit status: %d\n", pipeline[j].path, WEXITSTATUS(status));
