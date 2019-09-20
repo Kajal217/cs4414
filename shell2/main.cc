@@ -131,8 +131,8 @@ void parse_and_run_command(const std::string &command) {
 
             // connect pipe FDs
             if (cmdCount > 1) {
-                if (i != 0) dup2(pipeFDs[i][0], STDIN_FILENO);
-                if (i != cmdCount - 1) dup2(pipeFDs[i][1], STDOUT_FILENO);
+                if (i != 0) dup2(pipeFDs[i][0], 1);
+                if (i != cmdCount - 1) dup2(pipeFDs[i][1], 0);
                 close(pipeFDs[i][0]);
                 close(pipeFDs[i][1]);
             }
