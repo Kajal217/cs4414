@@ -40,7 +40,7 @@ void parse_and_run_command(const std::string &command) {
 
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
-    int tknIndex = 0;
+    uint tknIndex = 0;
     for (int j = 0; j < cmdCount; j++) {
         command_t cmd;
         memset(cmd.args, 0, sizeof(cmd.args));
