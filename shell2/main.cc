@@ -144,7 +144,7 @@ void parse_and_run_command(const std::string &command) {
                     fprintf(stderr, "Open failed for: %s\n", pipeline[i].output);
                     exit(1);
                 }
-                dup2(outFD, STDOUT_FILENO);
+                dup2(outFD, 1);
                 close(outFD);
             }
 
@@ -155,7 +155,7 @@ void parse_and_run_command(const std::string &command) {
                     fprintf(stderr, "Open failed for: %s\n", pipeline[i].input);
                     exit(1);
                 }
-                dup2(inFD, STDIN_FILENO);
+                dup2(inFD, 0);
                 close(inFD);
             }
 
