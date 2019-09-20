@@ -39,7 +39,7 @@ void parse_and_run_command(const std::string &command) {
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
     uint tknIndex = 0;
-    for (uint j = 0; j < cmdCount; j++) {
+    for (int j = 0; j < cmdCount; j++) {
         command_t cmd;
         memset(cmd.args, 0, sizeof(cmd.args));
         bool out = false, in = false;
@@ -48,7 +48,7 @@ void parse_and_run_command(const std::string &command) {
         // create command object
         while (tknIndex < tokens.size()) {
             // if "|", create a new command
-            if (tokens[tknIndex] = "|") break;
+            if (tokens[tknIndex] == "|") break;
 
             // output redirection
             if (out) {
