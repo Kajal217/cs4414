@@ -17,7 +17,7 @@ typedef struct
     const char* path = 0;
     const char* args[80];
     const char* output = 0;
-    // const char* input = 0;
+    const char* input = 0;
     pid_t pid = 0;
 } command_t;
 
@@ -28,8 +28,8 @@ void parse_and_run_command(const std::string &command) {
     std::vector<std::string> tokens;
     std::string tkn;
     while (s >> tkn) {
-        if (tkn == "<" || tkn == "|") {
-            std::cerr << "Support for input redirection and pipelines not implemented.\n";
+        if (tkn == "|") {
+            std::cerr << "Support for pipelines not implemented.\n";
             return;
         }
         tokens.push_back(tkn);
@@ -38,7 +38,7 @@ void parse_and_run_command(const std::string &command) {
     // CREATE COMMAND OBJECTS (checkpoint: only need 1)
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    bool out = false;
+    bool out, in = false;
     int argCount = 0;
     for (uint i = 0; i < tokens.size(); i++) {
         // output redirection
@@ -59,14 +59,32 @@ void parse_and_run_command(const std::string &command) {
             continue;
         }
 
+        // input redirection
+        if (in) {
+            /*  command is malformed if it contains:
+                    "<" followed by an operator 
+                    or multiple input redirections     */
+            if (tokens[i] == ">" || tokens[i] == "<" || tokens[i] == "|" || cmd.input != 0) {
+                std::cerr << "Invalid command\n";
+                return;
+            }
+            cmd.input = tokens[i].c_str();
+            in = false;
+            continue;
+        }
+        if (tokens[i] == "<") {
+            in = true;
+            continue;
+        }
+
         if (cmd.path == 0) cmd.path = tokens[i].c_str();
         cmd.args[argCount] = tokens[i].c_str();
         argCount++;
     }
     cmd.args[argCount] = 0;
 
-    // malformed if no path, or if redirecting to nothing
-    if (cmd.path == 0 || out) {
+    // malformed if no path, or if redirecting to/from nothing
+    if (cmd.path == 0 || out || in) {
         std::cerr << "Invalid command\n";
         return;
     }
@@ -91,6 +109,18 @@ void parse_and_run_command(const std::string &command) {
             close(outFD);
         }
 
+        // input redirection
+        if (cmd.input != 0) {
+            int inFD = open(cmd.input, O_RDONLY);
+            if (inFD == -1) {
+                fprintf(stderr, "Open failed for: %s\n", cmd.input);
+                exit(1);
+            }
+            dup2(inFD, 0);
+            close(inFD);
+        }
+
+        // execute command
         execv(cmd.path, (char**)cmd.args);
         if (errno == ENOENT) std::cerr << "No such file or directory\n";
         fprintf(stderr, "Failed to execute command: %s\n", cmd.path);
