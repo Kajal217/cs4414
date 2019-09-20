@@ -38,7 +38,7 @@ void parse_and_run_command(const std::string &command) {
     // CREATE COMMAND OBJECTS (checkpoint: only need 1)
     command_t cmd;
     memset(cmd.args, 0, sizeof(cmd.args));
-    bool out, in = false;
+    bool out = false, in = false;
     int argCount = 0;
     for (uint i = 0; i < tokens.size(); i++) {
         // output redirection
