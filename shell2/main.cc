@@ -113,7 +113,7 @@ void parse_and_run_command(const std::string &command) {
     // RUN COMMANDS
     const char* exitStr = "exit";
     // for each command in the line
-    for (uint i = 0; i < pipeline.size(); i++) {
+    for (uint i = 0; i < cmdCount; i++) {
         if (strcmp(pipeline[i].path, exitStr) == 0) {  // built-in exit command
             exit(0);
         }
@@ -132,7 +132,7 @@ void parse_and_run_command(const std::string &command) {
             // connect pipe FDs
             if (cmdCount > 1) {
                 if (i != 0) dup2(pipeFDs[i][0], STDIN_FILENO);
-                if (i != pipeline.size() - 1) dup2(pipeFDs[i][1], STDOUT_FILENO);
+                if (i != cmdCount - 1) dup2(pipeFDs[i][1], STDOUT_FILENO);
                 close(pipeFDs[i][0]);
                 close(pipeFDs[i][1]);
             }
@@ -174,14 +174,14 @@ void parse_and_run_command(const std::string &command) {
     }
     
     // close pipe FDs
-    for (uint j = 0; j < pipeline.size(); j++) {
+    for (uint j = 0; j < cmdCount; j++) {
         close(pipeFDs[j][0]);
         close(pipeFDs[j][1]);
     }
 
     int status;
     // wait for each command to finish and check its status
-    for (uint j = 0; j < pipeline.size(); j++) {
+    for (uint j = 0; j < cmdCount; j++) {
         status = 0;
         waitpid(pipeline[j].pid, &status, 0);
         printf("%s exit status: %d\n", pipeline[j].path, WEXITSTATUS(status));
