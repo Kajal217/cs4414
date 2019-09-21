@@ -200,12 +200,12 @@ void parse_and_run_command(const std::string &command) {
     }
 
     // close pipe FDs
-    if (cmdCount > 1) {
-        for (int j = 0; j < cmdCount; j++) {
-            close(pipeFDs[j][0]);
-            close(pipeFDs[j][1]);
-        }
-    }
+    // if (cmdCount > 1) {
+    //     for (int j = 0; j < cmdCount; j++) {
+    //         close(pipeFDs[j][0]);
+    //         close(pipeFDs[j][1]);
+    //     }
+    // }
 
     int status;
     // wait for each command to finish and check its status
