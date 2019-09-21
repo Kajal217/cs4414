@@ -118,7 +118,7 @@ void parse_and_run_command(const std::string &command) {
             exit(0);
         }
 
-        int curReadFD, curWriteFD, prevReadFD;
+        int curReadFD = -1, curWriteFD = -1, prevReadFD = -1;
         if (cmdCount > 1) {
             if (pipe(pipeFDs[i]) < 0) {
                 std::cerr << "Pipe failure\n";
