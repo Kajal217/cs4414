@@ -107,6 +107,8 @@ void parse_and_run_command(const std::string &command) {
         pipeline.push_back(cmd);
     }
 
+    printf("command count: %s\n", cmdCount)
+
     // pipe array
     int pipeFDs[25][2];
     int curReadFD = -1, curWriteFD = -1, prevReadFD = -1;
@@ -120,16 +122,14 @@ void parse_and_run_command(const std::string &command) {
         }
 
         if (cmdCount > 1) {
-            if (pipe(pipeFDs[i]) < 0) {
-                std::cerr << "Pipe failure\n";
-                return;
+            if (i != cmdCount - 1) {
+                if (pipe(pipeFDs[i]) < 0) {
+                    std::cerr << "Pipe failure\n";
+                    return;
+                }
+                curReadFD = pipeFDs[i][0];
+                curWriteFD = pipeFDs[i][1];
             }
-            if (i != 0) {
-                prevReadFD = curReadFD;
-            }
-            curReadFD = pipeFDs[i][0];
-            curWriteFD = pipeFDs[i][1];
-
         }
 
         pid_t pid = fork();
@@ -188,9 +188,9 @@ void parse_and_run_command(const std::string &command) {
                 if (i != 0) {
                     close(prevReadFD);
                 }
-                close(curWriteFD);
-                if (i == cmdCount - 1) {
-                    close(curReadFD);
+                if (i != cmdCount - 1) {
+                    prevReadFD = curReadFD;
+                    close(curWriteFD);
                 }
             }
         } else { // fork failure
