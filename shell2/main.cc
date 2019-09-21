@@ -15,7 +15,7 @@
 typedef struct
 {
     const char* path = 0;
-    const char* args[80];
+    const char* args[50];
     const char* output = 0;
     const char* input = 0;
     pid_t pid = -1;
@@ -36,7 +36,7 @@ void parse_and_run_command(const std::string &command) {
     }
 
     // pipe array
-    int pipeFDs[80][2];
+    int pipeFDs[25][2];
 
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
@@ -100,7 +100,7 @@ void parse_and_run_command(const std::string &command) {
             argCount++;
             tknIndex++;
         }
-        cmd.args[argCount] = 0;
+        cmd.args[argCount] = 0; // null terminate args
 
         // malformed if no path, or if redirecting to/from nothing
         if (cmd.path == 0 || out || in) {
@@ -172,9 +172,11 @@ void parse_and_run_command(const std::string &command) {
         } else if (pid > 0){ // parent process
             pipeline[i].pid = pid;
             // close pipe FDs
-            for (int j = 0; j < cmdCount; j++) {
-                close(pipeFDs[j][0]);
-                close(pipeFDs[j][1]);
+            if (cmdCount > 1) {
+                for (int j = 0; j < cmdCount; j++) {
+                    close(pipeFDs[j][0]);
+                    close(pipeFDs[j][1]);
+                }
             }
         } else { // fork failure
             std::cerr << "Fork failure\n";
