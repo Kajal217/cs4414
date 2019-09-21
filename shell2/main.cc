@@ -126,7 +126,7 @@ void parse_and_run_command(const std::string &command) {
                     if (errno == EBADF) err = "EBADF";
                     if (errno == EINTR) err = "EINTR";
                     if (errno == EMFILE) err = "EMFILE";
-                    fprintf(stderr, "Pipe error: %s\n", err);
+                    fprintf(stderr, "Pipe error: %s\n", err.c_str());
                     return;
                 }
                 curReadFD = pipeFDs[i][0];
