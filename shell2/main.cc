@@ -107,7 +107,7 @@ void parse_and_run_command(const std::string &command) {
         pipeline.push_back(cmd);
     }
 
-    printf("command count: %s\n", cmdCount);
+    printf("command count: %d\n", cmdCount);
 
     // pipe array
     int pipeFDs[25][2];
