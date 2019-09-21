@@ -180,12 +180,12 @@ void parse_and_run_command(const std::string &command) {
             // close pipes that future child processes won't need
             if (cmdCount > 1) {
                 if (i != 0) {
-                    close(pipeFDs[j-1][0]);
-                    close(pipeFDs[j-1][1]);
+                    close(pipeFDs[i-1][0]);
+                    close(pipeFDs[i-1][1]);
                 }
                 if (i == cmdCount - 1) {
-                    close(pipeFDs[j][0]);
-                    close(pipeFDs[j][1]);
+                    close(pipeFDs[i][0]);
+                    close(pipeFDs[i][1]);
                 }
             }
         } else { // fork failure
