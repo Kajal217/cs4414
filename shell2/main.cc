@@ -144,7 +144,7 @@ void parse_and_run_command(const std::string &command) {
                         if (errno == EBADF) err = "EBADF";
                         if (errno == EINTR) err = "EINTR";
                         if (errno == EMFILE) err = "EMFILE";
-                        fprintf(stderr, "dup2() error: %s\n", err.c_str());
+                        fprintf(stderr, "dup2() error: %d %s\n", errno, err.c_str());
                         std::cerr << "dup2() failed to connect previous pipe to stdin\n";
                     }
                     close(prevReadFD);
