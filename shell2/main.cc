@@ -136,14 +136,14 @@ void parse_and_run_command(const std::string &command) {
                         std::cerr << "dup2() failed to connect previous pipe to stdin\n";
                     }
                     close(pipeFDs[i-1][0]);
-                    close(pipeFDs[i-1][1]);
+                    // close(pipeFDs[i-1][1]);
                 }
                 if (i != cmdCount - 1) {
                     if (dup2(pipeFDs[i][1], STDOUT_FILENO) < 1) {
                         std::cerr << "dup2() failed to connect current pipe to stdout\n";
                     }    
                 }
-                close(pipeFDs[i][0]);
+                // close(pipeFDs[i][0]);
                 close(pipeFDs[i][1]);
             }
 
