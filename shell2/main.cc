@@ -133,13 +133,11 @@ void parse_and_run_command(const std::string &command) {
             if (cmdCount > 1) {
                 if (i != 0) {
                     dup2(pipeFDs[i-1][0], STDIN_FILENO);
-                    close(pipeFDs[i-1][0]);
                 }
                 if (i != cmdCount - 1) {
                     dup2(pipeFDs[i][1], STDOUT_FILENO);    
-                } else {
-                    close(pipeFDs[i][0]);
                 }
+                close(pipeFDs[i][0]);
                 close(pipeFDs[i][1]);
             }
 
@@ -173,16 +171,17 @@ void parse_and_run_command(const std::string &command) {
 
         } else if (pid > 0){ // parent process
             pipeline[i].pid = pid;
-            // close pipe FDs
-            if (cmdCount > 1) {
-                for (int j = 0; j < cmdCount; j++) {
-                    close(pipeFDs[j][0]);
-                    close(pipeFDs[j][1]);
-                }
-            }
         } else { // fork failure
             std::cerr << "Fork failure\n";
             return;
+        }
+    }
+
+    // close pipe FDs
+    if (cmdCount > 1) {
+        for (int j = 0; j < cmdCount; j++) {
+            close(pipeFDs[j][0]);
+            close(pipeFDs[j][1]);
         }
     }
 
