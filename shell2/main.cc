@@ -109,6 +109,7 @@ void parse_and_run_command(const std::string &command) {
 
     // pipe array
     int pipeFDs[25][2];
+    int curReadFD = -1, curWriteFD = -1, prevReadFD = -1;
 
     // RUN COMMANDS
     const char* exitStr = "exit";
@@ -118,14 +119,13 @@ void parse_and_run_command(const std::string &command) {
             exit(0);
         }
 
-        int curReadFD = -1, curWriteFD = -1, prevReadFD = -1;
         if (cmdCount > 1) {
             if (pipe(pipeFDs[i]) < 0) {
                 std::cerr << "Pipe failure\n";
                 return;
             }
             if (i != 0) {
-                prevReadFD = pipeFDs[i-1][0];
+                prevReadFD = curReadFD;
             }
             curReadFD = pipeFDs[i][0];
             curWriteFD = pipeFDs[i][1];
