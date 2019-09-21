@@ -35,9 +35,6 @@ void parse_and_run_command(const std::string &command) {
         tokens.push_back(tkn);
     }
 
-    // pipe array
-    int pipeFDs[25][2];
-
     // CREATE COMMAND PIPELINE
     std::vector<command_t> pipeline;
     uint tknIndex = 0;
@@ -110,6 +107,9 @@ void parse_and_run_command(const std::string &command) {
         pipeline.push_back(cmd);
     }
 
+    // pipe array
+    int pipeFDs[25][2];
+
     // RUN COMMANDS
     const char* exitStr = "exit";
     // for each command in the line
@@ -123,6 +123,12 @@ void parse_and_run_command(const std::string &command) {
                 std::cerr << "Pipe failure\n";
                 return;
             }
+            if (i != 0) {
+                int prevReadFD = pipeFDs[i-1][0];
+            }
+            int curReadFD = pipeFDs[i][0];
+            int curWriteFD = pipeFDs[i][1];
+
         }
 
         pid_t pid = fork();
@@ -132,19 +138,18 @@ void parse_and_run_command(const std::string &command) {
             // connect pipe FDs
             if (cmdCount > 1) {
                 if (i != 0) {
-                    if (dup2(pipeFDs[i-1][0], STDIN_FILENO) < 1) {
+                    if (dup2(prevReadFD, STDIN_FILENO) < 1) {
                         std::cerr << "dup2() failed to connect previous pipe to stdin\n";
                     }
-                    close(pipeFDs[i-1][0]);
-                    close(pipeFDs[i-1][1]);
+                    close(prevReadFD);
                 }
                 if (i != cmdCount - 1) {
                     if (dup2(pipeFDs[i][1], STDOUT_FILENO) < 1) {
                         std::cerr << "dup2() failed to connect current pipe to stdout\n";
                     }    
                 }
-                close(pipeFDs[i][0]);
-                close(pipeFDs[i][1]);
+                close(curReadFD);
+                close(curWriteFD);
             }
 
             // output redirection
@@ -180,12 +185,11 @@ void parse_and_run_command(const std::string &command) {
             // close pipes that future child processes won't need
             if (cmdCount > 1) {
                 if (i != 0) {
-                    close(pipeFDs[i-1][0]);
-                    close(pipeFDs[i-1][1]);
+                    close(prevReadFD);
                 }
+                close(curWriteFD);
                 if (i == cmdCount - 1) {
-                    close(pipeFDs[i][0]);
-                    close(pipeFDs[i][1]);
+                    close(curReadFD);
                 }
             }
         } else { // fork failure
