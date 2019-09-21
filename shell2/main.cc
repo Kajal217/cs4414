@@ -122,11 +122,7 @@ void parse_and_run_command(const std::string &command) {
         if (cmdCount > 1) {
             if (i < cmdCount - 1) {
                 if (pipe(pipeFDs[i]) < 0) {
-                    std::string err = "?";
-                    if (errno == EBADF) err = "EBADF";
-                    if (errno == EINTR) err = "EINTR";
-                    if (errno == EMFILE) err = "EMFILE";
-                    fprintf(stderr, "Pipe error: %s\n", err.c_str());
+                    std::cerr << "Pipe failed\n";
                     return;
                 }
                 curReadFD = pipeFDs[i][0];
@@ -144,6 +140,11 @@ void parse_and_run_command(const std::string &command) {
                 if (i != 0) {
                     printf("previous read FD = %d\n", prevReadFD);
                     if (dup2(prevReadFD, STDIN_FILENO) < 1) {
+                        std::string err = "?";
+                        if (errno == EBADF) err = "EBADF";
+                        if (errno == EINTR) err = "EINTR";
+                        if (errno == EMFILE) err = "EMFILE";
+                        fprintf(stderr, "Pipe error: %s\n", err.c_str());
                         std::cerr << "dup2() failed to connect previous pipe to stdin\n";
                     }
                     close(prevReadFD);
