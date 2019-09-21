@@ -139,7 +139,7 @@ void parse_and_run_command(const std::string &command) {
             if (cmdCount > 1) {
                 if (i != 0) {
                     printf("previous read FD = %d\n", prevReadFD);
-                    if (dup2(prevReadFD, 0) < 1) {
+                    if (dup2(prevReadFD, STDIN_FILENO) < 0) {
                         std::string err = "?";
                         if (errno == EBADF) err = "EBADF";
                         if (errno == EINTR) err = "EINTR";
@@ -150,12 +150,12 @@ void parse_and_run_command(const std::string &command) {
                     close(prevReadFD);
                 }
                 if (i < cmdCount - 1) {
-                    if (dup2(curWriteFD, 1) < 1) {
+                    if (dup2(curWriteFD, STDOUT_FILENO) < 0) {
                         std::cerr << "dup2() failed to connect current pipe to stdout\n";
-                    }    
+                    }
+                    close(curReadFD);
+                    close(curWriteFD);
                 }
-                close(curReadFD);
-                close(curWriteFD);
             }
 
             // output redirection
@@ -195,8 +195,8 @@ void parse_and_run_command(const std::string &command) {
                 }
                 if (i < cmdCount - 1) {
                     prevReadFD = curReadFD;
-                    close(curWriteFD);
                 }
+                close(curWriteFD);
             }
         } else { // fork failure
             std::cerr << "Fork failure\n";
