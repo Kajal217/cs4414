@@ -129,6 +129,7 @@ void parse_and_run_command(const std::string &command) {
                 }
                 curReadFD = pipeFDs[i][0];
                 curWriteFD = pipeFDs[i][1];
+                printf("current read FD = %d", curReadFD);
             }
         }
 
@@ -139,6 +140,7 @@ void parse_and_run_command(const std::string &command) {
             // connect pipe FDs
             if (cmdCount > 1) {
                 if (i != 0) {
+                    printf("previous read FD = %d", prevReadFD);
                     if (dup2(prevReadFD, STDIN_FILENO) < 1) {
                         std::cerr << "dup2() failed to connect previous pipe to stdin\n";
                     }
