@@ -132,14 +132,14 @@ void parse_and_run_command(const std::string &command) {
             // connect pipe FDs
             if (cmdCount > 1) {
                 if (i != 0) {
-                    dup2(pipeFDs[i][0], STDIN_FILENO);
+                    dup2(pipeFDs[i-1][0], STDIN_FILENO);
+                    close(pipeFDs[i-1][0]);
                 }
                 if (i != cmdCount - 1) {
                     dup2(pipeFDs[i][1], STDOUT_FILENO);    
                 } else {
-                    printf("<Final command %s - not connecting pipe to stdout>\n", pipeline[i].path);
+                    close(pipeFDs[i][0]);
                 }
-                close(pipeFDs[i][0]);
                 close(pipeFDs[i][1]);
             }
 
