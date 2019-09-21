@@ -107,8 +107,6 @@ void parse_and_run_command(const std::string &command) {
         pipeline.push_back(cmd);
     }
 
-    printf("command count: %d\n", cmdCount);
-
     // pipe array
     int pipeFDs[25][2];
     int curReadFD = -1, curWriteFD = -1, prevReadFD = -1;
@@ -122,14 +120,14 @@ void parse_and_run_command(const std::string &command) {
         }
 
         if (cmdCount > 1) {
-            if (i != cmdCount - 1) {
+            if (i < cmdCount - 1) {
                 if (pipe(pipeFDs[i]) < 0) {
                     std::cerr << "Pipe failure\n";
                     return;
                 }
                 curReadFD = pipeFDs[i][0];
                 curWriteFD = pipeFDs[i][1];
-                printf("current read FD = %d", curReadFD);
+                printf("current read FD = %d\ni = %d\ncmdCount = %d\n", curReadFD, i, cmdCount);
             }
         }
 
@@ -146,7 +144,7 @@ void parse_and_run_command(const std::string &command) {
                     }
                     close(prevReadFD);
                 }
-                if (i != cmdCount - 1) {
+                if (i < cmdCount - 1) {
                     if (dup2(curWriteFD, STDOUT_FILENO) < 1) {
                         std::cerr << "dup2() failed to connect current pipe to stdout\n";
                     }    
@@ -190,7 +188,7 @@ void parse_and_run_command(const std::string &command) {
                 if (i != 0) {
                     close(prevReadFD);
                 }
-                if (i != cmdCount - 1) {
+                if (i < cmdCount - 1) {
                     prevReadFD = curReadFD;
                     close(curWriteFD);
                 }
