@@ -344,6 +344,7 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      p->ticks++;
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
