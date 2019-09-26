@@ -111,10 +111,10 @@ sys_settickets(void)
   return settickets(tickets);
 }
 
-// int
-// sys_getprocessesinfo(void)
-// {
-//   struct processes_info* p;
-//   if (argptr(0,(void*)&p,sizeof(struct processes_info*)) < 0) return -1;
-//   return getprocessesinfo(p);
-// }
+int
+sys_getprocessesinfo(void)
+{
+  struct processes_info* p;
+  if (argptr(0,(void*)&p,sizeof(struct processes_info*)) < 0) return -1;
+  return getprocessesinfo(p);
+}
