@@ -543,7 +543,7 @@ procdump(void)
 int settickets(int tickets) {
   // struct proc* p;
   struct proc* curproc = myproc();
-  acquire(&ptable.lock);
+  // acquire(&ptable.lock);
   
   if (tickets>100000) return -1;
   curproc->tickets = tickets;
