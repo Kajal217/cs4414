@@ -595,8 +595,7 @@ int settickets(int tickets) {
 
 // fill the struct with info from the ptable
 int getprocessesinfo(struct processes_info *p) {
-  cprintf("RANDOM: ");
-  cprintf(next_random());
+  cprintf("RANDOM: %d", next_random());
   cprintf("\n");
   struct proc* proc;
   acquire(&ptable.lock);
