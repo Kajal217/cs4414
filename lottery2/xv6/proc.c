@@ -410,6 +410,8 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
+      // After winner is chosen, restart the lottery
+      break;
     }
     release(&ptable.lock);
 
