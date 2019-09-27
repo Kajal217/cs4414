@@ -19,25 +19,6 @@ unsigned lcg_parkmiller(unsigned *state)
     const unsigned N = 0x7fffffff;
     const unsigned G = 48271u;
 
-    /*  
-        Indirectly compute state*G%N.
-
-        Let:
-          div = state/(N/G)
-          rem = state%(N/G)
-
-        Then:
-          rem + div*(N/G) == state
-          rem*G + div*(N/G)*G == state*G
-
-        Now:
-          div*(N/G)*G == div*(N - N%G) === -div*(N%G)  (mod N)
-
-        Therefore:
-          rem*G - div*(N%G) === state*G  (mod N)
-
-        Add N if necessary so that the result is between 1 and N-1.
-    */
     unsigned div = *state / (N / G);  /* max : 2,147,483,646 / 44,488 = 48,271 */
     unsigned rem = *state % (N / G);  /* max : 2,147,483,646 % 44,488 = 44,487 */
 
@@ -380,11 +361,40 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
+    // Loop over process table to count the total tickets for all runnable processes
+    uint total_tickets = 0;
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
+      total_tickets += p->tickets;
+    }
+
+    // 0 tickets means no process may run right now
+    if (total_tickets == 0) {
+      release(&ptable.lock);
+      continue;
+    }
+
+    // Generate a random number in the range (0, total_tickets-1)
+    uint cutoff = (RANDOM_MAX/total_tickets) * total_tickets;
+    uint rand = next_random();
+    while (rand > cutoff) {
+      rand = next_random();
+    }
+    rand = rand % total_tickets;
+
+    // Loop over process table looking for process to run.
+    // The <rand>th counted ticket is the winner.
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+      
+      uint tickets = (uint)(p->tickets);
+      if (rand >= tickets) {
+        rand -= tickets;
+        continue;
+      }
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -595,9 +605,6 @@ int settickets(int tickets) {
 
 // fill the struct with info from the ptable
 int getprocessesinfo(struct processes_info *p) {
-  cprintf("RANDOM_MAX: %d", RANDOM_MAX);
-  cprintf("RANDOM: %d", next_random());
-  cprintf("\n");
   struct proc* proc;
   acquire(&ptable.lock);
 
