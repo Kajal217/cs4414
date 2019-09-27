@@ -1,3 +1,5 @@
+// Austin Baney // ab5ep
+// *derived from my S19 solution*
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -6,6 +8,49 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+
+// supplied random number generator
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+static unsigned random_seed = 1;
+
+#define RANDOM_MAX ((1u << 31u) - 1u)
+unsigned lcg_parkmiller(unsigned *state)
+{
+    const unsigned N = 0x7fffffff;
+    const unsigned G = 48271u;
+
+    /*  
+        Indirectly compute state*G%N.
+
+        Let:
+          div = state/(N/G)
+          rem = state%(N/G)
+
+        Then:
+          rem + div*(N/G) == state
+          rem*G + div*(N/G)*G == state*G
+
+        Now:
+          div*(N/G)*G == div*(N - N%G) === -div*(N%G)  (mod N)
+
+        Therefore:
+          rem*G - div*(N%G) === state*G  (mod N)
+
+        Add N if necessary so that the result is between 1 and N-1.
+    */
+    unsigned div = *state / (N / G);  /* max : 2,147,483,646 / 44,488 = 48,271 */
+    unsigned rem = *state % (N / G);  /* max : 2,147,483,646 % 44,488 = 44,487 */
+
+    unsigned a = rem * G;        /* max : 44,487 * 48,271 = 2,147,431,977 */
+    unsigned b = div * (N % G);  /* max : 48,271 * 3,399 = 164,073,129 */
+
+    return *state = (a > b) ? (a - b) : (a + (N - b));
+}
+
+unsigned next_random() {
+    return lcg_parkmiller(&random_seed);
+}
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 struct {
   struct spinlock lock;
@@ -138,7 +183,7 @@ userinit(void)
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
-  p->ticks=0;
+  p->ticks = 0;
   p->tickets = 10;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
@@ -541,25 +586,18 @@ procdump(void)
 
 // assign a number of tickets to the current process
 int settickets(int tickets) {
-  // struct proc* p;
+  if (tickets > 100000) return -1;
   struct proc* curproc = myproc();
-  // acquire(&ptable.lock);
-  
-  if (tickets>100000) return -1;
   curproc->tickets = tickets;
-  // for (p=ptable.proc; p<&ptable.proc[NPROC]; p++) {
-  //   if (p->pid == curproc->pid) {
-  //     p->tickets = tickets;
-  //     break;
-  //   }
-  // }
-
-  // release(&ptable.lock);
+  
   return 0;
 }
 
 // fill the struct with info from the ptable
 int getprocessesinfo(struct processes_info *p) {
+  cprintf("RANDOM: ");
+  cprintf(next_random());
+  cprintf("\n");
   struct proc* proc;
   acquire(&ptable.lock);
 
