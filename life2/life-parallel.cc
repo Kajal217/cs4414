@@ -2,7 +2,6 @@
 // Based on my own solution from S19
 #include "life.h"
 #include <pthread.h>
-#include <sys/wait.h>
 
 struct thread_args {
   LifeBoard* state;
@@ -12,52 +11,6 @@ struct thread_args {
   int start;    // index of first cell
   int end;      // index after last cell
 };
-
-void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
-    LifeBoard next_state{state.width(), state.height()};
-    int totalCells = (state.height()-2)*(state.width()-2);
-    int cellsPerThread = (totalCells+threads-1)/threads;
-
-    pthread_t lifeThreads[100];
-    struct thread_args args[100];
-
-    pthread_barrier_t barrier;
-    pthread_barrier_init(&barrier, NULL, threads+1);
-
-    // fill arguments struct for each thread
-    args[0].start = 0;
-    args[0].end = cellsPerThread;
-    for (int i = 0; i < threads; i++) {
-        args[i].state = &state;
-        args[i].next_state = &next_state;
-        args[i].barrier_ptr = &barrier;
-        args[i].steps = steps;
-        if (i > 0) {
-            int cur_start = args[i-1].end;
-            args[i].start = cur_start;
-            if (i < threads - 1) {
-                args[i].end = cur_start + cellsPerThread;
-            } else {    // final thread may work on fewer cells
-                args[i].end = totalCells;
-            }
-        }
-        // run this thread
-        pthread_create(&lifeThreads[i], NULL, run_thread, (void*)&args[i]);
-    }
-
-    for (int i = 0; i < steps; i++) {
-        // wait for all threads to complete this step
-        pthread_barrier_wait(&barrier);
-        swap(state, next_state);
-        // threads must wait until swap is complete
-	    pthread_barrier_wait(&barrier);
-    }
-
-    for (int i = 0; i < threads; i++) {
-      pthread_join(lifeThreads[i], NULL);
-    }
-    pthread_barrier_destroy(&barrier);
-}
 
 void* run_thread(void* arguments) {
     struct thread_args* args = (struct thread_args*)arguments;
@@ -110,4 +63,50 @@ void* run_thread(void* arguments) {
         pthread_barrier_wait(barrier_ptr);
     }
     return NULL;
+}
+
+void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
+    LifeBoard next_state{state.width(), state.height()};
+    int totalCells = (state.height()-2)*(state.width()-2);
+    int cellsPerThread = (totalCells+threads-1)/threads;
+
+    pthread_t lifeThreads[100];
+    struct thread_args args[100];
+
+    pthread_barrier_t barrier;
+    pthread_barrier_init(&barrier, NULL, threads+1);
+
+    // fill arguments struct for each thread
+    args[0].start = 0;
+    args[0].end = cellsPerThread;
+    for (int i = 0; i < threads; i++) {
+        args[i].state = &state;
+        args[i].next_state = &next_state;
+        args[i].barrier_ptr = &barrier;
+        args[i].steps = steps;
+        if (i > 0) {
+            int cur_start = args[i-1].end;
+            args[i].start = cur_start;
+            if (i < threads - 1) {
+                args[i].end = cur_start + cellsPerThread;
+            } else {    // final thread may work on fewer cells
+                args[i].end = totalCells;
+            }
+        }
+        // run this thread
+        pthread_create(&lifeThreads[i], NULL, run_thread, (void*)&args[i]);
+    }
+
+    for (int i = 0; i < steps; i++) {
+        // wait for all threads to complete this step
+        pthread_barrier_wait(&barrier);
+        swap(state, next_state);
+        // threads must wait until swap is complete
+	    pthread_barrier_wait(&barrier);
+    }
+
+    for (int i = 0; i < threads; i++) {
+      pthread_join(lifeThreads[i], NULL);
+    }
+    pthread_barrier_destroy(&barrier);
 }
