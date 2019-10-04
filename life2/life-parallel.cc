@@ -68,7 +68,13 @@ void* run_thread(void* arguments) {
 void simulate_life_parallel(int threads, LifeBoard &state, int steps) {
     LifeBoard next_state{state.width(), state.height()};
     int totalCells = (state.height()-2)*(state.width()-2);
-    int cellsPerThread = (totalCells+threads-1)/threads;
+    int cellsPerThread;
+    if (threads > totalCells) { // don't create more threads than cells
+        threads = totalCells;
+        cellsPerThread = 1;
+    } else {
+        cellsPerThread = (totalCells+threads-1)/threads;
+    }
 
     pthread_t lifeThreads[100];
     struct thread_args args[100];
