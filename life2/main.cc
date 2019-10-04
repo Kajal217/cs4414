@@ -29,12 +29,10 @@ using namespace std::placeholders;
 TestFunction test_functions[] = {
     { simulate_life_serial, "serial" },
 
-    /* UNCOMMENT THIS WHEN YOU'VE IMPLEMENTED THIS VERSION 
     { std::bind(&simulate_life_parallel, 1, _1, _2), "1 thread" },
     { std::bind(&simulate_life_parallel, 2, _1, _2), "2 threads" },
     { std::bind(&simulate_life_parallel, 4, _1, _2), "4 threads" },
-    { std::bind(&simulate_life_parallel, 8, _1, _2), "8 threads" },
-    */
+    { std::bind(&simulate_life_parallel, 8, _1, _2), "8 threads" },    
 };
 
 /* Given a number return a string using T, M, K to describe in a more readable way */
