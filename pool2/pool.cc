@@ -2,7 +2,7 @@
 
 void* runTasks(void* pool) {
     ThreadPool* threadPool = (ThreadPool*)pool;
-    Task* task;
+    Task* task = NULL;
     while (!threadPool->stop) {
         sem_wait(&(threadPool->pool_semaphore));    // wait for a task to become available
         pthread_mutex_lock(&(threadPool->pool_tasks_mutex));
@@ -16,10 +16,12 @@ void* runTasks(void* pool) {
         pthread_mutex_unlock(&(threadPool->pool_tasks_mutex));
 
         // run the task, then alert other threads of its completion
-        task->Run();
-        // ***
-        task->status = TASK_DONE;
-        pthread_cond_broadcast(&(task->task_cond));
+        if (task != NULL) {
+            task->Run();
+            // ***
+            task->status = TASK_DONE;
+            pthread_cond_broadcast(&(task->task_cond));
+        }
     }
     return NULL;
 }
@@ -61,7 +63,7 @@ void ThreadPool::SubmitTask(const std::string &name, Task* task) {
 
 void ThreadPool::WaitForTask(const std::string &name) {
     // identify the task and remove it from the queue
-    Task* task;
+    Task* task = NULL;
     pthread_mutex_lock(&pool_tasks_mutex);
     for (uint i = 0; i < pool_tasks.size(); i++) {
         if (pool_tasks[i]->name == name) {
@@ -73,13 +75,15 @@ void ThreadPool::WaitForTask(const std::string &name) {
     pthread_mutex_unlock(&pool_tasks_mutex);
 
     // if the task isn't already done, wait until it is
-    pthread_mutex_lock(&(task->task_mutex));
-    while (task->status != TASK_DONE) {
-        pthread_cond_wait(&(task->task_cond), &(task->task_mutex));
-    }
-    pthread_mutex_unlock(&(task->task_mutex));
+    if (task != NULL) {
+        pthread_mutex_lock(&(task->task_mutex));
+        while (task->status != TASK_DONE) {
+            pthread_cond_wait(&(task->task_cond), &(task->task_mutex));
+        }
+        pthread_mutex_unlock(&(task->task_mutex));
 
-    delete task;
+        delete task;
+    }
 }
 
 void ThreadPool::Stop() {
