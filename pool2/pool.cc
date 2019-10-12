@@ -21,7 +21,7 @@ void* runTasks(void* pool) {
         task->status = TASK_DONE;
         pthread_cond_broadcast(&task->task_cond);
     }
-    return;
+    return NULL;
 }
 
 Task::Task() {
@@ -42,7 +42,7 @@ ThreadPool::ThreadPool(int num_threads) {
     pool_threads = std::vector<pthread_t>(num_threads);
     stop = false;
     for (int i = 0; i < num_threads; i++) {
-        pthread_create(&pool_threads[i], NULL, runTasks, void*(this));
+        pthread_create(&pool_threads[i], NULL, runTasks, (void*)this);
     }
 
 }
@@ -86,8 +86,8 @@ void ThreadPool::Stop() {
     }
 
     // deallocate thread pool resources
-    delete pool_tasks;
-    delete pool_threads;
+    delete &pool_tasks;
+    delete &pool_threads;
     pthread_mutex_destroy(&pool_mutex);
     sem_destroy(&pool_semaphore);
 }
