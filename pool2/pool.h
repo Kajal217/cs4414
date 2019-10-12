@@ -26,7 +26,8 @@ class ThreadPool {
 public:
     std::deque<Task*> pool_tasks;
     std::vector<pthread_t> pool_threads;
-    pthread_mutex_t pool_mutex; // protects the task queue
+    pthread_mutex_t pool_tasks_mutex; // protects the task queue
+    pthread_mutex_t pool_threads_mutex; // protects the thread vector
     sem_t pool_semaphore;   // tracks number of available tasks
     bool stop;
 
