@@ -68,7 +68,6 @@ void ThreadPool::WaitForTask(const std::string &name) {
     for (uint i = 0; i < pool_tasks.size(); i++) {
         if (pool_tasks[i]->name == name) {
             task = pool_tasks[i];
-            pool_tasks.erase(pool_tasks.begin() + i);
             break;
         }
     }
