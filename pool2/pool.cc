@@ -97,8 +97,8 @@ void ThreadPool::Stop() {
     pthread_mutex_unlock(&pool_threads_mutex);
 
     // deallocate thread pool resources
-    delete &pool_tasks;
-    delete &pool_threads;
+    pool_tasks.clear();
+    pool_threads.clear();
     pthread_mutex_destroy(&pool_tasks_mutex);
     pthread_mutex_destroy(&pool_threads_mutex);
     sem_destroy(&pool_semaphore);
