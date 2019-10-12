@@ -62,7 +62,7 @@ void ThreadPool::SubmitTask(const std::string &name, Task* task) {
 }
 
 void ThreadPool::WaitForTask(const std::string &name) {
-    // identify the task and remove it from the queue
+    // identify the task
     Task* task = NULL;
     pthread_mutex_lock(&pool_tasks_mutex);
     for (uint i = 0; i < pool_tasks.size(); i++) {
@@ -81,6 +81,16 @@ void ThreadPool::WaitForTask(const std::string &name) {
             pthread_cond_wait(&(task->task_cond), &(task->task_mutex));
         }
         pthread_mutex_unlock(&(task->task_mutex));
+
+        // remove task from queue and delete it
+        pthread_mutex_lock(&pool_tasks_mutex);
+        for (uint i = 0; i < pool_tasks.size(); i++) {
+            if (pool_tasks[i]->name == name) {
+                pool_tasks.erase(pool_tasks.begin() + i);
+                break;
+            }
+        }
+        pthread_mutex_unlock(&pool_tasks_mutex);
 
         delete task;
     }
