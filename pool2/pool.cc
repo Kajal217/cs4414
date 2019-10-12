@@ -5,6 +5,7 @@ void* runTasks(void* pool) {
     Task* task = NULL;
     while (!threadPool->stop) {
         sem_wait(&(threadPool->pool_semaphore));    // wait for a task to become available
+        if (threadPool->stop) break;
         pthread_mutex_lock(&(threadPool->pool_tasks_mutex));
         for (uint i = 0; i < threadPool->pool_tasks.size(); i++) {
             task = threadPool->pool_tasks[i];
@@ -18,7 +19,6 @@ void* runTasks(void* pool) {
         // run the task, then alert other threads of its completion
         if (task != NULL) {
             task->Run();
-            // ***
             task->status = TASK_DONE;
             pthread_cond_broadcast(&(task->task_cond));
         }
@@ -91,6 +91,7 @@ void ThreadPool::Stop() {
     stop = true;
     pthread_mutex_lock(&pool_threads_mutex);
     for (uint i = 0; i < pool_threads.size(); i++) {
+        sem_post(&pool_semaphore); // account for threads still waiting for new tasks
         pthread_join(pool_threads[i], NULL);
     }
     pthread_mutex_unlock(&pool_threads_mutex);
@@ -99,5 +100,6 @@ void ThreadPool::Stop() {
     delete &pool_tasks;
     delete &pool_threads;
     pthread_mutex_destroy(&pool_tasks_mutex);
+    pthread_mutex_destroy(&pool_threads_mutex);
     sem_destroy(&pool_semaphore);
 }
