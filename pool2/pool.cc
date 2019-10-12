@@ -100,7 +100,9 @@ void ThreadPool::Stop() {
     stop = true;
     pthread_mutex_lock(&pool_threads_mutex);
     for (uint i = 0; i < pool_threads.size(); i++) {
-        sem_post(&pool_semaphore); // account for threads still waiting for new tasks
+        sem_post(&pool_semaphore); // unblock all threads still waiting for new tasks
+    }
+    for (uint i = 0; i < pool_threads.size(); i++) {
         pthread_join(pool_threads[i], NULL);
     }
     pthread_mutex_unlock(&pool_threads_mutex);
