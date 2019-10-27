@@ -322,11 +322,13 @@ copyuvm(pde_t *pgdir, uint sz)
 
   if((d = setupkvm()) == 0)
     return 0;
-  for(i = 0; i < sz; i += PGSIZE){
+  for(i = 0; i < sz; i += PGSIZE){  // skip unallocated PTEs
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
-      panic("copyuvm: pte should exist");
+      continue;
+      // panic("copyuvm: pte should exist");
     if(!(*pte & PTE_P))
-      panic("copyuvm: page not present");
+      continue;
+      // panic("copyuvm: page not present");
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
     if((mem = kalloc()) == 0)
@@ -407,7 +409,6 @@ getpagetableinfo(int pid)
     } else {
       writeable = "-";
     }
-
     if (*pte & PTE_U) {
       usermode = "U";
     } else {
@@ -416,11 +417,33 @@ getpagetableinfo(int pid)
 
     pa = PTE_ADDR(*pte);
 
-    cprintf("%d P %s %s %d\n", va, writeable, usermode, pa);
+    cprintf("%X P %s %s %X\n", va, writeable, usermode, pa);
   }
   cprintf("END PAGE TABLE\n");
 
   return 0;
+}
+
+void
+pagefaulthandler(void) 
+{
+  // ALLOCATE ON DEMAND
+  char* mem;
+
+  if(mem = kalloc() == 0){
+    cprintf("AOD out of memory.\n");
+    freevm(myproc()->pgdir);
+    myproc()->killed = 1;
+    return;
+  }
+  memset(mem, 0, PGSIZE);
+  if(mappages(myproc()->pgdir, (void*)PGROUNDDOWN(rcr2()), PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+    cprintf("AOD out of memory.\n");
+    freevm(myproc()->pgdir);
+    kfree(mem);
+    myproc()->killed = 1;
+    return;
+  }
 }
 
 //PAGEBREAK!

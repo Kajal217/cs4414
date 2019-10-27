@@ -155,20 +155,12 @@ userinit(void)
 
 // Grow current process's memory by n bytes.
 // Return 0 on success, -1 on failure.
+// (No need to create PTEs with allocation on demand)
 int
 growproc(int n)
 {
   uint sz;
   struct proc *curproc = myproc();
-
-  sz = curproc->sz;
-  if(n > 0){
-    if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
-      return -1;
-  } else if(n < 0){
-    if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
-      return -1;
-  }
   curproc->sz = sz;
   switchuvm(curproc);
   return 0;
@@ -545,6 +537,6 @@ findproc(int pid)
     if(p->pid == pid) break;
   }
   release(&ptable.lock);
-  
+
   return p;
 }

@@ -36,6 +36,24 @@ idtinit(void)
 void
 trap(struct trapframe *tf)
 {
+  // PAGE FAULT
+  if (tf->trapno == T_PGFLT){
+    // is address out of bounds?
+    uint addr = rcr2();
+    if (addr >= myproc()->sz || addr >= KERNBASE){
+      cprintf("out-of-range memory access\n");
+      myproc()->killed = 1;
+      exit();
+      return;
+    }
+
+    pagefaulthandler();
+
+    if(myproc()->killed)
+      exit();
+    return;
+  }
+
   if(tf->trapno == T_SYSCALL){
     if(myproc()->killed)
       exit();
