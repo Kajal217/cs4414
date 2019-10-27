@@ -40,7 +40,7 @@ trap(struct trapframe *tf)
   if (tf->trapno == T_PGFLT){
     // is address out of bounds?
     uint addr = rcr2();
-    if (addr >= myproc()->sz || addr >= KERNBASE){
+    if (addr >= myproc()->sz){  // || addr >= KERNBASE ?
       cprintf("out-of-range memory access\n");
       myproc()->killed = 1;
       exit();
