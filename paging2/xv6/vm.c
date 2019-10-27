@@ -394,8 +394,8 @@ getpagetableinfo(int pid)
   pde_t* pgdir = p->pgdir;
   pte_t* pte;
   uint va, pa;
-  char* writeable;
-  char* usermode;
+  char* writeable = "BAD";
+  char* usermode = "BAD";
 
   // Retrieve the last-level PTEs for this process and print their info
   cprintf("START PAGE TABLE (pid %d)\n", pid);
@@ -417,7 +417,7 @@ getpagetableinfo(int pid)
 
     pa = PTE_ADDR(*pte);
 
-    cprintf("%X P %s %s %X\n", va, writeable, usermode, pa);
+    cprintf("%x P %s %s %x\n", va, writeable, usermode, pa);
   }
   cprintf("END PAGE TABLE\n");
 
