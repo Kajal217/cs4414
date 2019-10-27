@@ -429,8 +429,8 @@ pagefaulthandler(void)
 {
   // ALLOCATE ON DEMAND
   char* mem;
-
-  if(mem = kalloc() == 0){
+  mem = kalloc();
+  if(mem == 0){
     cprintf("AOD out of memory.\n");
     freevm(myproc()->pgdir);
     myproc()->killed = 1;
