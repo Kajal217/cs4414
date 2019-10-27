@@ -398,7 +398,7 @@ getpagetableinfo(int pid)
   // Retrieve the last-level PTEs for this process and print their info
   cprintf("START PAGE TABLE (pid %d)\n", pid);
   for (va = 0; va < p->sz; va += PGSIZE) {
-    if((pte = walkpgdir(pgdir, va, 0)) == 0)
+    if((pte = walkpgdir(pgdir, (void*)va, 0)) == 0)
       return -1;
     if (!(*pte & PTE_P)) continue;
 
