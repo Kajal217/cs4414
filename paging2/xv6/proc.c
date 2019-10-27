@@ -159,11 +159,8 @@ userinit(void)
 int
 growproc(int n)
 {
-  uint sz;
   struct proc *curproc = myproc();
-
-  sz = curproc->sz;
-  curproc->sz = sz;
+  curproc->sz += n;
   switchuvm(curproc);
   return 0;
 }

@@ -38,9 +38,11 @@ trap(struct trapframe *tf)
 {
   // PAGE FAULT
   if (tf->trapno == T_PGFLT){
+    if ((tf->cs & 3) == 0) cprintf("page fault from kernel\n");
+    
     // is address out of bounds?
     uint addr = rcr2();
-    if (addr >= myproc()->sz){  // || addr >= KERNBASE ?
+    if (addr >= myproc()->sz || addr >= KERNBASE){
       cprintf("out-of-range memory access\n");
       myproc()->killed = 1;
       exit();
