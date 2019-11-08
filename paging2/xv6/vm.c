@@ -329,7 +329,8 @@ copyuvm(pde_t *pgdir, uint sz)
 
   if((d = setupkvm()) == 0)
     return 0;
-  for(i = 0; i < sz; i += PGSIZE){  // skip unallocated PTEs
+  for(i = 0; i < sz; i += PGSIZE){  
+    // skip unallocated PTEs
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       continue;
       // panic("copyuvm: pte should exist");
@@ -337,12 +338,12 @@ copyuvm(pde_t *pgdir, uint sz)
       continue;
       // panic("copyuvm: page not present");
 
-    // instead of copying page, mark as read-only
+    // instead of copying page, mark as read-only and map child pgdir to it
     pa = PTE_ADDR(*pte);
     *pte &= ~PTE_W;
     flags = PTE_FLAGS(*pte);
 
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
+    if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0)
       goto bad;
     
     // count c-o-w references for this page (1 means shared with 1 other process)
