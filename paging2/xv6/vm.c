@@ -443,7 +443,7 @@ pagefaulthandler(void)
   // COPY-ON-WRITE
   uint addr = PGROUNDDOWN(rcr2());
   pte_t* pte;
-  if ((pte = walkpgdir(myproc()->pgdir, (void*)addr, 0)) == 0) {
+  if ((pte = walkpgdir(myproc()->pgdir, (void*)addr, 1)) == 0) {
     cprintf("C-O-W: walkpgdir error.");
     goto bad;
   }

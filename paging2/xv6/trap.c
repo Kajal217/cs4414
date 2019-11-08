@@ -38,7 +38,7 @@ trap(struct trapframe *tf)
 {
   // PAGE FAULT
   if (tf->trapno == T_PGFLT){
-    if ((tf->cs & 3) == 0) cprintf("page fault from kernel\n");
+    if ((tf->cs & 3) == 0) cprintf("!!! page fault from kernel !!!\n");
     
     // is address out of bounds?
     uint addr = rcr2();
