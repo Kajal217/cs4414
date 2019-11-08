@@ -278,9 +278,10 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       if (cow_reference_count[pa / PGSIZE] < 1) { // if no other process is using this page
         char *v = P2V(pa);
         kfree(v);
-      }
+      } else {
         cow_reference_count[pa / PGSIZE]--; // this proc is no longer using the page
-        *pte = 0;
+      }
+      *pte = 0;
     }
   }
   return newsz;
