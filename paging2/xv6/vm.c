@@ -347,7 +347,7 @@ copyuvm(pde_t *pgdir, uint sz)
     if(mappages(d, (void*)i, PGSIZE, pa, flags) < 0)
       goto bad;
     
-    // count c-o-w references for this page (1 means shared with 1 other process)
+    // count c-o-w references for this page
     cow_reference_count[pa / PGSIZE]++;
   }
   lcr3(V2P(myproc()->pgdir));
@@ -448,11 +448,11 @@ pagefaulthandler(void)
     cprintf("C-O-W: walkpgdir error.");
     goto bad;
   }
-  else if ((*pte & PTE_P) && !(*pte & PTE_W) && (*pte & PTE_U)){ // if pte present, user accessible, & readonly
+  else if ((*pte & PTE_P) && !(*pte & PTE_W) && (*pte & PTE_U)) { // if pte present, user accessible, & readonly
     uint pa = PTE_ADDR(*pte);
 
     //  if only process using this page, mark as writeable
-    if (cow_reference_count[pa / PGSIZE] < 1){
+    if (cow_reference_count[pa / PGSIZE] < 1) {
       *pte |= PTE_W;
     }
     else {  // otherwise, make an actual copy of the page
@@ -462,6 +462,7 @@ pagefaulthandler(void)
         goto bad;
       }
       memmove(mem, (char*)P2V(pa), PGSIZE);
+
       // point the pte to the copied page & set flags
       *pte = V2P(mem) | PTE_P | PTE_W | PTE_U;
 
@@ -475,13 +476,12 @@ pagefaulthandler(void)
 
   // ALLOCATE ON DEMAND
   char* mem;
-  mem = kalloc();
-  if(mem == 0){
+  if ((mem = kalloc()) == 0) {
     cprintf("AOD: out of memory.\n");
     goto bad;
   }
   memset(mem, 0, PGSIZE);
-  if(mappages(myproc()->pgdir, (void*)PGROUNDDOWN(rcr2()), PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+  if(mappages(myproc()->pgdir, (void*)addr, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
     cprintf("AOD: out of memory.\n");
     kfree(mem);
     goto bad;
