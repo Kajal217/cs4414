@@ -441,6 +441,8 @@ getpagetableinfo(int pid)
 void
 pagefaulthandler(void) 
 {
+  dumppagetable(myproc()->pid);
+
   // COPY-ON-WRITE
   uint addr = PGROUNDDOWN(rcr2());
   pte_t* pte;
