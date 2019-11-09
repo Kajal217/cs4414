@@ -441,7 +441,7 @@ getpagetableinfo(int pid)
 void
 pagefaulthandler(void) 
 {
-  getpagetableinfo(myproc()->pid);
+  // getpagetableinfo(myproc()->pid);
 
   // COPY-ON-WRITE
   uint addr = PGROUNDDOWN(rcr2());
@@ -453,17 +453,17 @@ pagefaulthandler(void)
 
   else if ((*pte & PTE_P) && !(*pte & PTE_W) && (*pte & PTE_U)) { // if pte present, user accessible, & readonly
 
-    cprintf("C-O-W: pte is P, ~W, U");
+    // cprintf("C-O-W: pte is P, ~W, U");
 
     uint pa = PTE_ADDR(*pte);
 
     //  if only process using this page, mark as writeable
     if (cow_reference_count[pa / PGSIZE] < 1) {
-      cprintf("C-O-W: marking page as writeable");
+      // cprintf("C-O-W: marking page as writeable");
       *pte |= PTE_W;
     }
     else {  // otherwise, make an actual copy of the page
-      cprintf("C-O-W: copying page");
+      // cprintf("C-O-W: copying page");
 
       char *mem;
       if((mem = kalloc()) == 0) {
@@ -478,7 +478,7 @@ pagefaulthandler(void)
       // decrement refcount for original page, since this process has its own copy
       cow_reference_count[pa / PGSIZE]--;
 
-      cprintf("C-O-W: page copied");
+      // cprintf("C-O-W: page copied");
     }
 
     lcr3(V2P(myproc()->pgdir)); // flush TLB
@@ -486,7 +486,7 @@ pagefaulthandler(void)
   }
 
   // ALLOCATE ON DEMAND
-  cprintf("AOD: starting");
+  // cprintf("AOD: starting");
   char* mem;
   if ((mem = kalloc()) == 0) {
     cprintf("AOD: out of memory.\n");
@@ -498,7 +498,7 @@ pagefaulthandler(void)
     kfree(mem);
     goto bad;
   }
-  cprintf("AOD: succeeded");
+  // cprintf("AOD: succeeded");
   return;
 
 bad:

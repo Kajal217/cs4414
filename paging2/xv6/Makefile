@@ -180,6 +180,7 @@ UPROGS=\
     _shutdown\
 	_testwritecount\
 	_dumppt\
+	_pagingtest\
 
 
 fs.img: mkfs README $(UPROGS)
