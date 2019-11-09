@@ -451,8 +451,6 @@ pagefaulthandler(void)
     goto bad;
   }
 
-  cprintf("C-O-W: walkpgdir succeeded");
-
   else if ((*pte & PTE_P) && !(*pte & PTE_W) && (*pte & PTE_U)) { // if pte present, user accessible, & readonly
 
     cprintf("C-O-W: pte is P, ~W, U");
