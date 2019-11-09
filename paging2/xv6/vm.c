@@ -6,6 +6,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "elf.h"
+#include "user.h"
 
 // track the number of ADDITIONAL processes referencing a page for copy-on-write
 // (0 = just one process; 1 = shared with one process)
