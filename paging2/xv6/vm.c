@@ -9,7 +9,7 @@
 
 // track the number of ADDITIONAL processes referencing a page for copy-on-write
 // (0 = just one process; 1 = shared with one process)
-unsigned char cow_reference_count[PHYSTOP / PGSIZE];
+unsigned char cow_reference_count[PHYSTOP / PGSIZE] = {0};
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
