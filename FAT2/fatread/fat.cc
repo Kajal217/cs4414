@@ -19,7 +19,7 @@ uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 // return a formatted copy of the supplied DirEntry name
 char* formatDirName(char* dirName) {
     // Copy to new string, excluding spaces & file extension
-    char* formattedName = (char*)malloc(11);
+    char* formattedName = (char*)malloc(8);
     for (unsigned int i = 0; i < 8; i++) {
         if (dirName[i] != ' ') {
             formattedName[i] = dirName[i];
