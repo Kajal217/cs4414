@@ -16,6 +16,21 @@ uint32_t* FAT;   // the File Allocation Table - stores next cluster number
 DirEntry* FileTable[128];   // tracks open files, indexed by FDs
 uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 
+// return a formatted copy of the supplied DirEntry name
+char* formatDirName(char* dirName) {
+    char* newName = strdup(dirName);
+    // trim extension for now
+    newName[8] = '\0';
+    // trim whitespace
+    for (int i = 0; i < 8; i++){
+        if (newName[i] == 0x20)
+        break;
+    }
+    newName[i] = '\0';
+
+    return newName;
+}
+
 // read a cluster chain and return its directory entries
 DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
     // count the number of clusters in the chain
@@ -98,12 +113,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
     char* token = strtok(cpath, "/");
-    char* nextDirName;
-
-    char s[] = "aSuhdude";
-    char* s1 = s;
-    const char* s2 = "AsuhDude";
-    printf("----- TESTING strcasecmp(): %d -----\n", strcasecmp((const char*)s1, s2));
+    char* nextDirName, entryDirName;
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
@@ -111,10 +121,6 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
     // traverse subdirectories
     while (token != NULL) {
-        // if (strcmp(token, ".") == 0) {
-        //     token = strtok(NULL, "/");
-        //     continue;
-        // }
         nextDirName = strdup(token);
         printf("NEXT DIR: %s\n", nextDirName);
 
@@ -122,12 +128,17 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
             printf("----- DIR_Name: %s -----\n", (char*)entries[i].DIR_Name);
+            entryDirName = formatDirName((char*)entries[i].DIR_Name);
+            printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
+
             // get the matching entry's cluster number
-            if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)nextDirName) == 0) {
+            if (strcasecmp((const char*)entryDirName, (const char*)nextDirName) == 0) {
                 printf("FOUND DIRECTORY: %s\n", nextDirName);
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
                 break;
             }
+            free(entryDirName);
+            entryDirName = NULL;
         }
         free(nextDirName);
         nextDirName = NULL;
