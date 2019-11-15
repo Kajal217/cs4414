@@ -18,17 +18,14 @@ uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 
 // return a formatted copy of the supplied DirEntry name
 char* formatDirName(char* copiedDirName) {
-    // trim extension for now
-    copiedDirName[8] = '\0';
-    // trim whitespace
-    for (int i = 0; i < 8; i++){
-        if (copiedDirName[i] == ' ') {
-            copiedDirName[i] = '\0';
-            break;
-        }
-    }
+    // Trim extension (for now) and trailing space
+    char* end = copiedDirName + strlen(copiedDirName) - 4;
+    while(end > copiedDirName && isspace((unsigned char)*end)) end--;
 
-    return (char*)copiedDirName;
+    // Null terminate
+    end[1] = '\0';
+
+    return copiedDirName;
 }
 
 // read a cluster chain and return its directory entries
@@ -128,7 +125,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         for (uint32_t i = 0; i < *entryCount; i++) {
             printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // copy each dir name, format the copy, and compare
-            dirNameCopy = (char*)strdup((const char*)(entries[i].DIR_Name));
+            dirNameCopy = strdup((const char*)(entries[i].DIR_Name));
             entryDirName = formatDirName((char*)dirNameCopy);
             printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
