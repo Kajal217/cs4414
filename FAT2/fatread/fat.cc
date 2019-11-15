@@ -1,5 +1,6 @@
 // Austin Baney // ab5ep
 // Based on my S19 implementation
+
 #include "fat_internal.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -10,6 +11,7 @@
 #include <string.h>
 #include <strings.h>
 
+
 int Disk = -1;  // the FAT disk image
 Fat32BPB BPB;   // the header with info like the locations of FAT and root directory
 uint32_t* FAT;   // the File Allocation Table - stores next cluster number
@@ -17,6 +19,7 @@ DirEntry* FileTable[128];   // tracks open files, indexed by FDs
 uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 
 // return a formatted copy of the supplied DirEntry name
+// (return value must be free()'d)
 char* formatDirName(char* dirName) {
     // Copy to new string, excluding spaces & file extension
     char* formattedName = (char*)malloc(8);
@@ -107,8 +110,15 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
     return -1;
 }
 
+// given a path to a directory, retrieve all entries within.
+// (assume absolute paths)
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
+    if (Disk == -1) {
+        std::cerr << "No disk image has been mounted.\n";
+        return result;
+    }
+
     char* cpath = strdup(path.c_str());
     uint32_t entryCount[1];
     *entryCount = 0;
