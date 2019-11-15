@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
-
+#include <strings.h>
 
 int Disk = -1;  // the FAT disk image
 Fat32BPB BPB;   // the header with info like the locations of FAT and root directory
@@ -38,7 +38,7 @@ DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
         // read this cluster
         lseek(Disk, clusterOffset, 0);
         if (read(Disk, &(entries[clusterIndex]), ClusterSize) == -1) {
-            std::cerr << "Failed to read cluster #" + clusterNum;
+            std::cerr << "Failed to read cluster #" + clusterNum + "\n";
             return 0;
         }
 
@@ -58,7 +58,7 @@ bool fat_mount(const std::string &path) {
     Disk = open(cpath, O_RDWR, 0);
     lseek(Disk, 0, 0);
     if(read(Disk, (char*)&BPB, sizeof(BPB)) == -1) {
-        std::cerr << "Failed to read BPB";
+        std::cerr << "Failed to read BPB\n";
         return false;
     }
 
@@ -66,7 +66,7 @@ bool fat_mount(const std::string &path) {
     FAT = (uint32_t*)malloc(BPB.BPB_BytsPerSec * BPB.BPB_FATSz32);
     lseek(Disk, BPB.BPB_RsvdSecCnt * BPB.BPB_BytsPerSec, 0);
     if(read(Disk, FAT, BPB.BPB_BytsPerSec * BPB.BPB_FATSz32) == -1) {
-        std::cerr << "Failed to read FAT";
+        std::cerr << "Failed to read FAT\n";
         return false;
     }
 
@@ -96,17 +96,49 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     const char* cpath = path.c_str();
     uint32_t entryCount[1];
     *entryCount = 0;
+    uint32_t clusterNum = BPB.BPB_RootClus;
 
-    if (strcmp(cpath, "/") == 0) {  // root dir
-        DirEntry* entries = readClusterChain(BPB.BPB_RootClus, entryCount);
-        if (entries == 0 || *entryCount == 0) return result;
+    // first, read the root directory
+    DirEntry* entries = readClusterChain(clusterNum, entryCount);
+    if (entries == 0 || *entryCount == 0) goto bad;
 
-        for (uint32_t i = 0; i < *entryCount; i++) {
-            AnyDirEntry entry;
-            entry.dir = entries[i];
-            result.push_back(entry);
+    // traverse subdirectories
+    token = strtok(cpath, "/");
+    while (token != NULL) {
+        // if (strcmp(token, ".") == 0) {
+        //     token = strtok(NULL, "/");
+        //     continue;
+        // }
+
+        // find the DirEntry for the next dir in path
+        for (uint32_t i = 0; i < *entrycount; i++) {
+            if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)token) == 0) {
+                clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
+            }
         }
+
+        // deallocate the DirEntry array
+        *entryCount = 0;
+        free(entries);
+        entries = NULL;
+
+        // read the next directory
+        entries = readClusterChain(clusterNum, entryCount);
+        if (entries == 0 || *entryCount == 0) goto bad;
+
+        token = strtok(NULL, "/");
     }
 
+    // push each entry to the vector
+    for (uint32_t i = 0; i < *entryCount; i++) {
+        AnyDirEntry entry;
+        entry.dir = entries[i];
+        result.push_back(entry);
+    }
+    free(entries);
+    return result;
+
+bad:
+    free(entries);
     return result;
 }
