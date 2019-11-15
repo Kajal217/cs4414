@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <conio.h>
 #include <string.h>
 
 
@@ -38,7 +37,7 @@ DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
         // read this cluster
         lseek(Disk, clusterOffset, 0);
         if (read(Disk, &(entries[clusterIndex]), ClusterSize) == -1) {
-            cprintf("Failed to read cluster #%d", clusterNum);
+            std::cerr << "Failed to read cluster #" + clusterNum;
             return 0;
         }
 
@@ -58,7 +57,7 @@ bool fat_mount(const std::string &path) {
     Disk = open(cpath, O_RDWR, 0);
     lseek(Disk, 0, 0);
     if(read(Disk, (char*)&BPB, sizeof(BPB)) == -1) {
-        cprintf("Failed to read BPB");
+        std::cerr << "Failed to read BPB";
         return false;
     }
 
@@ -66,7 +65,7 @@ bool fat_mount(const std::string &path) {
     FAT = (uint32_t*)malloc(BPB.BPB_BytsPerSec * BPB.BPB_FATSz32);
     lseek(Disk, BPB.BPB_RsvdSecCnt * BPB.BPB_BytsPerSec, 0);
     if(read(Disk, FAT, BPB.BPB_BytsPerSec * BPB.BPB_FATSz32) == -1) {
-        cprintf("Failed to read FAT");
+        std::cerr << "Failed to read FAT";
         return false;
     }
 
