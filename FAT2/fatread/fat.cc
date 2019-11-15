@@ -93,11 +93,11 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
-    char* cpath = path.c_str();
+    const char* cpath = path.c_str();
     uint32_t* entryCount;
     *entryCount = 0;
 
-    if (strcmp(cpath, '/') == 0) {  // root dir
+    if (strcmp(cpath, "/") == 0) {  // root dir
         DirEntry* entries = readClusterChain(BPB.BPB_RootClus, entryCount);
         if (entries == 0 || *entryCount == 0) return result;
 
