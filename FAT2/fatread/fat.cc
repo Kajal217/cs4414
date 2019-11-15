@@ -115,6 +115,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     uint32_t clusterNum = BPB.BPB_RootClus;
     char* token = strtok(cpath, "/");
     char* entryDirName;
+    bool found = false;
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
@@ -122,28 +123,31 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
     // traverse subdirectories
     while (token != NULL) {
-        printf("NEXT DIR: %s\n", token);
+        // printf("NEXT DIR: %s\n", token);
 
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
-            printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
+            // printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // copy each dir name, format the copy, and compare
             // dirNameCopy = strdup((const char*)(entries[i].DIR_Name));
             entryDirName = formatDirName((char*)(entries[i].DIR_Name));
-            printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
+            // printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // get the matching entry's cluster number
             if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
-                printf("FOUND DIRECTORY: %s\n", token);
+                found = true;
+                // printf("FOUND DIRECTORY: %s\n", token);
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
+                free(entryDirName);
+                entryDirName = NULL;
                 break;
             }
             free(entryDirName);
             entryDirName = NULL;
         }
 
-        if (clusterNum == 0) {
+        if (!found) {
             std::cerr << "DIRECTORY NOT FOUND\n";
             goto bad;
         }
@@ -156,7 +160,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         *entryCount = 0;
         entries = readClusterChain(clusterNum, entryCount);
         if (entries == 0 || *entryCount == 0) goto bad;
-
+        found = false;
         token = strtok(NULL, "/");
     }
 
