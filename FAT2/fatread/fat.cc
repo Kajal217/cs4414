@@ -38,7 +38,7 @@ DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
         // read this cluster
         lseek(Disk, clusterOffset, 0);
         if (read(Disk, &(entries[clusterIndex]), ClusterSize) == -1) {
-            std::cerr << "Failed to read cluster #" + clusterNum + "\n";
+            std::cerr << "Failed to read cluster\n";
             return 0;
         }
 
@@ -93,7 +93,7 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
-    const char* cpath = path.c_str();
+    char* cpath = strdup(path.c_str());
     uint32_t entryCount[1];
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
@@ -103,7 +103,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     if (entries == 0 || *entryCount == 0) goto bad;
 
     // traverse subdirectories
-    token = strtok(cpath, "/");
+    char* token = strtok(cpath, "/");
     while (token != NULL) {
         // if (strcmp(token, ".") == 0) {
         //     token = strtok(NULL, "/");
@@ -111,18 +111,20 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         // }
 
         // find the DirEntry for the next dir in path
-        for (uint32_t i = 0; i < *entrycount; i++) {
+        for (uint32_t i = 0; i < *entryCount; i++) {
+            // get the matching entry's cluster number
             if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)token) == 0) {
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
+                break;
             }
         }
 
         // deallocate the DirEntry array
-        *entryCount = 0;
         free(entries);
         entries = NULL;
 
         // read the next directory
+        *entryCount = 0;
         entries = readClusterChain(clusterNum, entryCount);
         if (entries == 0 || *entryCount == 0) goto bad;
 
