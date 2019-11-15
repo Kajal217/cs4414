@@ -104,6 +104,10 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
     if (entries == 0 || *entryCount == 0) goto bad;
 
+    char* s1 = "aSuhdude";
+    const char* s2 = "AsuhDude";
+    printf("----- TESTING strcasecmp(): %d -----\n", strcasecmp((const char*)s1, s2));
+
     // traverse subdirectories
     while (token != NULL) {
         // if (strcmp(token, ".") == 0) {
@@ -116,6 +120,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
+            printf("----- DIR_Name: %s -----\n", (char*)entries[i].DIR_Name);
             // get the matching entry's cluster number
             if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)nextDirName) == 0) {
                 printf("FOUND DIRECTORY: %s\n", nextDirName);
