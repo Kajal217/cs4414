@@ -25,7 +25,7 @@ char* formatDirName(char* copiedDirName) {
     // Null terminate
     end[1] = '\0';
 
-    return copiedDirName;
+    return (char*)copiedDirName;
 }
 
 // read a cluster chain and return its directory entries
@@ -126,7 +126,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // copy each dir name, format the copy, and compare
             dirNameCopy = strdup((const char*)(entries[i].DIR_Name));
-            entryDirName = formatDirName((char*)dirNameCopy);
+            entryDirName = (char*)formatDirName((char*)dirNameCopy);
             printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // get the matching entry's cluster number
