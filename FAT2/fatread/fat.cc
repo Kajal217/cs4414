@@ -17,18 +17,17 @@ DirEntry* FileTable[128];   // tracks open files, indexed by FDs
 uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 
 // return a formatted copy of the supplied DirEntry name
-char* formatDirName(char* dirName) {
-    char* newName = strdup((const char*)dirName);
+char* formatDirName(char* copiedDirName) {
     // trim extension for now
-    newName[8] = '\0';
+    copiedDirName[8] = '\0';
     // trim whitespace
     for (int i = 0; i < 8; i++){
-        if (newName[i] == 0x20)
-        newName[i] = '\0';
+        if (copiedDirName[i] == ' ')
+        copiedDirName[i] = '\0';
         break;
     }
 
-    return (char*)newName;
+    return (char*)copiedDirName;
 }
 
 // read a cluster chain and return its directory entries
@@ -113,7 +112,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
     char* token = strtok(cpath, "/");
-    char* nextDirName, entryDirName;
+    char* entryDirName;
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
@@ -121,27 +120,25 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
 
     // traverse subdirectories
     while (token != NULL) {
-        nextDirName = strdup(token);
-        printf("NEXT DIR: %s\n", nextDirName);
+        printf("NEXT DIR: %s\n", token);
 
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
             printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
-            entryDirName = formatDirName((char*)(entries[i].DIR_Name));
+            // copy each dir name, format the copy, and compare
+            entryDirName = formatDirName(strdup((const char*)(entries[i].DIR_Name)));
             printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // get the matching entry's cluster number
-            if (strcasecmp((const char*)entryDirName, (const char*)nextDirName) == 0) {
-                printf("FOUND DIRECTORY: %s\n", nextDirName);
+            if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
+                printf("FOUND DIRECTORY: %s\n", token);
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
                 break;
             }
             free(entryDirName);
             entryDirName = NULL;
         }
-        free(nextDirName);
-        nextDirName = NULL;
 
         if (clusterNum == 0) {
             std::cerr << "DIRECTORY NOT FOUND\n";
