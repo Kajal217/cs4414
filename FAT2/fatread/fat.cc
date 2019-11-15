@@ -97,13 +97,13 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     uint32_t entryCount[1];
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
+    char* token = strtok(cpath, "/");
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
     if (entries == 0 || *entryCount == 0) goto bad;
 
     // traverse subdirectories
-    char* token = strtok(cpath, "/");
     while (token != NULL) {
         // if (strcmp(token, ".") == 0) {
         //     token = strtok(NULL, "/");
