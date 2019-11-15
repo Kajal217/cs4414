@@ -100,13 +100,14 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     char* token = strtok(cpath, "/");
     char* nextDirName;
 
+    char s[] = "aSuhdude";
+    char* s1 = s;
+    const char* s2 = "AsuhDude";
+    printf("----- TESTING strcasecmp(): %d -----\n", strcasecmp((const char*)s1, s2));
+
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
     if (entries == 0 || *entryCount == 0) goto bad;
-
-    char* s1 = "aSuhdude";
-    const char* s2 = "AsuhDude";
-    printf("----- TESTING strcasecmp(): %d -----\n", strcasecmp((const char*)s1, s2));
 
     // traverse subdirectories
     while (token != NULL) {
