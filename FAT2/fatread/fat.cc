@@ -110,13 +110,22 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         //     continue;
         // }
 
+        printf("TOKEN: %s", token);
+
         // find the DirEntry for the next dir in path
+        clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
             // get the matching entry's cluster number
             if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)token) == 0) {
+                printf("FOUND DIRECTORY: %s", token);
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
                 break;
             }
+        }
+
+        if (clusterNum == 0) {
+            std::cerr << "DIRECTORY NOT FOUND";
+            goto bad;
         }
 
         // deallocate the DirEntry array
@@ -138,9 +147,11 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         result.push_back(entry);
     }
     free(entries);
+    free(cpath);
     return result;
 
 bad:
     free(entries);
+    free(cpath);
     return result;
 }
