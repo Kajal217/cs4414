@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <iostream>
 #include <string.h>
 
 
@@ -92,10 +93,11 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
+    const char* cpath = path.c_str();
     uint32_t* entryCount;
     *entryCount = 0;
 
-    if (path.c_str() == '/') {  // root dir
+    if (cpath == '/') {  // root dir
         DirEntry* entries = readClusterChain(BPB.BPB_RootClus, entryCount);
         if (entries == 0 || *entryCount == 0) return result;
 
