@@ -98,6 +98,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
     char* token = strtok(cpath, "/");
+    const char* nextDirName;
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
@@ -109,22 +110,24 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         //     token = strtok(NULL, "/");
         //     continue;
         // }
-
-        printf("TOKEN: %s", token);
+        nextDirName = (const char*)strdup(token);
+        printf("NEXT DIR: %s\n", nextDirName);
 
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
             // get the matching entry's cluster number
-            if (strcasecmp((const char*)entries[i].DIR_Name, (const char*)token) == 0) {
-                printf("FOUND DIRECTORY: %s", token);
+            if (strcasecmp((const char*)entries[i].DIR_Name, nextDirName) == 0) {
+                printf("FOUND DIRECTORY: %s\n", nextDirName);
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
                 break;
             }
         }
+        free(nextDirName);
+        nextDirName = NULL;
 
         if (clusterNum == 0) {
-            std::cerr << "DIRECTORY NOT FOUND";
+            std::cerr << "DIRECTORY NOT FOUND\n";
             goto bad;
         }
 
