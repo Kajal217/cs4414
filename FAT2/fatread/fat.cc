@@ -152,6 +152,11 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
             goto bad;
         }
 
+        // handle case of '..' to root dir (FAT says clus 0, but isn't stored there)
+        if (clusterNum == 0) {
+            clusterNum = BPB.BPB_RootClus;
+        }
+
         // deallocate the DirEntry array
         free(entries);
         entries = NULL;
