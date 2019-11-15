@@ -22,9 +22,10 @@ char* formatDirName(char* copiedDirName) {
     copiedDirName[8] = '\0';
     // trim whitespace
     for (int i = 0; i < 8; i++){
-        if (copiedDirName[i] == ' ')
-        copiedDirName[i] = '\0';
-        break;
+        if (copiedDirName[i] == ' ') {
+            copiedDirName[i] = '\0';
+            break;
+        }
     }
 
     return (char*)copiedDirName;
@@ -112,7 +113,7 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     *entryCount = 0;
     uint32_t clusterNum = BPB.BPB_RootClus;
     char* token = strtok(cpath, "/");
-    char* entryDirName;
+    char* dirNameCopy, entryDirName;
 
     // first, read the root directory
     DirEntry* entries = readClusterChain(clusterNum, entryCount);
@@ -127,7 +128,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
         for (uint32_t i = 0; i < *entryCount; i++) {
             printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // copy each dir name, format the copy, and compare
-            entryDirName = formatDirName(strdup((const char*)(entries[i].DIR_Name)));
+            dirNameCopy = strdup((const char*)(entries[i].DIR_Name));
+            entryDirName = formatDirName(dirNameCopy);
             printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // get the matching entry's cluster number
@@ -136,7 +138,8 @@ std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
                 clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
                 break;
             }
-            free(entryDirName);
+            free(dirNameCopy);
+            dirNameCopy = NULL;
             entryDirName = NULL;
         }
 
