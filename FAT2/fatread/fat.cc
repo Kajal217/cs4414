@@ -21,17 +21,38 @@ uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 // return a formatted copy of the supplied DirEntry name
 // (return value must be free()'d)
 char* formatDirName(char* dirName) {
-    // Copy to new string, excluding spaces & file extension
-    char* formattedName = (char*)malloc(8);
-    for (unsigned int i = 0; i < 8; i++) {
+    // copy name portion
+    char* formattedName = (char*)malloc(12);
+
+    unsigned int i;
+    for (i = 0; i < 8; i++) {
         if (dirName[i] != ' ') {
             formattedName[i] = dirName[i];
-        } else if (dirName[i] == ' ' || i == 7){
-            formattedName[i] = '\0';
-            break;
-        }
+        } 
+        else break;
     }
 
+    // check whether dirName contains a file extension
+    if (dirName[8] != ' ') {
+        formattedName[i] = '.';
+        i++;
+    } else {
+        // terminate string & return
+        formattedName[i] = '\0';
+        return formattedName;
+    }
+
+    // copy extension
+    for (unsigned int j = 8; j < 11; j++) {
+        if (dirName[j] != ' ') {
+            formattedName[i] = dirName[j];
+            i++;
+        } 
+        else break;
+    }
+    
+    // terminate string & return
+    formattedName[i] = '\0';
     return formattedName;
 }
 
@@ -71,6 +92,92 @@ DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
     return entries;
 }
 
+// given a path in the filesystem: if it leads to a directory, return its entries
+// if it leads to a file, return the file's entry
+// also, store the number of returned entries in sizePtr
+DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
+    DirEntry* result;
+    char* cpath = strdup(path.c_str());
+    uint32_t entryCount[1];
+    *entryCount = 0;
+    uint32_t clusterNum = BPB.BPB_RootClus;
+    char* token = strtok(cpath, "/");
+    char* entryDirName;
+    bool found = false;
+
+    // first, read the root directory
+    DirEntry* entries = readClusterChain(clusterNum, entryCount);
+    if (entries == 0 || *entryCount == 0) goto bad;
+
+    // traverse subdirectories
+    while (token != NULL) {
+        // printf("NEXT DIR: %s\n", token);
+
+        // find the DirEntry for the next dir in path
+        clusterNum = 0;
+        for (uint32_t i = 0; i < *entryCount; i++) {
+            // printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
+            // format dir name to compare
+            entryDirName = formatDirName((char*)(entries[i].DIR_Name));
+            // printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
+
+            // find the matching entry, get its cluster # if needed
+            if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
+                found = true;
+                free(entryDirName);
+                entryDirName = NULL;
+                // printf("FOUND DIRECTORY: %s\n", token);
+
+                // if this entry is for a file, return the single entry
+                if (entries[i].DIR_Attr != DirEntryAttributes.DIRECTORY) {
+                    *result = entries[i];
+                    *sizePtr = 1;
+                    free(entries);
+                    free(cpath);
+                    return result;
+                }
+
+                clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
+                break;
+            }
+            free(entryDirName);
+            entryDirName = NULL;
+        }
+
+        if (!found) {
+            std::cerr << "FILE OR DIRECTORY NOT FOUND\n";
+            goto bad;
+        }
+
+        // handle case of '..' to root dir (FAT says clus 0, but isn't stored there)
+        if (clusterNum == 0) {
+            clusterNum = BPB.BPB_RootClus;
+        }
+
+        // deallocate the DirEntry array
+        free(entries);
+        entries = NULL;
+
+        // read the next directory
+        *entryCount = 0;
+        entries = readClusterChain(clusterNum, entryCount);
+        if (entries == 0 || *entryCount == 0) goto bad;
+        found = false;
+        token = strtok(NULL, "/");
+    }
+
+    result = entries;
+    *sizePtr = *entryCount;
+    // free(entries);
+    free(cpath);
+    return result;
+
+bad:
+    free(entries);
+    free(cpath);
+    return 0;
+}
+
 bool fat_mount(const std::string &path) {
     // read the BPB from the disk into the supplied struct
     const char* cpath = path.c_str();
@@ -99,11 +206,48 @@ bool fat_mount(const std::string &path) {
 }
 
 int fat_open(const std::string &path) {
+    // check whether a disk image has been mounted
+    if (Disk == -1) {
+        std::cerr << "No disk image has been mounted.\n";
+        return -1;
+    }
+
+    uint32_t sizePtr[1];
+    *sizePtr = 0;
+    
+    // retrieve the file's dirEntry
+    DirEntry* entry = traversePath(path, sizePtr);
+    if (entry == 0 || *sizePtr != 1) {
+        std::cerr << "Failed to find file.\n";
+        return -1;
+    }
+
+    printf("FOUND FILE: %s\n", (char*)entry->DIR_Name);
+
+    // store the entry in the file table and return its file descriptor
+    for (int i = 0; i < 128; i++) {
+        if (FileTable[i] == NULL) {
+            FileTable[i] = entry;
+            return i;
+        }
+    }
+
+    std::cerr << "Open file limit (128) reached.\n";
+    free(entry);
     return -1;
 }
 
+// given a file descriptor, remove the corresponding entry from the file table
 bool fat_close(int fd) {
-    return false;
+    if (fd < 0 || fd > 127) {
+        std::cerr << "File descriptor must be in range 0-127.\n";
+        return false;
+    }
+
+    free(FileTable[fd]);
+    FileTable[fd] = NULL;
+
+    return true;
 }
 
 int fat_pread(int fd, void *buffer, int count, int offset) {
@@ -114,83 +258,30 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 // (assume absolute paths)
 std::vector<AnyDirEntry> fat_readdir(const std::string &path) {
     std::vector<AnyDirEntry> result;
+
+    // check whether a disk image has been mounted
     if (Disk == -1) {
         std::cerr << "No disk image has been mounted.\n";
         return result;
     }
 
-    char* cpath = strdup(path.c_str());
-    uint32_t entryCount[1];
-    *entryCount = 0;
-    uint32_t clusterNum = BPB.BPB_RootClus;
-    char* token = strtok(cpath, "/");
-    char* entryDirName;
-    bool found = false;
-
-    // first, read the root directory
-    DirEntry* entries = readClusterChain(clusterNum, entryCount);
-    if (entries == 0 || *entryCount == 0) goto bad;
-
-    // traverse subdirectories
-    while (token != NULL) {
-        // printf("NEXT DIR: %s\n", token);
-
-        // find the DirEntry for the next dir in path
-        clusterNum = 0;
-        for (uint32_t i = 0; i < *entryCount; i++) {
-            // printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
-            // copy each dir name, format the copy, and compare
-            // dirNameCopy = strdup((const char*)(entries[i].DIR_Name));
-            entryDirName = formatDirName((char*)(entries[i].DIR_Name));
-            // printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
-
-            // get the matching entry's cluster number
-            if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
-                found = true;
-                // printf("FOUND DIRECTORY: %s\n", token);
-                clusterNum = ((unsigned int)entries[i].DIR_FstClusHI << 16) + ((unsigned int)entries[i].DIR_FstClusLO);
-                free(entryDirName);
-                entryDirName = NULL;
-                break;
-            }
-            free(entryDirName);
-            entryDirName = NULL;
-        }
-
-        if (!found) {
-            std::cerr << "DIRECTORY NOT FOUND\n";
-            goto bad;
-        }
-
-        // handle case of '..' to root dir (FAT says clus 0, but isn't stored there)
-        if (clusterNum == 0) {
-            clusterNum = BPB.BPB_RootClus;
-        }
-
-        // deallocate the DirEntry array
-        free(entries);
-        entries = NULL;
-
-        // read the next directory
-        *entryCount = 0;
-        entries = readClusterChain(clusterNum, entryCount);
-        if (entries == 0 || *entryCount == 0) goto bad;
-        found = false;
-        token = strtok(NULL, "/");
+    uint32_t sizePtr[1];
+    *sizePtr = 0;
+    
+    // retrieve the directory's entries
+    DirEntry* entries = traversePath(path, sizePtr);
+    if (entries == 0 || *sizePtr == 0) {
+        std::cerr << "Failed to read directory.\n";
+        return result;
     }
 
     // push each entry to the vector
-    for (uint32_t i = 0; i < *entryCount; i++) {
+    for (uint32_t i = 0; i < *sizePtr; i++) {
         AnyDirEntry entry;
         entry.dir = entries[i];
         result.push_back(entry);
     }
-    free(entries);
-    free(cpath);
-    return result;
 
-bad:
     free(entries);
-    free(cpath);
     return result;
 }
