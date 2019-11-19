@@ -130,7 +130,8 @@ DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
 
                 // if this entry is for a file, return the single entry
                 if (entries[i].DIR_Attr != DirEntryAttributes::DIRECTORY) {
-                    result = malloc(sizeof(DirEntry));
+                    // copy the entry to free the others
+                    result = (DirEntry*)malloc(sizeof(DirEntry));
                     *result = entries[i];
                     *sizePtr = 1;
                     free(entries);
