@@ -116,10 +116,10 @@ DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
-            printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
+            // printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // format dir name to compare
             entryDirName = formatDirName((char*)(entries[i].DIR_Name));
-            printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
+            // printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // find the matching entry, get its cluster # if needed
             if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
@@ -170,7 +170,6 @@ DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
 
     result = entries;
     *sizePtr = *entryCount;
-    // free(entries);
     free(cpath);
     return result;
 
@@ -239,15 +238,20 @@ int fat_open(const std::string &path) {
     return -1;
 }
 
-// given a file descriptor, remove the corresponding entry from the file table
+// given a file descriptor, clear the corresponding entry from the file table
 bool fat_close(int fd) {
     if (fd < 0 || fd > 127) {
         std::cerr << "File descriptor must be in range 0-127.\n";
         return false;
     }
 
-    free(FileTable[fd]);
-    FileTable[fd] = NULL;
+    if (FileTable[fd] != NULL) {
+        free(FileTable[fd]);
+        FileTable[fd] = NULL;
+    } else {
+        std::cerr << "File is not currently open.\n";
+        return false;
+    }
 
     return true;
 }
