@@ -334,9 +334,9 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
     }
 
     // copy into buffer parameter
-    memcpy(buffer, (void*)&myBuffer, bytesRead);
+    memcpy(buffer, (void*)myBuffer, bytesRead);
     free(myBuffer);
-    return bytesRead;
+    return (int)bytesRead;
 }
 
 // given a path to a directory, retrieve all entries within.
