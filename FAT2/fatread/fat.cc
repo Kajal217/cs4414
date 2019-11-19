@@ -96,7 +96,7 @@ DirEntry* readClusterChain(uint32_t clusterNum, uint32_t* sizePtr) {
 // if it leads to a file, return the file's entry
 // also, store the number of returned entries in sizePtr
 DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
-    DirEntry* result;
+    DirEntry* result = 0;
     char* cpath = strdup(path.c_str());
     uint32_t entryCount[1];
     *entryCount = 0;
