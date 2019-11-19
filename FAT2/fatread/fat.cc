@@ -22,7 +22,7 @@ uint32_t FirstDataSector, DataOffset, ClusterSize, EntsPerCluster;
 // (return value must be free()'d)
 char* formatDirName(char* dirName) {
     // copy name portion
-    char* formattedName = (char*)malloc(12);
+    char* formattedName = (char*)malloc(13);
 
     unsigned int i;
     for (i = 0; i < 8; i++) {
@@ -116,10 +116,10 @@ DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
         // find the DirEntry for the next dir in path
         clusterNum = 0;
         for (uint32_t i = 0; i < *entryCount; i++) {
-            // printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
+            printf("----- DIR_Name: %s -----\n", (char*)(entries[i].DIR_Name));
             // format dir name to compare
             entryDirName = formatDirName((char*)(entries[i].DIR_Name));
-            // printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
+            printf("----- FORMATTED DIR NAME: %s -----\n", entryDirName);
 
             // find the matching entry, get its cluster # if needed
             if (strcasecmp((const char*)entryDirName, (const char*)token) == 0) {
