@@ -223,7 +223,7 @@ int fat_open(const std::string &path) {
         return -1;
     }
 
-    printf("FOUND FILE: %s\n", (char*)entry->DIR_Name);
+    // printf("FOUND FILE: %s\n", (char*)entry->DIR_Name);
 
     // store the entry in the file table and return its file descriptor
     for (int i = 0; i < 128; i++) {
@@ -240,6 +240,12 @@ int fat_open(const std::string &path) {
 
 // given a file descriptor, clear the corresponding entry from the file table
 bool fat_close(int fd) {
+    // check whether a disk image has been mounted
+    if (Disk == -1) {
+        std::cerr << "No disk image has been mounted.\n";
+        return false;
+    }
+
     if (fd < 0 || fd > 127) {
         std::cerr << "File descriptor must be in range 0-127.\n";
         return false;
@@ -256,8 +262,75 @@ bool fat_close(int fd) {
     return true;
 }
 
+// read up to <count> bytes from an open file into a buffer, and return the # of bytes read
 int fat_pread(int fd, void *buffer, int count, int offset) {
-    return -1;
+    // check whether a disk image is mounted and the file is open
+    if (Disk == -1) {
+        std::cerr << "No disk image has been mounted.\n";
+        return -1;
+    }
+    if (fd < 0 || fd > 127) {
+        std::cerr << "File descriptor must be in range 0-127.\n";
+        return -1;
+    }
+    if (FileTable[fd] == NULL) {
+        std::cerr << "File is not currently open.\n";
+        return -1;
+    }
+
+    uint32_t fileSize = FileTable[fd]->DIR_FileSize;
+    uint32_t clusterNum = ((unsigned int)FileTable[fd]->DIR_FstClusHI << 16) + ((unsigned int)FileTable[fd]->DIR_FstClusLO);
+
+    // count the number of clusters in the chain
+    uint32_t curClus = clusterNum;
+    uint32_t clusCount = 0;
+    while (curClus < 0x0FFFFFF8) {
+        curClus = FAT[curClus] & 0x0FFFFFFF;
+        clusCount++;
+    }
+
+    uint32_t clusterOffset, clusterIndex, readSize, bytesRemaining;
+    uint32_t bytesRead = 0;
+    uint32_t offsetRemaining = offset;
+
+    if (offset > fileSize) return 0;
+    if (offset + count > fileSize) {
+        bytesRemaining = fileSize - offset;
+    } else {
+        bytesRemaining = count;
+    }
+
+    while (clusterNum < 0x0FFFFFF8) {
+        // if the offset is big enough, need to skip this cluster
+        if (offsetRemaining >= ClusterSize) {
+            offsetRemaining -= ClusterSize;
+            clusterNum = FAT[clusterNum] & 0x0FFFFFFF;
+            continue;
+        }
+
+        // determine how much of this cluster to read
+        if (offsetRemaining + bytesRemaining < ClusterSize) {
+            readSize = bytesRemaining;
+        } else readSize = ClusterSize - offsetRemaining;
+
+        clusterOffset = (clusterNum - 2) * ClusterSize + DataOffset + offsetRemaining;
+
+        // read from this cluster
+        lseek(Disk, clusterOffset, 0);
+        if (read(Disk, &(buffer[bytesRead]), readSize) == -1) {
+            std::cerr << "Failed to read cluster\n";
+            return -1;
+        }
+
+        bytesRead += readSize;
+        bytesRemaining -= readSize;
+        offsetRemaining = 0;
+
+        // get the next cluster number
+        clusterNum = FAT[clusterNum] & 0x0FFFFFFF;
+    }
+
+    return bytesRead;
 }
 
 // given a path to a directory, retrieve all entries within.
