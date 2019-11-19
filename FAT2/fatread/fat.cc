@@ -300,6 +300,8 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
         bytesRemaining = (uint32_t)count;
     }
 
+    char* myBuffer = (char*)malloc(bytesRemaining);
+
     while (clusterNum < 0x0FFFFFF8) {
         // if the offset is big enough, need to skip this cluster
         if (offsetRemaining >= ClusterSize) {
@@ -317,7 +319,7 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
         // read from this cluster
         lseek(Disk, clusterOffset, 0);
-        if (read(Disk, &(buffer + bytesRead), readSize) == -1) {
+        if (read(Disk, &(myBuffer[bytesRead]), readSize) == -1) {
             std::cerr << "Failed to read cluster\n";
             return -1;
         }
@@ -330,6 +332,8 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
         clusterNum = FAT[clusterNum] & 0x0FFFFFFF;
     }
 
+    // copy into buffer parameter
+    memcpy(buffer, (void*)&myBuffer, bytesRead);
     return bytesRead;
 }
 
