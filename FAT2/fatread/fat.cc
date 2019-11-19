@@ -129,7 +129,7 @@ DirEntry* traversePath(const std::string &path, uint32_t* sizePtr) {
                 // printf("FOUND DIRECTORY: %s\n", token);
 
                 // if this entry is for a file, return the single entry
-                if (entries[i].DIR_Attr != DirEntryAttributes.DIRECTORY) {
+                if (entries[i].DIR_Attr != DirEntryAttributes::DIRECTORY) {
                     *result = entries[i];
                     *sizePtr = 1;
                     free(entries);
