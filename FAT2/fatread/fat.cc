@@ -289,15 +289,15 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
         clusCount++;
     }
 
-    uint32_t clusterOffset, clusterIndex, readSize, bytesRemaining;
+    uint32_t clusterOffset, readSize, bytesRemaining;
     uint32_t bytesRead = 0;
     uint32_t offsetRemaining = offset;
 
-    if (offset > fileSize) return 0;
-    if (offset + count > fileSize) {
-        bytesRemaining = fileSize - offset;
+    if ((uint32_t)offset > fileSize) return 0;
+    if ((uint32_t)offset + (uint32_t)count > fileSize) {
+        bytesRemaining = fileSize - (uint32_t)offset;
     } else {
-        bytesRemaining = count;
+        bytesRemaining = (uint32_t)count;
     }
 
     while (clusterNum < 0x0FFFFFF8) {
@@ -317,7 +317,7 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
         // read from this cluster
         lseek(Disk, clusterOffset, 0);
-        if (read(Disk, &(buffer[bytesRead]), readSize) == -1) {
+        if (read(Disk, &((char*)buffer[bytesRead]), readSize) == -1) {
             std::cerr << "Failed to read cluster\n";
             return -1;
         }
