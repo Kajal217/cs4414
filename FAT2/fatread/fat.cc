@@ -262,7 +262,7 @@ bool fat_close(int fd) {
     return true;
 }
 
-// read up to <count> bytes from an open file into a buffer, and return the # of bytes read
+// read up to <count> bytes from an open file into the buffer, and return the # of bytes read
 int fat_pread(int fd, void *buffer, int count, int offset) {
     // check whether a disk image is mounted and the file is open
     if (Disk == -1) {
@@ -317,7 +317,7 @@ int fat_pread(int fd, void *buffer, int count, int offset) {
 
         // read from this cluster
         lseek(Disk, clusterOffset, 0);
-        if (read(Disk, &((char*)buffer[bytesRead]), readSize) == -1) {
+        if (read(Disk, &(buffer + bytesRead), readSize) == -1) {
             std::cerr << "Failed to read cluster\n";
             return -1;
         }
